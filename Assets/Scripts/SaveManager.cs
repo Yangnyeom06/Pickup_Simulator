@@ -11,6 +11,7 @@ public class SaveManager : MonoBehaviour
         {
             Instance = this;
             DontDestroyOnLoad(gameObject);
+            Load();
         }
         else
         {
