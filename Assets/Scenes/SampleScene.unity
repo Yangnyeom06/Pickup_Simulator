@@ -1632,6 +1632,7 @@ Transform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
+  - {fileID: 1883293780}
   - {fileID: 2048240188}
   - {fileID: 756184445}
   - {fileID: 418101743}
@@ -3315,6 +3316,7 @@ MonoBehaviour:
   itemList: {fileID: 11400000, guid: 6c6b8b769eb6ad04f9f0b2e17fdda047, type: 2}
   roadSpawners:
   - {fileID: 2048240187}
+  - {fileID: 1883293781}
   mountainSpawners:
   - {fileID: 756184444}
   elementSchoolSpawners:
@@ -5161,6 +5163,51 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1837467416}
   m_CullTransparentMesh: 1
+--- !u!1 &1883293779
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 1883293780}
+  - component: {fileID: 1883293781}
+  m_Layer: 0
+  m_Name: Road1
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &1883293780
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1883293779}
+  serializedVersion: 2
+  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
+  m_LocalPosition: {x: 0.41657048, y: -3.5693722, z: -1.79}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 461767432}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &1883293781
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1883293779}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: eeb6abbe4ed2169449d28c26862b9c2d, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  spawnCount: 5
 --- !u!1 &1913057065
 GameObject:
   m_ObjectHideFlags: 0
