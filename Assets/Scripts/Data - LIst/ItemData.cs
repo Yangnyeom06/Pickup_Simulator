@@ -24,7 +24,7 @@ public class ItemData : ScriptableObject
     public string description; // 아이템 설명
     public ItemType itemType; // 아이템 타입
     public ItemRarity itemRarity; // 아이템 희귀도
-    public int dirty; // 더러움 수치 (가장 깨끗함 : 1, 가장 더러움 : 0)
+    public float dirty; // 더러움 수치 (가장 깨끗함 : 1, 가장 더러움 : 0)
     public int minValue; // 최소 가치
     public int maxValue; // 최대 가치
     public int value; // 기본 가치 (스폰될 때 최소 가치와 최대 가치 사이의 값으로 변경)
