@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 
 public class PlayerController : MonoBehaviour {
+    public PlayerStats playerStats;
 
     // 스피드 조정 변수
     [SerializeField]
@@ -31,7 +32,7 @@ public class PlayerController : MonoBehaviour {
     private float applyCrouchPosY;
 
     // 땅 착지 여부
-    private CapsuleCollider capsuleCollider;
+    private BoxCollider boxCollider;
 
 
     // 민감도
@@ -54,7 +55,7 @@ public class PlayerController : MonoBehaviour {
 
 	// Use this for initialization
 	void Start () {
-        capsuleCollider = GetComponent<CapsuleCollider>();
+        boxCollider = GetComponent<BoxCollider>();
         myRigid = GetComponent<Rigidbody>();
         applySpeed = walkSpeed;
 
@@ -132,7 +133,7 @@ public class PlayerController : MonoBehaviour {
     // 지면 체크.
     private void IsGround()
     {
-        isGround = Physics.Raycast(transform.position, Vector3.down, capsuleCollider.bounds.extents.y + 0.1f);
+        isGround = Physics.Raycast(transform.position, Vector3.down, boxCollider.bounds.extents.y + 0.1f);
     }
 
 
