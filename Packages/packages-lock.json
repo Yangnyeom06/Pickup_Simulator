@@ -41,9 +41,14 @@
     "com.unity.ext.nunit": {
       "version": "2.0.5",
       "depth": 1,
+<<<<<<< HEAD
+      "source": "builtin",
+      "dependencies": {}
+=======
       "source": "registry",
       "dependencies": {},
       "url": "https://packages.unity.com"
+>>>>>>> af91cbbafbeb637ac5e144890b7bdf80d67680f8
     },
     "com.unity.ide.rider": {
       "version": "3.0.31",
@@ -64,7 +69,7 @@
       "url": "https://packages.unity.com"
     },
     "com.unity.inputsystem": {
-      "version": "1.13.0",
+      "version": "1.13.1",
       "depth": 0,
       "source": "registry",
       "dependencies": {
@@ -154,15 +159,25 @@
       }
     },
     "com.unity.test-framework": {
+<<<<<<< HEAD
+      "version": "1.5.1",
+      "depth": 0,
+      "source": "builtin",
+=======
       "version": "1.4.6",
       "depth": 0,
       "source": "registry",
+>>>>>>> af91cbbafbeb637ac5e144890b7bdf80d67680f8
       "dependencies": {
         "com.unity.ext.nunit": "2.0.3",
         "com.unity.modules.imgui": "1.0.0",
         "com.unity.modules.jsonserialize": "1.0.0"
+<<<<<<< HEAD
+      }
+=======
       },
       "url": "https://packages.unity.com"
+>>>>>>> af91cbbafbeb637ac5e144890b7bdf80d67680f8
     },
     "com.unity.test-framework.performance": {
       "version": "3.0.3",
@@ -196,7 +211,7 @@
       }
     },
     "com.unity.visualscripting": {
-      "version": "1.9.5",
+      "version": "1.9.6",
       "depth": 0,
       "source": "registry",
       "dependencies": {
