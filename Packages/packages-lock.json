@@ -1,5 +1,6 @@
 {
   "dependencies": {
+<<<<<<< HEAD
     "com.simonoliver.unityfigma": {
       "version": "https://github.com/simonoliver/UnityFigmaBridge.git",
       "depth": 0,
@@ -16,6 +17,8 @@
       "source": "builtin",
       "dependencies": {}
     },
+=======
+>>>>>>> af91cbbafbeb637ac5e144890b7bdf80d67680f8
     "com.unity.ai.navigation": {
       "version": "2.0.6",
       "depth": 0,
@@ -57,8 +60,14 @@
     "com.unity.ext.nunit": {
       "version": "2.0.5",
       "depth": 1,
+<<<<<<< HEAD
       "source": "builtin",
       "dependencies": {}
+=======
+      "source": "registry",
+      "dependencies": {},
+      "url": "https://packages.unity.com"
+>>>>>>> af91cbbafbeb637ac5e144890b7bdf80d67680f8
     },
     "com.unity.ide.rider": {
       "version": "3.0.31",
@@ -79,7 +88,11 @@
       "url": "https://packages.unity.com"
     },
     "com.unity.inputsystem": {
+<<<<<<< HEAD
       "version": "1.13.1",
+=======
+      "version": "1.13.0",
+>>>>>>> af91cbbafbeb637ac5e144890b7bdf80d67680f8
       "depth": 0,
       "source": "registry",
       "dependencies": {
@@ -109,6 +122,7 @@
       "dependencies": {},
       "url": "https://packages.unity.com"
     },
+<<<<<<< HEAD
     "com.unity.nuget.newtonsoft-json": {
       "version": "3.2.1",
       "depth": 1,
@@ -116,6 +130,8 @@
       "dependencies": {},
       "url": "https://packages.unity.com"
     },
+=======
+>>>>>>> af91cbbafbeb637ac5e144890b7bdf80d67680f8
     "com.unity.render-pipelines.core": {
       "version": "17.0.4",
       "depth": 1,
@@ -176,14 +192,25 @@
       }
     },
     "com.unity.test-framework": {
+<<<<<<< HEAD
       "version": "1.5.1",
       "depth": 0,
       "source": "builtin",
+=======
+      "version": "1.4.6",
+      "depth": 0,
+      "source": "registry",
+>>>>>>> af91cbbafbeb637ac5e144890b7bdf80d67680f8
       "dependencies": {
         "com.unity.ext.nunit": "2.0.3",
         "com.unity.modules.imgui": "1.0.0",
         "com.unity.modules.jsonserialize": "1.0.0"
+<<<<<<< HEAD
       }
+=======
+      },
+      "url": "https://packages.unity.com"
+>>>>>>> af91cbbafbeb637ac5e144890b7bdf80d67680f8
     },
     "com.unity.test-framework.performance": {
       "version": "3.0.3",
@@ -195,6 +222,7 @@
       },
       "url": "https://packages.unity.com"
     },
+<<<<<<< HEAD
     "com.unity.textmeshpro": {
       "version": "5.0.0",
       "depth": 1,
@@ -203,6 +231,8 @@
         "com.unity.ugui": "2.0.0"
       }
     },
+=======
+>>>>>>> af91cbbafbeb637ac5e144890b7bdf80d67680f8
     "com.unity.timeline": {
       "version": "1.8.7",
       "depth": 0,
@@ -225,7 +255,11 @@
       }
     },
     "com.unity.visualscripting": {
+<<<<<<< HEAD
       "version": "1.9.6",
+=======
+      "version": "1.9.5",
+>>>>>>> af91cbbafbeb637ac5e144890b7bdf80d67680f8
       "depth": 0,
       "source": "registry",
       "dependencies": {
