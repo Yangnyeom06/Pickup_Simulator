@@ -298,6 +298,18 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 8357936704911851780}
     m_Modifications:
+    - target: {fileID: 3887172369392745958, guid: 17c8d1a044488f84990af958bb2d49c6, type: 3}
+      propertyPath: m_Name
+      value: Inventory
+      objectReference: {fileID: 0}
+    - target: {fileID: 5295789375017984565, guid: 17c8d1a044488f84990af958bb2d49c6, type: 3}
+      propertyPath: m_Name
+      value: Health
+      objectReference: {fileID: 0}
+    - target: {fileID: 5861877460761082550, guid: 17c8d1a044488f84990af958bb2d49c6, type: 3}
+      propertyPath: m_Name
+      value: Speed
+      objectReference: {fileID: 0}
     - target: {fileID: 6019673392146392172, guid: 17c8d1a044488f84990af958bb2d49c6, type: 3}
       propertyPath: m_Name
       value: upgrading
@@ -382,6 +394,14 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 7064520661508226807, guid: 17c8d1a044488f84990af958bb2d49c6, type: 3}
+      propertyPath: m_Name
+      value: Map
+      objectReference: {fileID: 0}
+    - target: {fileID: 8491903853238179912, guid: 17c8d1a044488f84990af958bb2d49c6, type: 3}
+      propertyPath: m_Name
+      value: Stamina
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
@@ -403,6 +423,22 @@ PrefabInstance:
     - target: {fileID: 60659862112281934, guid: 0b9bb86dcca3c914d83f4f40bbd3108f, type: 3}
       propertyPath: m_Name
       value: money
+      objectReference: {fileID: 0}
+    - target: {fileID: 553015013237730105, guid: 0b9bb86dcca3c914d83f4f40bbd3108f, type: 3}
+      propertyPath: m_Name
+      value: StaminaRequire
+      objectReference: {fileID: 0}
+    - target: {fileID: 4090674936667990559, guid: 0b9bb86dcca3c914d83f4f40bbd3108f, type: 3}
+      propertyPath: m_Name
+      value: SpeedRequire
+      objectReference: {fileID: 0}
+    - target: {fileID: 4922007251388806880, guid: 0b9bb86dcca3c914d83f4f40bbd3108f, type: 3}
+      propertyPath: m_Name
+      value: MapRequire
+      objectReference: {fileID: 0}
+    - target: {fileID: 7035998856675455510, guid: 0b9bb86dcca3c914d83f4f40bbd3108f, type: 3}
+      propertyPath: m_Name
+      value: InventoryRequire
       objectReference: {fileID: 0}
     - target: {fileID: 7310847284120370633, guid: 0b9bb86dcca3c914d83f4f40bbd3108f, type: 3}
       propertyPath: m_Pivot.x
@@ -484,6 +520,10 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 7825706694925378641, guid: 0b9bb86dcca3c914d83f4f40bbd3108f, type: 3}
+      propertyPath: m_Name
+      value: HealthRequire
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
@@ -502,6 +542,18 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 8357936704911851780}
     m_Modifications:
+    - target: {fileID: 1210365003711425617, guid: 7d05259ac6e84754380b49ab78b9c56d, type: 3}
+      propertyPath: m_Name
+      value: StaminaUp
+      objectReference: {fileID: 0}
+    - target: {fileID: 1432895014523619782, guid: 7d05259ac6e84754380b49ab78b9c56d, type: 3}
+      propertyPath: m_Name
+      value: InventoryUp
+      objectReference: {fileID: 0}
+    - target: {fileID: 1713619900288725657, guid: 7d05259ac6e84754380b49ab78b9c56d, type: 3}
+      propertyPath: m_Name
+      value: SpeedUp
+      objectReference: {fileID: 0}
     - target: {fileID: 6239395969390161477, guid: 7d05259ac6e84754380b49ab78b9c56d, type: 3}
       propertyPath: m_Pivot.x
       value: 0.5
@@ -582,9 +634,17 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 7291118644294121606, guid: 7d05259ac6e84754380b49ab78b9c56d, type: 3}
+      propertyPath: m_Name
+      value: HealthUp
+      objectReference: {fileID: 0}
     - target: {fileID: 7603705566245795737, guid: 7d05259ac6e84754380b49ab78b9c56d, type: 3}
       propertyPath: m_Name
       value: upgradePlus
+      objectReference: {fileID: 0}
+    - target: {fileID: 7669811398024933042, guid: 7d05259ac6e84754380b49ab78b9c56d, type: 3}
+      propertyPath: m_Name
+      value: MapUp
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
@@ -604,6 +664,18 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 8357936704911851780}
     m_Modifications:
+    - target: {fileID: 2212260203857749727, guid: 805a94c7abd836444a1bc26f8e64c06a, type: 3}
+      propertyPath: m_Name
+      value: HealthDown
+      objectReference: {fileID: 0}
+    - target: {fileID: 3076446350802844916, guid: 805a94c7abd836444a1bc26f8e64c06a, type: 3}
+      propertyPath: m_Name
+      value: StaminaDown
+      objectReference: {fileID: 0}
+    - target: {fileID: 3700087026004794637, guid: 805a94c7abd836444a1bc26f8e64c06a, type: 3}
+      propertyPath: m_Name
+      value: InventoryDown
+      objectReference: {fileID: 0}
     - target: {fileID: 4128261272882657659, guid: 805a94c7abd836444a1bc26f8e64c06a, type: 3}
       propertyPath: m_Pivot.x
       value: 0.5
@@ -684,9 +756,17 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 4814613640115949642, guid: 805a94c7abd836444a1bc26f8e64c06a, type: 3}
+      propertyPath: m_Name
+      value: MapDown
+      objectReference: {fileID: 0}
     - target: {fileID: 5711748393323441041, guid: 805a94c7abd836444a1bc26f8e64c06a, type: 3}
       propertyPath: m_Name
       value: upgradeMinus
+      objectReference: {fileID: 0}
+    - target: {fileID: 6320460205550560433, guid: 805a94c7abd836444a1bc26f8e64c06a, type: 3}
+      propertyPath: m_Name
+      value: SpeedDown
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
@@ -706,6 +786,10 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 8357936704911851780}
     m_Modifications:
+    - target: {fileID: 1593248472462630376, guid: 50eb3f0741fb1af478debbe4d13c88a3, type: 3}
+      propertyPath: m_Name
+      value: MapIcon
+      objectReference: {fileID: 0}
     - target: {fileID: 1915095037254932674, guid: 50eb3f0741fb1af478debbe4d13c88a3, type: 3}
       propertyPath: m_Pivot.x
       value: 0.5
@@ -785,6 +869,22 @@ PrefabInstance:
     - target: {fileID: 1915095037254932674, guid: 50eb3f0741fb1af478debbe4d13c88a3, type: 3}
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 2765622140797330683, guid: 50eb3f0741fb1af478debbe4d13c88a3, type: 3}
+      propertyPath: m_Name
+      value: HealthIcon
+      objectReference: {fileID: 0}
+    - target: {fileID: 3496379813158056010, guid: 50eb3f0741fb1af478debbe4d13c88a3, type: 3}
+      propertyPath: m_Name
+      value: SpeedIcon
+      objectReference: {fileID: 0}
+    - target: {fileID: 6606387650324800567, guid: 50eb3f0741fb1af478debbe4d13c88a3, type: 3}
+      propertyPath: m_Name
+      value: StaminaIcon
+      objectReference: {fileID: 0}
+    - target: {fileID: 8076305387670083751, guid: 50eb3f0741fb1af478debbe4d13c88a3, type: 3}
+      propertyPath: m_Name
+      value: InventoryIcon
       objectReference: {fileID: 0}
     - target: {fileID: 8226576657516009189, guid: 50eb3f0741fb1af478debbe4d13c88a3, type: 3}
       propertyPath: m_Name
