@@ -8,12 +8,21 @@ public class PlayerController : MonoBehaviour {
     // 스피드 조정 변수
     [SerializeField]
     private float walkSpeed;
+
     [SerializeField]
     private float runSpeed;
+
     [SerializeField]
     private float crouchSpeed;
 
-    private float applySpeed;
+    private float baseSpeed;
+    private float applySpeed
+    {
+        get { return baseSpeed * playerStats.speed; }
+        set { baseSpeed = value; }
+    }
+
+    private float calSpeed;
 
     [SerializeField]
     private float jumpForce;
@@ -58,6 +67,7 @@ public class PlayerController : MonoBehaviour {
         boxCollider = GetComponent<BoxCollider>();
         myRigid = GetComponent<Rigidbody>();
         applySpeed = walkSpeed;
+        Debug.Log(applySpeed);
 
         // 초기화.
         originPosY = theCamera.transform.localPosition.y;
@@ -99,10 +109,12 @@ public class PlayerController : MonoBehaviour {
         {
             applySpeed = crouchSpeed;
             applyCrouchPosY = crouchPosY;
+            Debug.Log(applySpeed);
         }
         else
         {
             applySpeed = walkSpeed;
+            Debug.Log(applySpeed);
             applyCrouchPosY = originPosY;
         }
 
@@ -180,6 +192,7 @@ public class PlayerController : MonoBehaviour {
 
         isRun = true;
         applySpeed = runSpeed;
+        Debug.Log(applySpeed);
     }
 
 
@@ -188,6 +201,7 @@ public class PlayerController : MonoBehaviour {
     {
         isRun = false;
         applySpeed = walkSpeed;
+        Debug.Log(applySpeed);
     }
 
 

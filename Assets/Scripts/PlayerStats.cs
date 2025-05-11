@@ -8,8 +8,9 @@ public class PlayerStats : MonoBehaviour // 후에 이 코드는 PlayerManager�
     public IntValueSO inventoryLevel;
     public IntValueSO mapLevel;
     public int health;
-    public int satmina;
+    public int stamina;
     public int speed;
+    public int money;
 
 /*
     void Start()

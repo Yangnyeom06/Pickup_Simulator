@@ -6,10 +6,11 @@ using System;
 
 public class UpGradeManager : MonoBehaviour
 {
+    public static UpGradeManager Instance { get; private set; }
     public PlayerStats playerStats;
     public SaveManager saveManager;
     public InventoryManager inventory;
-    public TextMeshProUGUI healthLevelText;
+    // public TextMeshProUGUI healthLevelText;
     public TextMeshProUGUI staminaLevelText;
     public TextMeshProUGUI speedLevelText;
     public TextMeshProUGUI inventoryLevelText;
@@ -19,10 +20,21 @@ public class UpGradeManager : MonoBehaviour
     // (스탯, 텍스트, 콜백 함수)를 저장하는 리스트
     private List<(IntValueSO stat, TextMeshProUGUI text, Action<int> callback)> bindings = new();
 
+    private void Awake()
+    {
+        if (Instance != null && Instance != this)
+        {
+            Destroy(gameObject);
+            return;
+        }
+
+        Instance = this;
+    }
+
     void Start()
     {
         // 업그레이드 할때마다 TextUI를 갱신해 주기 위해서 호출
-        TextUpdate(playerStats.healthLevel, healthLevelText);
+        // TextUpdate(playerStats.healthLevel, healthLevelText);
         TextUpdate(playerStats.staminaLevel, staminaLevelText);
         TextUpdate(playerStats.speedLevel, speedLevelText);
         TextUpdate(playerStats.inventoryLevel, inventoryLevelText);
@@ -54,6 +66,7 @@ public class UpGradeManager : MonoBehaviour
     {
         if (playerStats.healthLevel.Value < 10) {
             playerStats.healthLevel.Value += 1;
+            playerStats.health += 10;
         }
         
     }
@@ -62,6 +75,7 @@ public class UpGradeManager : MonoBehaviour
     {
         if (playerStats.staminaLevel.Value < 10) {
             playerStats.staminaLevel.Value += 1;
+            playerStats.stamina += 10;
         }
         
     }
@@ -70,6 +84,7 @@ public class UpGradeManager : MonoBehaviour
     {
         if (playerStats.speedLevel.Value < 10) {
             playerStats.speedLevel.Value += 1;
+            playerStats.speed += 1;
         }
         
     }
