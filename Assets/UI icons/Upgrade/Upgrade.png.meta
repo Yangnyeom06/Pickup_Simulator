@@ -1,5 +1,5 @@
 fileFormatVersion: 2
-guid: 83a3b470d8aa67a45ac011a53b9e0e09
+guid: 3c9cd3d4a6a49ef4197ca86e3c5b2f69
 TextureImporter:
   internalIDToNameTable: []
   externalObjects: {}
@@ -34,7 +34,7 @@ TextureImporter:
   maxTextureSize: 2048
   textureSettings:
     serializedVersion: 2
-    filterMode: 0
+    filterMode: 1
     aniso: 1
     mipBias: 0
     wrapU: 1
@@ -97,13 +97,13 @@ TextureImporter:
     serializedVersion: 2
     sprites:
     - serializedVersion: 2
-      name: UpgradePlus
+      name: Upgrade
       rect:
         serializedVersion: 2
         x: 0
         y: 0
-        width: 143
-        height: 127
+        width: 1073
+        height: 120
       alignment: 0
       pivot: {x: 0.5, y: 0.5}
       border: {x: 0, y: 0, z: 0, w: 0}
@@ -112,8 +112,8 @@ TextureImporter:
       physicsShape: []
       tessellationDetail: 0
       bones: []
-      spriteID: 904bef96922945245a4911e9007458b4
-      internalID: 1114176373
+      spriteID: d39f10eecca0d4144b6ed9df3f25fdf5
+      internalID: -1877381038
       vertices: []
       indices: 
       edges: []
@@ -122,7 +122,7 @@ TextureImporter:
     customData: 
     physicsShape: []
     bones: []
-    spriteID: 6ddc25d794109484d9b37c67543f1ffb
+    spriteID: 7fc9202db9fea9d44af391d82465a57b
     internalID: 0
     vertices: []
     indices: 
@@ -132,7 +132,7 @@ TextureImporter:
     spriteCustomMetadata:
       entries: []
     nameFileIdTable:
-      UpgradePlus: 1114176373
+      Upgrade: -1877381038
   mipmapLimitGroupName: 
   pSDRemoveMatte: 0
   userData: 

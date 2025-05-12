@@ -1,5 +1,5 @@
 fileFormatVersion: 2
-guid: 1fef4db38b39ddc4584d84eb5448e378
+guid: a533308f7f8bfbf47bc1b248bb7c0cab
 TextureImporter:
   internalIDToNameTable: []
   externalObjects: {}
@@ -97,13 +97,13 @@ TextureImporter:
     serializedVersion: 2
     sprites:
     - serializedVersion: 2
-      name: InventoryScreen
+      name: streetIcon
       rect:
         serializedVersion: 2
         x: 0
         y: 0
-        width: 1920
-        height: 1080
+        width: 50
+        height: 56
       alignment: 0
       pivot: {x: 0.5, y: 0.5}
       border: {x: 0, y: 0, z: 0, w: 0}
@@ -112,8 +112,8 @@ TextureImporter:
       physicsShape: []
       tessellationDetail: 0
       bones: []
-      spriteID: c28d9b67461278c499d81a506f046f37
-      internalID: -45959141
+      spriteID: 1d7bbaa9543fb004b8b102dde7a69dcb
+      internalID: 617386409
       vertices: []
       indices: 
       edges: []
@@ -122,7 +122,7 @@ TextureImporter:
     customData: 
     physicsShape: []
     bones: []
-    spriteID: b2b29b8b03b0c6446aa6dc7afee1874b
+    spriteID: fc23437456a6b944aae30e0bb7231485
     internalID: 0
     vertices: []
     indices: 
@@ -132,7 +132,7 @@ TextureImporter:
     spriteCustomMetadata:
       entries: []
     nameFileIdTable:
-      InventoryScreen: -45959141
+      streetIcon: 617386409
   mipmapLimitGroupName: 
   pSDRemoveMatte: 0
   userData: 
