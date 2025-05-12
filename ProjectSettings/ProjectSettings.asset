@@ -4,7 +4,11 @@
 PlayerSettings:
   m_ObjectHideFlags: 0
   serializedVersion: 28
+<<<<<<< HEAD
   productGUID: 5a347bc8b4e8d8343af37dc82ad9f8be
+=======
+  productGUID: 70fdfdef968345b47bdd0fe81128ac44
+>>>>>>> origin/dev/ui
   AndroidProfiler: 0
   AndroidFilterTouchesWhenObscured: 0
   AndroidEnableSustainedPerformanceMode: 0
@@ -670,13 +674,21 @@ PlayerSettings:
   qnxGraphicConfPath: 
   apiCompatibilityLevel: 6
   captureStartupLogs: {}
-  activeInputHandler: 2
+  activeInputHandler: 1
   windowsGamepadBackendHint: 0
+<<<<<<< HEAD
   cloudProjectId: 
   framebufferDepthMemorylessMode: 0
   qualitySettingsNames: []
   projectName: 
   organizationId: 
+=======
+  cloudProjectId: 3a275af9-4f13-4af4-b941-4ab0d884a323
+  framebufferDepthMemorylessMode: 0
+  qualitySettingsNames: []
+  projectName: PickupSimulator
+  organizationId: sooals0625
+>>>>>>> origin/dev/ui
   cloudEnabled: 0
   legacyClampBlendShapeWeights: 0
   hmiLoadingImage: {fileID: 0}
