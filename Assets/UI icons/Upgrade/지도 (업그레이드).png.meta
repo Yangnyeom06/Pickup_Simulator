@@ -1,5 +1,5 @@
 fileFormatVersion: 2
-guid: 3fa44b1659675554aa353390e9d76164
+guid: a20dda488221f9b4dac3a764af81fd15
 TextureImporter:
   internalIDToNameTable: []
   externalObjects: {}
@@ -97,13 +97,13 @@ TextureImporter:
     serializedVersion: 2
     sprites:
     - serializedVersion: 2
-      name: Money
+      name: mapUpgrade
       rect:
         serializedVersion: 2
         x: 0
         y: 0
-        width: 18
-        height: 22
+        width: 143
+        height: 127
       alignment: 0
       pivot: {x: 0.5, y: 0.5}
       border: {x: 0, y: 0, z: 0, w: 0}
@@ -112,8 +112,8 @@ TextureImporter:
       physicsShape: []
       tessellationDetail: 0
       bones: []
-      spriteID: f4ad2093b689b7c44add8cc926aff703
-      internalID: 230563614
+      spriteID: d840fb2dee2a65844a1cc61f621fbf48
+      internalID: 2015847957
       vertices: []
       indices: 
       edges: []
@@ -122,7 +122,7 @@ TextureImporter:
     customData: 
     physicsShape: []
     bones: []
-    spriteID: 57d8be31d5811694ca2dc46905c94e43
+    spriteID: 4f4e282e26cf97642bf54b4e06289787
     internalID: 0
     vertices: []
     indices: 
@@ -132,7 +132,7 @@ TextureImporter:
     spriteCustomMetadata:
       entries: []
     nameFileIdTable:
-      Money: 230563614
+      mapUpgrade: 2015847957
   mipmapLimitGroupName: 
   pSDRemoveMatte: 0
   userData: 
