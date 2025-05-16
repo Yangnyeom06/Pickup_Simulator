@@ -10,62 +10,51 @@ public class UpGradeManager : MonoBehaviour
     public PlayerStats playerStats;
     public SaveManager saveManager;
     public InventoryManager inventory;
-    // public TextMeshProUGUI healthLevelText;
-    public TextMeshProUGUI staminaLevelText;
-    public TextMeshProUGUI speedLevelText;
-    public TextMeshProUGUI inventoryLevelText;
-    public TextMeshProUGUI mapLevelText;
     public GameObject UpGradeGround;
-
-    // (스탯, 텍스트, 콜백 함수)를 저장하는 리스트
-    private List<(IntValueSO stat, TextMeshProUGUI text, Action<int> callback)> bindings = new();
-
-    private void Awake()
+    [SerializeField] private GameObject cellPrefab;
+    [Serializable] public struct UpgradeBar
     {
-        if (Instance != null && Instance != this)
-        {
-            Destroy(gameObject);
-            return;
-        }
-
-        Instance = this;
+        public Transform UpgradeBarPos;
+        public int maxLevel;
     }
+    [SerializeField] private UpgradeBar[] upgradeBars;
+    [SerializeField] private List<List<UpgradeCellFill>> allUpgradeBars = new();
 
-    void Start()
-    {
-        // 업그레이드 할때마다 TextUI를 갱신해 주기 위해서 호출
-        // TextUpdate(playerStats.healthLevel, healthLevelText);
-        TextUpdate(playerStats.staminaLevel, staminaLevelText);
-        TextUpdate(playerStats.speedLevel, speedLevelText);
-        TextUpdate(playerStats.inventoryLevel, inventoryLevelText);
-        TextUpdate(playerStats.mapLevel, mapLevelText);
-    }
 
-    void TextUpdate(IntValueSO Level, TextMeshProUGUI LevelText) // TextUI 갱신용 함수
+
+
+
+    private void Start()
     {
-        Action<int> callback = newValue => 
+        foreach (var bar in upgradeBars)
         {
-            LevelText.text = newValue.ToString();
-            Debug.Log($"{LevelText.name}Level 바뀜: {LevelText.text}");
-        };
-        Level.Register(callback); // 변경 감지 등록
-        LevelText.text = Level.Value.ToString(); // 초기 값 설정
-        bindings.Add((Level, LevelText, callback)); // 해제할 수 있도록 저장
-    }
+            var parentRect = bar.UpgradeBarPos.GetComponent<RectTransform>();
+            float totalWidth = parentRect.rect.width;
+            float cellWidth = totalWidth / bar.maxLevel;
 
-    void OnDestroy()
-    {
-        foreach (var (stat, _, callback) in bindings)
-        {
-            stat.Unregister(callback); // 콜백 해제
+            var cellList = new List<UpgradeCellFill>();
+
+            for (int i = 0; i < bar.maxLevel; i++)
+            {
+                GameObject go = Instantiate(cellPrefab, bar.UpgradeBarPos);
+                var controller = go.GetComponent<UpgradeCellFill>();
+
+                var rt = go.GetComponent<RectTransform>();
+                rt.sizeDelta = new Vector2(cellWidth, rt.sizeDelta.y);
+
+                controller.SetFillAmount(0f);
+                controller.SetMaxWidth(cellWidth); // FillImage 최대 크기도 업데이트
+                cellList.Add(controller);
+            }
+            allUpgradeBars.Add(cellList);
         }
     }
 
 
-    public void HealthUpGrade() // 체력 업그레이드
+    public void HealthUpGrade(int level) // 체력 업그레이드
     {
         if (playerStats.healthLevel.Value < 10) {
-            playerStats.healthLevel.Value += 1;
+            playerStats.healthLevel.Value += level;
             playerStats.health += 10;
         }
         
