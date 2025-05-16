@@ -97,4 +97,9 @@ public class SaveManager : MonoBehaviour
             Debug.Log("삭제할 세이브 파일이 없음");
         }
     }
+
+    public void LogThisObject()
+    {
+        Debug.Log($"[Object Log] 이름: {gameObject.name}");
+    }
 }

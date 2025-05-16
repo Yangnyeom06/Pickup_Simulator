@@ -3,12 +3,24 @@ using UnityEngine;
 
 public class ItemManager : MonoBehaviour
 {
+    public static ItemManager Instance { get; private set; }
     [SerializeField] private ItemList itemList; // 아이템 리스트
     [SerializeField] private List<ItemSpawner> roadSpawners; // 길 스포너 리스트
     [SerializeField] private List<ItemSpawner> mountainSpawners; // 산 스포너 리스트
     [SerializeField] private List<ItemSpawner> elementSchoolSpawners; // 초등학교 스포너 리스트
     [SerializeField] private List<ItemSpawner> middleSchoolSpawners; // 중학교 스포너 리스트
 
+    private void Awake()
+    {
+        if (Instance != null && Instance != this)
+        {
+            Destroy(gameObject);
+            return;
+        }
+
+        Instance = this;
+    }
+    
     private void Start()
     {
         // 각 지역별 스포너 초기화
