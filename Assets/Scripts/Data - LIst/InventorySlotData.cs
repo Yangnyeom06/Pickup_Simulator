@@ -12,13 +12,18 @@ public class InventorySlotData : MonoBehaviour
         ItemSlotButton.onClick.AddListener(OnInfoButtonClicked);
     }
 
-    public void SetItem(ItemData item)
+    public void SetItem(ItemData itemData)
     {
-        currentItem = item;
-        if (item != null && ItemSlotImage != null)
+        currentItem = itemData;
+        if (itemData != null && ItemSlotImage != null)
         {
-            ItemSlotImage.sprite = item.icon;
+            ItemSlotImage.sprite = itemData.icon;
             ItemSlotImage.enabled = true;
+        }
+        else if(ItemSlotImage != null)
+        {
+            ItemSlotImage.sprite = null;
+            ItemSlotImage.enabled = false;
         }
     }
 

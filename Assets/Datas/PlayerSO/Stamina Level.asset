@@ -9,7 +9,10 @@ MonoBehaviour:
   m_GameObject: {fileID: 0}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: a453a1070b94b874dbc66752d858c999, type: 3}
-  m_Name: MapLevel
+  m_Script: {fileID: 11500000, guid: 00791fe28f610774a82934c6edbe96d4, type: 3}
+  m_Name: Stamina Level
   m_EditorClassIdentifier: 
   _value: 0
+  maxLevel: 10
+  _max: 50
+  _current: 50
