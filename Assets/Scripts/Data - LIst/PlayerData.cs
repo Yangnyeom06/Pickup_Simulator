@@ -8,12 +8,14 @@ public class PlayerData
     public int speedLevel;
     public int inventoryLevel;
     public int mapLevel;
-    public int health;
-    public int stamina;
+    public float health;
+    public float maxHealth;
+    public float stamina;
+    public float maxStamina;
     public int speed;
     public int money;
 
-    public PlayerData(int healthLevel, int staminaLevel, int speedLevel, int inventoryLevel, int mapLevel, int health, int stamina, int speed, int money)
+    public PlayerData(int healthLevel, int staminaLevel, int speedLevel, int inventoryLevel, int mapLevel, float health, float maxHealth, float stamina, float maxStamina, int speed, int money)
     {
         this.healthLevel = healthLevel;
         this.staminaLevel = staminaLevel;
@@ -21,7 +23,9 @@ public class PlayerData
         this.inventoryLevel = inventoryLevel;
         this.mapLevel = mapLevel;
         this.health = health;
+        this.maxHealth = maxHealth;
         this.stamina = stamina;
+        this.maxStamina = maxStamina;
         this.speed = speed;
         this.money = money;
     }
@@ -34,9 +38,11 @@ public class PlayerData
             stats.speedLevel.Value,
             stats.inventoryLevel.Value,
             stats.mapLevel.Value,
-            stats.health,
-            stats.stamina,
-            stats.speed,
+            stats.healthLevel.current,
+            stats.healthLevel.max,
+            stats.staminaLevel.current,
+            stats.staminaLevel.max,
+            stats.speedLevel.Value,
             stats.money
         );
     }
@@ -48,9 +54,10 @@ public class PlayerData
         stats.speedLevel.Value = speedLevel;
         stats.inventoryLevel.Value = inventoryLevel;
         stats.mapLevel.Value = mapLevel;
-        stats.health = health;
-        stats.stamina = stamina;
-        stats.speed = speed;
+        stats.healthLevel.current = health;
+        stats.healthLevel.max = maxHealth;
+        stats.staminaLevel.current = stamina;
+        stats.staminaLevel.max = maxStamina;
         stats.money = money;
     }
 }
