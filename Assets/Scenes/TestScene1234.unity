@@ -1313,7 +1313,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: e5a95662acb8a0046bc391441fe641b7, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  playerStats: {fileID: 1367856122}
+  player: {fileID: 1517635801}
   saveManager: {fileID: 2051972929}
   inventory: {fileID: 1154057377}
   UpGradeGround: {fileID: 1796375081}
@@ -3774,7 +3774,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: f5ffd95d3fa28a54880013bd58f12507, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  playerStats: {fileID: 1367856122}
+  player: {fileID: 0}
   moneyTexts:
   - {fileID: 7642967170555131140}
 --- !u!1 &1045397911
@@ -4582,7 +4582,6 @@ GameObject:
   - component: {fileID: 1367856118}
   - component: {fileID: 1367856117}
   - component: {fileID: 1367856115}
-  - component: {fileID: 1367856122}
   - component: {fileID: 1367856123}
   - component: {fileID: 1367856120}
   - component: {fileID: 1367856121}
@@ -4605,9 +4604,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 3522eb8b0e58ac449837e48478246b48, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  playerStats: {fileID: 1367856122}
+  player: {fileID: 1517635801}
   walkSpeed: 20
-  runSpeed: 30
+  runSpeed: 100
   crouchSpeed: 5
   jumpForce: 5
   crouchPosY: -0.5
@@ -4731,24 +4730,6 @@ BoxCollider:
   serializedVersion: 3
   m_Size: {x: 1, y: 2, z: 1}
   m_Center: {x: 0, y: 0, z: 0}
---- !u!114 &1367856122
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1367856114}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 084a727dab471d14fbf70b9074ec3863, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  healthLevel: {fileID: 11400000, guid: ba6c5e93c0d97054ebfa576681a78df0, type: 2}
-  staminaLevel: {fileID: 11400000, guid: af7fb8b39d3b4394abf722bda063f9df, type: 2}
-  speedLevel: {fileID: 11400000, guid: 23378a218f1d5d046b941a9e8b3e4f5a, type: 2}
-  inventoryLevel: {fileID: 11400000, guid: 877f44807ff42604d871441c7409c931, type: 2}
-  mapLevel: {fileID: 11400000, guid: 0164ba73c4c72ff49971e0ddb22a14f4, type: 2}
-  money: 0
 --- !u!114 &1367856123
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -4875,8 +4856,64 @@ Transform:
   - {fileID: 324711034}
   - {fileID: 1068465655}
   - {fileID: 959090248}
+  - {fileID: 1517635800}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!1 &1517635799
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 1517635800}
+  - component: {fileID: 1517635801}
+  m_Layer: 0
+  m_Name: PlayerManager
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &1517635800
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1517635799}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 1506081770}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &1517635801
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1517635799}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 084a727dab471d14fbf70b9074ec3863, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  playerController: {fileID: 1367856115}
+  healthLevel: {fileID: 11400000, guid: ba6c5e93c0d97054ebfa576681a78df0, type: 2}
+  staminaLevel: {fileID: 11400000, guid: af7fb8b39d3b4394abf722bda063f9df, type: 2}
+  speedLevel: {fileID: 11400000, guid: 23378a218f1d5d046b941a9e8b3e4f5a, type: 2}
+  inventoryLevel: {fileID: 11400000, guid: 877f44807ff42604d871441c7409c931, type: 2}
+  mapLevel: {fileID: 11400000, guid: 0164ba73c4c72ff49971e0ddb22a14f4, type: 2}
+  money: 0
+  HealthLossInterval: 1
+  HealthLossSpeed: 1
+  staminaLossInterval: 1
+  staminaLossSpeed: 1
 --- !u!1 &1522770185
 GameObject:
   m_ObjectHideFlags: 0
@@ -7781,7 +7818,7 @@ MonoBehaviour:
     inventoryData:
       savedSlotCounts: 0
       savedItems: []
-  playerStats: {fileID: 1367856122}
+  player: {fileID: 0}
   inventory: {fileID: 1154057377}
   slotId: 0
 --- !u!1 &2070697227

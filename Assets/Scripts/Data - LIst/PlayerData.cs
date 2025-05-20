@@ -30,7 +30,7 @@ public class PlayerData
         this.money = money;
     }
 
-    public static PlayerData FromData(PlayerStats stats)
+    public static PlayerData FromData(PlayerManager stats)
     {
         return new PlayerData(
             stats.healthLevel.Value,
@@ -47,7 +47,7 @@ public class PlayerData
         );
     }
 
-    public void ApplyToStats(PlayerStats stats)
+    public void ApplyToPlayer(PlayerManager stats)
     {
         stats.healthLevel.Value = healthLevel;
         stats.staminaLevel.Value = staminaLevel;
