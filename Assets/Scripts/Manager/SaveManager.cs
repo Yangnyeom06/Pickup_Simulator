@@ -12,7 +12,7 @@ public class SaveManager : MonoBehaviour
     public SaveData currentSaveData = new();
 
     // 필요한 게임 데이터들
-    public PlayerStats playerStats;
+    public PlayerManager player;
     public InventoryManager inventory;
 
     public int slotId;
@@ -43,7 +43,7 @@ public class SaveManager : MonoBehaviour
     public void SaveGame(int slotId)
     {
         // PlayerStats의 최신 상태를 currentSaveData에 반영
-        currentSaveData.playerData = PlayerData.FromData(playerStats);
+        currentSaveData.playerData = PlayerData.FromData(player);
         currentSaveData.inventoryData = InventoryData.FromData(inventory);
 
         // currentSaveData를 JSON 형식으로 변환
@@ -65,7 +65,7 @@ public class SaveManager : MonoBehaviour
             currentSaveData = JsonUtility.FromJson<SaveData>(json);
 
             // PlayerStats에 로드된 데이터를 반영
-            currentSaveData.playerData.ApplyToStats(playerStats);
+            currentSaveData.playerData.ApplyToPlayer(player);
 
             // InventoryManager에 로드된 데이터를 반영
             currentSaveData.inventoryData.ApplyToInventory(inventory);
@@ -82,10 +82,10 @@ public class SaveManager : MonoBehaviour
     {
         if (scene.name == "TestScene1234") // PlayScene 이름으로 확인
         {
-            playerStats = FindFirstObjectByType<PlayerStats>();
+            player = FindFirstObjectByType<PlayerManager>();
             inventory = FindFirstObjectByType<InventoryManager>();
 
-            if (playerStats != null && inventory != null)
+            if (player != null && inventory != null)
             {
                 slotId = SceneChangeManager.Instance.selectSlotId;
                 // 로드된 데이터 반영
@@ -103,7 +103,7 @@ public class SaveManager : MonoBehaviour
     public void ResetAllData(int slotId)
     {
         Debug.Log(slotId);
-        playerStats.ResetStats();
+        player.ResetPlayerData();
         inventory.ResetSlots();
 
 
