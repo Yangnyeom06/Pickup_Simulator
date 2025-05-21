@@ -38,7 +38,6 @@ public class UpGradeManager : MonoBehaviour
             player.staminaLevel.max += 10;
             player.staminaLevel.current += 10;
         }
-        
     }
     
     public void SpeedUpgrade() // 이동 속도 업그레이드
@@ -48,7 +47,6 @@ public class UpGradeManager : MonoBehaviour
             player.speedLevel.Value += 1;
             player.speedLevel.current += 1;
         }
-        
     }
 
     public void InventoryUpgrade() // 가방 업그레이드
@@ -57,7 +55,6 @@ public class UpGradeManager : MonoBehaviour
             player.inventoryLevel.Value += 1;
             inventory.inventorySlotCount.Value += inventory.inventorySlotCount.upgradeCount;
         }
-        
     }
 
     public void MapUpgrade() // 지도 업그레이드
@@ -65,7 +62,6 @@ public class UpGradeManager : MonoBehaviour
         if (player.mapLevel.Value < player.mapLevel.maxLevel) {
             player.mapLevel.Value += 1;
         }
-        
     }
 
     public void Open() // UpGradeUI 열기

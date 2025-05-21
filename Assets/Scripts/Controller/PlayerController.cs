@@ -4,7 +4,6 @@ using UnityEngine;
 
 public class PlayerController : MonoBehaviour {
     public PlayerManager player;
-
     // 스피드 조정 변수
     [SerializeField]
     private float walkSpeed;
@@ -84,6 +83,9 @@ public class PlayerController : MonoBehaviour {
         TryRun();
         TryCrouch();
         Move();
+        
+        if (Cursor.lockState == CursorLockMode.None) return;
+
         CameraRotation();
         CharacterRotation();
 
