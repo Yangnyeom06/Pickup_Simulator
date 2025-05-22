@@ -1,5 +1,8 @@
 # Pickup_Simulator
 
+## UI 진행현황
+
+
 ## 피그마 디자인 가져오기
 
 ### UnityFigmaBridge 패키지 설치
