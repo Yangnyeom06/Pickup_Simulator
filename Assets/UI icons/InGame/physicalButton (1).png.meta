@@ -1,5 +1,5 @@
 fileFormatVersion: 2
-guid: 493f3d574bb0ec84b9957025967e9946
+guid: 393bea0e9c21d0f46bfb4a8260694b01
 TextureImporter:
   internalIDToNameTable: []
   externalObjects: {}
@@ -97,14 +97,14 @@ TextureImporter:
     serializedVersion: 2
     sprites:
     - serializedVersion: 2
-      name: InventoryIcon_0
+      name: physicalButton (1)_0
       rect:
         serializedVersion: 2
         x: 0
         y: 0
-        width: 63
-        height: 79
-      alignment: 0
+        width: 135
+        height: 122
+      alignment: 9
       pivot: {x: 0, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
       customData: 
@@ -112,8 +112,8 @@ TextureImporter:
       physicsShape: []
       tessellationDetail: 0
       bones: []
-      spriteID: a321a3e2c93615b40856db0f1bacd70a
-      internalID: -1319317585
+      spriteID: dfec904f661a5664c9195ac022173dfd
+      internalID: 1767168193
       vertices: []
       indices: 
       edges: []
@@ -122,7 +122,7 @@ TextureImporter:
     customData: 
     physicsShape: []
     bones: []
-    spriteID: 8c02484a030414a4f9bab9e065efe308
+    spriteID: 005318903a51a134dbb9080923eae8ad
     internalID: 0
     vertices: []
     indices: 
@@ -132,7 +132,7 @@ TextureImporter:
     spriteCustomMetadata:
       entries: []
     nameFileIdTable:
-      InventoryIcon_0: -1319317585
+      physicalButton (1)_0: 1767168193
   mipmapLimitGroupName: 
   pSDRemoveMatte: 0
   userData: 
