@@ -4,7 +4,8 @@
 - [X] upgrade
 - [ ] gameStart
 - [ ] gameCause
-- [ ] Ingame 
+- [ ] Ingame
+- [ ] setting
 
 
 ## 피그마 디자인 가져오기
