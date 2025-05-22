@@ -1,8 +1,10 @@
 # Pickup_Simulator
 
 ## UI 진행현황
-- [O] upgrade
-- [] 
+- [X] upgrade
+- [ ] gameStart
+- [ ] gameCause
+- [ ] Ingame 
 
 
 ## 피그마 디자인 가져오기
