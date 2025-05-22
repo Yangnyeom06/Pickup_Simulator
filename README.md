@@ -1,11 +1,11 @@
 # Pickup_Simulator
 
 ## UI 진행현황
-- [X] upgrade
-- [ ] gameStart
-- [ ] gameCause
-- [ ] Ingame
-- [ ] setting
+- [X] upgrade --> 2차 수정 완료
+- [ ] gameStart --> 1차 수정 필요
+- [ ] gameCause --> 1차 수정 필요
+- [ ] Ingame --> 1차 수정 필요
+- [ ] setting --> 1차 수정 필요
 
 
 ## 피그마 디자인 가져오기
