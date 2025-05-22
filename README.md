@@ -1,6 +1,8 @@
 # Pickup_Simulator
 
 ## UI 진행현황
+- [O] upgrade
+- [] 
 
 
 ## 피그마 디자인 가져오기
