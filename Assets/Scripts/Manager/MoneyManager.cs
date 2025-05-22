@@ -8,7 +8,7 @@ using System;
 public class MoneyManager : MonoBehaviour
 {
     public static MoneyManager Instance { get; private set; }
-    public PlayerStats playerStats;
+    public PlayerManager player;
     [SerializeField] private List<TextMeshProUGUI> moneyTexts = new();
 
     private void Awake()
@@ -24,15 +24,15 @@ public class MoneyManager : MonoBehaviour
 
     public void AddMoney(int amount)
     {
-        playerStats.money += amount;
+        player.money += amount;
         UpdateMoneyUI();
     }
 
     public void SpendMoney(int amount)
     {
-        if (playerStats.money >= amount)
+        if (player.money >= amount)
         {
-            playerStats.money -= amount;
+            player.money -= amount;
             UpdateMoneyUI();
         }
         else
@@ -45,7 +45,7 @@ public class MoneyManager : MonoBehaviour
     {
         foreach (var text in moneyTexts)
         {
-            text.text = playerStats.money.ToString();
+            text.text = player.money.ToString();
         }
     }
     

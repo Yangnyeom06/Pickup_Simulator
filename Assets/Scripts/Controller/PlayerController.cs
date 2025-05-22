@@ -3,8 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 
 public class PlayerController : MonoBehaviour {
-    public PlayerStats playerStats;
-
+    public PlayerManager player;
     // 스피드 조정 변수
     [SerializeField]
     private float walkSpeed;
@@ -18,7 +17,7 @@ public class PlayerController : MonoBehaviour {
     private float baseSpeed;
     private float applySpeed
     {
-        get { return baseSpeed * playerStats.speed; }
+        get { return baseSpeed * player.speedLevel.current; }
         set { baseSpeed = value; }
     }
 
@@ -67,7 +66,6 @@ public class PlayerController : MonoBehaviour {
         boxCollider = GetComponent<BoxCollider>();
         myRigid = GetComponent<Rigidbody>();
         applySpeed = walkSpeed;
-        Debug.Log(applySpeed);
 
         // 초기화.
         originPosY = theCamera.transform.localPosition.y;
@@ -85,6 +83,9 @@ public class PlayerController : MonoBehaviour {
         TryRun();
         TryCrouch();
         Move();
+        
+        if (Cursor.lockState == CursorLockMode.None) return;
+
         CameraRotation();
         CharacterRotation();
 
@@ -109,12 +110,10 @@ public class PlayerController : MonoBehaviour {
         {
             applySpeed = crouchSpeed;
             applyCrouchPosY = crouchPosY;
-            Debug.Log(applySpeed);
         }
         else
         {
             applySpeed = walkSpeed;
-            Debug.Log(applySpeed);
             applyCrouchPosY = originPosY;
         }
 
@@ -174,7 +173,7 @@ public class PlayerController : MonoBehaviour {
     // 달리기 시도
     private void TryRun()
     {
-        if (Input.GetKey(KeyCode.LeftShift))
+        if (Input.GetKey(KeyCode.LeftShift) && (player.staminaLevel.current > 0))
         {
             Running();
         }
@@ -187,21 +186,26 @@ public class PlayerController : MonoBehaviour {
     // 달리기 실행
     private void Running()
     {
+        if (isRun) return; // 달리고 있으면 리턴
         if (isCrouch)
             Crouch();
 
         isRun = true;
         applySpeed = runSpeed;
-        Debug.Log(applySpeed);
+        player.StartStaminaLoss();
+        Debug.Log("달리는 중");
     }
 
 
     // 달리기 취소
-    private void RunningCancel()
+    public void RunningCancel()
     {
+        if (!isRun) return; // 안달리고 있으면 리턴
+
         isRun = false;
         applySpeed = walkSpeed;
-        Debug.Log(applySpeed);
+        player.StopStaminaLoss();
+        Debug.Log("안달리는 중");
     }
 
 
