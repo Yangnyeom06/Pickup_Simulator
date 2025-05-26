@@ -1,9 +1,9 @@
 # Pickup_Simulator
 
 ## UI 진행현황
-- [X] upgrade --> 2차 수정 완료
-- [X] gameStart --> 1차 수정 필요
-- [X] gameCause --> 1차 수정 필요
+- [X] upgrade --> 재업로드 완료
+- [X] gameStart --> 2차 수정 필요
+- [X] gameCause --> 2차 수정 필요
 - [ ] Ingame --> 1차 수정 필요
 - [ ] setting --> 1차 수정 필요
 
