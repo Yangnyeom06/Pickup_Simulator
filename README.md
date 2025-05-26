@@ -1,10 +1,11 @@
 # Pickup_Simulator
 
 ## UI 진행현황
-- [X] upgrade --> 2차 수정 완료
-- [ ] gameStart --> 1차 수정 필요
-- [ ] gameCause --> 1차 수정 필요
-- [ ] Ingame --> 1차 수정 필요
+- [X] upgrade --> 재업로드 완료
+- [X] gameStart --> 2차 수정 필요
+- [X] gameCause --> 2차 수정 필요
+- [ ] Ingame --> 1차 수정 중 (촌스러운 부분만 수정)
+- [ ] Inventroy --> 1차 수정 중 (색 수정만 남은 상태)
 - [ ] setting --> 1차 수정 필요
 
 
