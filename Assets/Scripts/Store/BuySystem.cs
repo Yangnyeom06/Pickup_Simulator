@@ -1,15 +1,18 @@
 using UnityEditor;
 using UnityEngine;
 using UnityEngine.EventSystems;
+using System.Collections.Generic;
 
 // 상점 NPC 오브젝트에 적용한 코드
 public class BuySystem : MonoBehaviour, IDropHandler
 {
     public GameObject heartImg; // 장바구니 UI 제작하기
     public string residentName;
-    public PlayerStats playerStats;
+    public PlayerData playerData;
     public MoneyManager moneyManager;
     public InventorySlotData inventorySlot;
+    public GameObject cartDialogPrefab;
+
 
     private Dictionary<ItemData, int> cartItems = new Dictionary<ItemData, int>();
     private GameObject cartDialog; // 현재 열린 장바구니 다이얼로그
@@ -91,7 +94,7 @@ public class BuySystem : MonoBehaviour, IDropHandler
     {
         int totalPrice = CalculateTotalPrice();
         
-        if (totalPrice <= playerStats.money)
+        if (totalPrice <= playerData.money)
         {
             // 돈 지불
             moneyManager.SpendMoney(totalPrice);
@@ -150,5 +153,12 @@ public class BuySystem : MonoBehaviour, IDropHandler
             Destroy(cartDialog);
             cartDialog = null;
         }
+    }
+
+    // IDropHandler에서 요구하는 메서드 구현
+    public void OnDrop(PointerEventData eventData)
+    {
+        // 드롭 시 실행할 로직 작성
+        Debug.Log("드롭됨: " + eventData.pointerDrag?.name);
     }
 }

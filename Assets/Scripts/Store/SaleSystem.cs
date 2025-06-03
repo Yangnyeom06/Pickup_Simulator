@@ -6,7 +6,8 @@ public class SellSystem : MonoBehaviour
     public MoneyManager moneyManager;
     private GameObject quantityDialogInstance;
     private InventorySlotData selectedSlot;
-    private int selectedQuantity = 1;
+    public int selectedQuantity = 1; // 기존 private → public 으로 변경
+
 
     // 슬롯 클릭 시 호출
     public void OnSlotClicked(InventorySlotData slot)
