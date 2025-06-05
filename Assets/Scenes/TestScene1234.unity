@@ -1315,13 +1315,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: e5a95662acb8a0046bc391441fe641b7, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  playerStats: {fileID: 1367856122}
+  player: {fileID: 0}
   saveManager: {fileID: 2051972929}
   inventory: {fileID: 1154057377}
-  staminaLevelText: {fileID: 1935754904}
-  speedLevelText: {fileID: 1522770187}
-  inventoryLevelText: {fileID: 854676342}
-  mapLevelText: {fileID: 1950341001}
   UpGradeGround: {fileID: 1796375081}
 --- !u!1 &372546612
 GameObject:
@@ -3741,7 +3737,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: f5ffd95d3fa28a54880013bd58f12507, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  playerStats: {fileID: 1367856122}
+  player: {fileID: 0}
   moneyTexts:
   - {fileID: 7642967170555131140}
 --- !u!1 &1045397911
@@ -3924,7 +3920,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 60dc0d030e9bdad44bb4f7ec4bdcca81, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  itemList: {fileID: 11400000, guid: 6c6b8b769eb6ad04f9f0b2e17fdda047, type: 2}
+  itemListData: {fileID: 0}
   roadSpawners:
   - {fileID: 2048240187}
   - {fileID: 1883293781}
@@ -3969,6 +3965,8 @@ MonoBehaviour:
   inventory: {fileID: 4157086624461975529}
   saveManager: {fileID: 2051972929}
   slotList: []
+  savedItems: []
+  currentShopItem: {fileID: 0}
 --- !u!4 &1154057378
 Transform:
   m_ObjectHideFlags: 0
@@ -4434,7 +4432,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 3522eb8b0e58ac449837e48478246b48, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  playerStats: {fileID: 1367856122}
+  player: {fileID: 0}
   walkSpeed: 20
   runSpeed: 30
   crouchSpeed: 5
@@ -4572,15 +4570,17 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 084a727dab471d14fbf70b9074ec3863, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  playerController: {fileID: 0}
   healthLevel: {fileID: 11400000, guid: 440b6a3aa7a5ff44eb6277c43b4cdaa4, type: 2}
   staminaLevel: {fileID: 11400000, guid: d0fae8763ce2dec4983049ec30e4a543, type: 2}
   speedLevel: {fileID: 11400000, guid: 3533b8a46f7e7ef4ab8ea691b8dfd236, type: 2}
   inventoryLevel: {fileID: 11400000, guid: 2f4e2913585cb6a4ea4028030a976b19, type: 2}
   mapLevel: {fileID: 11400000, guid: cee60e6e7fa418d45ab1c0a7efed8293, type: 2}
-  health: 10
-  stamina: 0
-  speed: 1
   money: 0
+  HealthLossInterval: 1
+  HealthLossSpeed: 1
+  staminaLossInterval: 1
+  staminaLossSpeed: 1
 --- !u!1 &1403134691
 GameObject:
   m_ObjectHideFlags: 0
@@ -7094,13 +7094,17 @@ MonoBehaviour:
       inventoryLevel: 0
       mapLevel: 0
       health: 0
+      maxHealth: 0
       stamina: 0
+      maxStamina: 0
       speed: 0
       money: 0
     inventoryData:
-      inventorySlotCount: 20
-  playerStats: {fileID: 1367856122}
+      savedSlotCounts: 0
+      savedItems: []
+  player: {fileID: 0}
   inventory: {fileID: 1154057377}
+  slotId: 0
 --- !u!1 &2070697227
 GameObject:
   m_ObjectHideFlags: 0

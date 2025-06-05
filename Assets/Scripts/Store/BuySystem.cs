@@ -4,47 +4,44 @@ using UnityEngine.EventSystems;
 using System.Collections.Generic;
 
 // 상점 NPC 오브젝트에 적용한 코드
-public class BuySystem : MonoBehaviour, IDropHandler
+public class BuySystem : MonoBehaviour
 {
-    public GameObject heartImg; // 장바구니 UI 제작하기
-    public string residentName;
     public PlayerData playerData;
     public MoneyManager moneyManager;
     public InventorySlotData inventorySlot;
     public GameObject cartDialogPrefab;
 
-
-    private Dictionary<ItemData, int> cartItems = new Dictionary<ItemData, int>();
+    private Dictionary<ShopItemData, int> cartItems = new Dictionary<ShopItemData, int>();
     private GameObject cartDialog; // 현재 열린 장바구니 다이얼로그
 		
     // 아이템을 장바구니에 추가하는 메서드
-    public void AddToCart(ItemData item)
+    public void AddToCart(ShopItemData shopItemData)
     {
         // cartItems 딕셔너리 안에 해당 item이 있는지 확인
-        if (cartItems.ContainsKey(item))
+        if (cartItems.ContainsKey(shopItemData))
         {
             // 있으면 수량 증가
-            cartItems[item] ++; 
+            cartItems[shopItemData] ++; 
         }
         else
         {
             // 없으면 새로 추가
-            cartItems.Add(item, 1);
+            cartItems.Add(shopItemData, 1);
         }
         // 장바구니 UI 업데이트
         UpdateCartUI();
     }
 
     // 장바구니에서 아이템 수량 조절
-    public void AdjustItemQuantity(ItemData item, int amount)
+    public void AdjustItemQuantity(ShopItemData shopItemData, int amount)
     {
-        if (cartItems.ContainsKey(item))
+        if (cartItems.ContainsKey(shopItemData))
         {
-            cartItems[item] += amount;
+            cartItems[shopItemData] += amount;
             // 수량이 0이면 장바구니에서 제거
-            if (cartItems[item] <= 0)
+            if (cartItems[shopItemData] <= 0)
             {
-                cartItems.Remove(item);
+                cartItems.Remove(shopItemData);
             }
         }
         UpdateCartUI();
@@ -56,7 +53,7 @@ public class BuySystem : MonoBehaviour, IDropHandler
         int total = 0;
         foreach (var item in cartItems)
         {
-            total += item.Key.value * item.Value;
+            total += item.Key.price * item.Value;
         }
         return total;
     }
@@ -100,7 +97,7 @@ public class BuySystem : MonoBehaviour, IDropHandler
             moneyManager.SpendMoney(totalPrice);
 
             // 남은 아이템을 저장할 딕셔너리
-            Dictionary<ItemData, int> remainingItems = new Dictionary<ItemData, int>();
+            Dictionary<ShopItemData, int> remainingItems = new Dictionary<ShopItemData, int>();
             
             // 아이템들을 인벤토리에 추가
             foreach (var item in cartItems) // 장바구니에 있는 아이템과 수량을 저장하는 딕셔너리
@@ -110,7 +107,7 @@ public class BuySystem : MonoBehaviour, IDropHandler
                 // 남은 수량만큼 인벤토리에 추가 시도
                 for (int i = 0; i < remaining; i++)
                 {
-                    bool added = InventoryManager.Instance.AddItem(item.Key);
+                    bool added = InventoryManager.Instance.AddShopItem(item.Key);
                     if (added)
                     {
                         remaining--;
@@ -155,10 +152,8 @@ public class BuySystem : MonoBehaviour, IDropHandler
         }
     }
 
-    // IDropHandler에서 요구하는 메서드 구현
-    public void OnDrop(PointerEventData eventData)
+    void OnMouseDown()
     {
-        // 드롭 시 실행할 로직 작성
-        Debug.Log("드롭됨: " + eventData.pointerDrag?.name);
+        OnNPCClicked(); // 장바구니 UI 띄우기
     }
 }

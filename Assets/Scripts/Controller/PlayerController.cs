@@ -17,9 +17,18 @@ public class PlayerController : MonoBehaviour {
     private float baseSpeed;
     private float applySpeed
     {
-        get { return baseSpeed * player.speedLevel.current; }
+        get
+        {
+            if (player == null || player.speedLevel == null)
+        {
+            Debug.LogWarning("player 또는 speedLevel이 null입니다. 기본 속도 반환");
+            return baseSpeed;
+        }
+        return baseSpeed * player.speedLevel.current;
+        }
         set { baseSpeed = value; }
     }
+    
 
     private float calSpeed;
 
@@ -208,6 +217,15 @@ public class PlayerController : MonoBehaviour {
         Debug.Log("안달리는 중");
     }
 
+    void Awake()
+    {
+        if (player == null)
+        {
+            player = GetComponent<PlayerManager>();
+            if (player == null)
+                Debug.LogError("PlayerManager 컴포넌트를 찾을 수 없습니다.");
+        }
+    }
 
     // 움직임 실행
     private void Move()
@@ -245,5 +263,6 @@ public class PlayerController : MonoBehaviour {
 
         theCamera.transform.localEulerAngles = new Vector3(currentCameraRotationX, 0f, 0f);
     }
+
 
 }

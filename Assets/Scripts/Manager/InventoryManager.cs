@@ -12,9 +12,13 @@ public class InventoryManager : MonoBehaviour
     public IntSlotValueSO inventorySlotCount; // 업그레이드 반영된 슬롯 수
     public GameObject inventory;
     public SaveManager saveManager;
+
     [SerializeField] public List<InventorySlotData> slotList = new();
     public List<ItemInstanceData> savedItems = new();
     private int slotNum = -1;
+
+    public ShopItemData currentShopItem;
+    private List<ShopItemData> purchasedItems = new List<ShopItemData>();
 
     private void Awake()
     {
@@ -74,6 +78,7 @@ public class InventoryManager : MonoBehaviour
         UpdateSlots(inventorySlotCount.Value);
     }
 
+    // 아이템 줍는 상황에서의 AddItem
     public bool AddItem(ItemData itemData)
     {
         foreach (var slot in slotList)
@@ -89,9 +94,30 @@ public class InventoryManager : MonoBehaviour
             }
         }
 
-
         Debug.Log("인벤토리가 가득 찼습니다!");
         return false; // 실패
+    }
+
+    // 상점에서 구매한 아이템 추가
+    public bool AddShopItem(ShopItemData shopItemData)
+    {
+        foreach (var slot in slotList)
+        {
+            if (slot.currentItem == null && slot.currentShopItem == null)
+            {
+                slot.SetShopItem(shopItemData);
+                Debug.Log($"{shopItemData.itemName}이(가) 인벤토리에 추가되었습니다.");
+                return true;
+            }
+        }
+
+        Debug.Log("인벤토리가 가득 찼습니다!");
+        return false;
+    }
+
+    public List<ShopItemData> GetInventory()
+    {
+        return purchasedItems;
     }
 
     public void LoadItemToInventorySlot()
