@@ -14,7 +14,6 @@ public class InventoryManager : MonoBehaviour
     public SaveManager saveManager;
     [SerializeField] public List<InventorySlotData> slotList = new();
     public List<ItemInstanceData> savedItems = new();
-    private int slotNum = -1;
 
     private void Awake()
     {
@@ -76,15 +75,13 @@ public class InventoryManager : MonoBehaviour
 
     public bool AddItem(ItemData itemData)
     {
-        foreach (var slot in slotList)
+        for (int i = 0; i < slotList.Count; i++)
         {
-            slotNum += 1;
-            if (slot.currentItem == null) // 빈 슬롯 발견
+            if (slotList[i].currentItem == null) // 빈 슬롯 발견
             {
-                itemData.slotNum = slotNum;
-                slot.SetItem(itemData);
+                itemData.slotNum = i; // 슬롯 인덱스를 그대로 사용
+                slotList[i].SetItem(itemData);
                 savedItems.Add(new ItemInstanceData(itemData.itemID, itemData.itemName, itemData.icon, itemData.description, itemData.itemType, itemData.dirty, itemData.value, itemData.slotNum));
-                slotNum = -1;
                 return true; // 아이템 추가 성공
             }
         }

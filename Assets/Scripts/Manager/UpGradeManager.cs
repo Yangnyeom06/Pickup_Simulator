@@ -11,13 +11,11 @@ public class UpGradeManager : MonoBehaviour
     public SaveManager saveManager;
     public InventoryManager inventory;
     public GameObject UpGradeGround;
-
-
-
-    private void Start()
-    {
-        
-    }
+    public List<UpgradeBarMove> HealthUpgradeCells;
+    public List<UpgradeBarMove> StaminaUpgradeCells;
+    public List<UpgradeBarMove> SpeedUpgradeCells;
+    public List<UpgradeBarMove> InventoryUpgradeCells;
+    public List<UpgradeBarMove> MapUpgradeCells;
 
 
     public void HealthUpGrade(int level) // 체력 업그레이드
@@ -27,40 +25,60 @@ public class UpGradeManager : MonoBehaviour
             player.healthLevel.Value += level;
             player.healthLevel.max += 10;
             player.healthLevel.current += 10;
+
+            TriggerCellMovement(HealthUpgradeCells, player.healthLevel.Value);
         }
     }
 
-    public void StaminaUpgrade()  // 스태미나 업그레이드
+    public void StaminaUpgrade(int level)  // 스태미나 업그레이드
     {
         if (player.staminaLevel.Value < player.staminaLevel.maxLevel)
         {
-            player.staminaLevel.Value += 1;
+            player.staminaLevel.Value += level;
             player.staminaLevel.max += 10;
             player.staminaLevel.current += 10;
+            
+            TriggerCellMovement(StaminaUpgradeCells, player.staminaLevel.Value);
         }
     }
     
-    public void SpeedUpgrade() // 이동 속도 업그레이드
+    public void SpeedUpgrade(int level) // 이동 속도 업그레이드
     {
         if (player.speedLevel.Value < player.speedLevel.maxLevel)
         {
-            player.speedLevel.Value += 1;
+            player.speedLevel.Value += level;
             player.speedLevel.current += 1;
+
+            TriggerCellMovement(SpeedUpgradeCells, player.speedLevel.Value);
         }
     }
 
-    public void InventoryUpgrade() // 가방 업그레이드
+    public void InventoryUpgrade(int level) // 가방 업그레이드
     {
-        if (player.inventoryLevel.Value < player.inventoryLevel.maxLevel) {
-            player.inventoryLevel.Value += 1;
+        if (player.inventoryLevel.Value < player.inventoryLevel.maxLevel)
+        {
+            player.inventoryLevel.Value += level;
             inventory.inventorySlotCount.Value += inventory.inventorySlotCount.upgradeCount;
+            
+            TriggerCellMovement(InventoryUpgradeCells, player.inventoryLevel.Value);
         }
     }
 
-    public void MapUpgrade() // 지도 업그레이드
+    public void MapUpgrade(int level) // 지도 업그레이드
     {
-        if (player.mapLevel.Value < player.mapLevel.maxLevel) {
-            player.mapLevel.Value += 1;
+        if (player.mapLevel.Value < player.mapLevel.maxLevel)
+        {
+            player.mapLevel.Value += level;
+            
+            TriggerCellMovement(MapUpgradeCells, player.mapLevel.Value);
+        }
+    }
+
+    private void TriggerCellMovement(List<UpgradeBarMove> upgradeCells, int currentCellCount)
+    {
+        if (currentCellCount <= upgradeCells.Count)
+        {
+            upgradeCells[currentCellCount - 1].MoveToTarget();
         }
     }
 

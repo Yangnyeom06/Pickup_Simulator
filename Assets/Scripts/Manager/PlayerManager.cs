@@ -2,7 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class PlayerManager : MonoBehaviour // 후에 이 코드는 PlayerManager에 옮기기
+public class PlayerManager : MonoBehaviour
 {
     public PlayerController playerController;
     public IntStatValueSO healthLevel;
