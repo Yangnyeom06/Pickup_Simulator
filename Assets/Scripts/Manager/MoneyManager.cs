@@ -41,7 +41,7 @@ public class MoneyManager : MonoBehaviour
         }
     }
 
-    private void UpdateMoneyUI()
+    public void UpdateMoneyUI()
     {
         foreach (var text in moneyTexts)
         {

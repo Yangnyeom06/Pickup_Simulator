@@ -148,4 +148,23 @@ public class InventoryManager : MonoBehaviour
     {
         inventory.SetActive(false);
     }
+
+    // 아이템 ID로 인벤토리에서 아이템을 삭제
+    public bool RemoveItemById(string itemId)
+    {
+        bool removed = false;
+        // slotList에서 해당 아이템을 가진 슬롯을 찾아 삭제
+        foreach (var slot in slotList)
+        {
+            if (slot.currentItem != null && slot.currentItem.itemID == itemId)
+            {
+                slot.ClearSlot();
+                removed = true;
+                break; // 한 개만 삭제 (중복 아이템이 있을 경우 첫 번째만 삭제)
+            }
+        }
+        // savedItems에서도 해당 아이템 데이터 삭제
+        int removedCount = savedItems.RemoveAll(item => item.itemID == itemId);
+        return removed || removedCount > 0;
+    }
 }
