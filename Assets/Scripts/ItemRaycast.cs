@@ -13,11 +13,8 @@ using UnityEngine.AI;
 /// </summary>
 public class ItemRaycast : MonoBehaviour
 {
-
-
     
-    
-    public  TextMeshProUGUI explainText;
+    public TextMeshProUGUI explainText;
     public GameObject followMouseImage;
 
     /// <summary>
@@ -37,7 +34,8 @@ public class ItemRaycast : MonoBehaviour
     [Header("레이캐스트를 쏠 카메라")]
     [SerializeField] private Camera mRayCamera; //레이를 쏠 카메라 (메인카메라)
 
-    [SerializeField] private InventoryManager mInventory; //인벤토리 메인
+    [SerializeField] public InventoryManager mInventory;
+    [SerializeField] public SaleSystem saleSystem;
     // [SerializeField] private ItemActionManager mItemActionCustomFunc; //아이템 상호작용 커스텀 함수 매니저 (이 글에서는 설명 X)
     // [SerializeField] private ItemRaycastInfoText mItemRaycastInfoText; //아이템 상호작용 가능시 보여질 텍스트 매니저 (이 글에서는 설명 X)
 
@@ -45,33 +43,10 @@ public class ItemRaycast : MonoBehaviour
     {
         CheckItem();
 
-        if (mIsPickupActive) { TryPickItem(); }
-    }
-
-    /// <summary>
-    /// 아이템을 주울 수 있는지 확인한다.
-    /// </summary>
-    private void TryPickItem()
-    {
+        // 이제 마우스 클릭이 아닌 'E' 키로 아이템 획득
         if (Input.GetKeyDown(KeyCode.E))
         {
-            
-            {
-                //현재 인벤토리 아이템 가져오기
-                int count = 0;
-
-                for (; count < mInventory.slotList.Count; ++count)
-                {                    //현재 아이템 칸이 null이라면 주울 수 있는 상태
-                    if (mInventory.slotList[count].currentItem == null) { break; }
-                }
-                //모든 칸이 null이 아니고, 중첩이 불가능하면 주울 수 없음
-                if (count == mInventory.slotList.Count) { return; }
-                //아이템 줍는 효과음 재생
-                
-            }
-
             TryPickUp();
-            ItemInfoDisappear();
         }
     }
 
@@ -81,12 +56,8 @@ public class ItemRaycast : MonoBehaviour
     /// 
     /// 
     // 
-    
-    
     private void CheckItem()
 
-    {
-        
     {
         if (Physics.Raycast(mRayCamera.transform.position, mRayCamera.transform.forward, out mHit, mRayDistance))
         {
@@ -145,7 +116,6 @@ public class ItemRaycast : MonoBehaviour
 
 
     }
-    }
 
     /// <summary>
     /// 아이템 정보 보여주기를 비활성화 한다.
@@ -165,17 +135,19 @@ public class ItemRaycast : MonoBehaviour
     /// <summary>
     /// 아이템을 습득한다.
     /// </summary>
-    private void TryPickUp()
+    public void TryPickUp()
     {
         if (mIsPickupActive)
         {
-            // mItemActionCustomFunc.InteractionItem(mCurrentItem.Item, mCurrentItem.gameObject); (이 글에서는 설명 X)
-
+            Debug.Log("[Pickup] TryPickUp 실행됨, 아이템: " + mCurrentItem?.itemData?.itemName);
+            mInventory.AddItem(mCurrentItem.itemData);
+            Destroy(mCurrentItem.gameObject);
             
-                mInventory.AddItem(mCurrentItem.itemData);
-                Destroy(mCurrentItem.gameObject);
-            
-
+            if (saleSystem != null && saleSystem.sellUI.activeSelf)
+            {
+                saleSystem.RefreshSellSlots();
+                Debug.Log("[Pickup] RefreshSellSlots 호출됨");
+            }
             ItemInfoDisappear(); 
         }
     }

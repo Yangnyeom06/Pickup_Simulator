@@ -1,33 +1,47 @@
 using UnityEngine;
 using UnityEngine.UI;
+using TMPro;
 
 public class InventorySlotData : MonoBehaviour
 {
     [SerializeField] public Image ItemSlotImage;
     [SerializeField] private Button ItemSlotButton;
+    [SerializeField] public TMP_Text countText;
+
     public ItemData currentItem;
     public ShopItemData currentShopItem;
     public int currentItemCount = 1; // 슬롯에 들어있는 아이템 수량
 
+    private SaleSystem saleSystem;
+
 
     private void Awake()
     {
-        ItemSlotButton.onClick.AddListener(OnInfoButtonClicked);
+        saleSystem = Object.FindFirstObjectByType<SaleSystem>();
+        ItemSlotButton.onClick.RemoveAllListeners();
+        ItemSlotButton.onClick.AddListener(OnSlotButtonClicked);
     }
 
     public void SetItem(ItemData itemData)
     {
         currentItem = itemData;
+        currentItemCount = 1;
         if (itemData != null && ItemSlotImage != null)
         {
             ItemSlotImage.sprite = itemData.icon;
             ItemSlotImage.enabled = true;
+
+            if (countText != null) {
+                countText.text = currentItemCount.ToString();
+            }
         }
         else if(ItemSlotImage != null)
         {
             ItemSlotImage.sprite = null;
             ItemSlotImage.enabled = false;
         }
+            
+        
     }
 
     public void SetShopItem(ShopItemData shopItemData)
@@ -55,7 +69,7 @@ public class InventorySlotData : MonoBehaviour
         ItemSlotImage.enabled = false;
     }
 
-    private void OnInfoButtonClicked()
+    public void OnInfoButtonClicked()
     {
         if (currentItem != null)
         {
@@ -78,7 +92,6 @@ public class InventorySlotData : MonoBehaviour
     }
 
     //store 시스템을 위한 RemoveItem 함수 추가 -  수민
-    
     public void RemoveItem(int count)
     {
         if (currentItem == null || currentItemCount <= 0)
@@ -97,6 +110,43 @@ public class InventorySlotData : MonoBehaviour
             currentItemCount = 0;
             ItemSlotImage.enabled = false;
         }
-        // UI 갱신
+        
+        if (countText != null)
+        countText.text = currentItemCount.ToString();
     }
+
+    /// <summary>
+    /// SellUI용 슬롯 초기화: 데이터 모델과 버튼 이벤트를 여기서 확실히 셋업!
+    /// </summary>
+    public void SetupSlot(ItemData item, int count, SaleSystem system)
+    {
+        saleSystem         = system;
+        currentItem        = item;
+        currentItemCount   = count;
+
+        // 아이콘 & 수량 UI 갱신
+        ItemSlotImage.sprite = item.icon;
+        ItemSlotImage.enabled = true;
+        if (countText != null)
+            countText.text = currentItemCount.ToString();
+
+        // 클릭 리스너: 이 슬롯이 클릭되면 바로 SaleSystem.OnSlotClicked(this)
+        ItemSlotButton.onClick.RemoveAllListeners();
+        ItemSlotButton.onClick.AddListener(OnSlotButtonClicked);
+    }
+    
+    public void OnSlotButtonClicked()
+    {
+        Debug.Log($"[InventorySlotData] 슬롯 클릭: {currentItem.itemName} x{currentItemCount}");
+        // SellUI가 활성화된 상태라면 판매 모드로 간주
+        if (saleSystem != null && saleSystem.sellUI.activeSelf)
+        {
+            saleSystem.OnSlotClicked(this);
+            return;
+        }
+
+        // 그렇지 않으면 기존 정보 출력
+        OnInfoButtonClicked();
+    }
+
 }

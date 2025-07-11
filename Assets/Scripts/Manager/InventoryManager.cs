@@ -15,7 +15,6 @@ public class InventoryManager : MonoBehaviour
 
     [SerializeField] public List<InventorySlotData> slotList = new();
     public List<ItemInstanceData> savedItems = new();
-    private int slotNum = -1;
 
     public ShopItemData currentShopItem;
     private List<ShopItemData> purchasedItems = new List<ShopItemData>();
@@ -81,28 +80,53 @@ public class InventoryManager : MonoBehaviour
     // 아이템 줍는 상황에서의 AddItem
     public bool AddItem(ItemData itemData)
     {
+        // 1) 이미 같은 아이템이 들어있는 슬롯이 있는지 찾는다
+        var existing = slotList.Find(s => 
+            s.currentItem != null && s.currentItem.itemName == itemData.itemName);
+        if (existing != null)
+        {
+            // 이미 있으면 수량만 +1
+            existing.currentItemCount++;
+            if (existing.countText != null)
+                existing.countText.text = existing.currentItemCount.ToString();
+            return true;
+        }
+
+        // 2) 빈 슬롯이 있으면 새 아이템으로 채운다
         foreach (var slot in slotList)
         {
-            slotNum += 1;
-            if (slot.currentItem == null) // 빈 슬롯 발견
+            if (slot.currentItem == null)
             {
-                itemData.slotNum = slotNum;
                 slot.SetItem(itemData);
-                savedItems.Add(new ItemInstanceData(itemData.itemID, itemData.itemName, itemData.icon, itemData.description, itemData.itemType, itemData.dirty, itemData.value, itemData.slotNum));
-                slotNum = -1;
-                return true; // 아이템 추가 성공
+                slot.currentItemCount = 1;
+                if (slot.countText != null)
+                    slot.countText.text = "1";
+                return true;
             }
         }
 
+        // 3) 빈 슬롯이 하나도 없으면 실패
         Debug.Log("인벤토리가 가득 찼습니다!");
-        return false; // 실패
+        return false;
     }
 
     // 상점에서 구매한 아이템 추가
     public bool AddShopItem(ShopItemData shopItemData)
     {
+        if (shopItemData == null)
+        {
+            Debug.LogError("shopItemData가 null입니다!");
+            return false;
+        }
+
         foreach (var slot in slotList)
         {
+            if (slot == null)
+            {
+                Debug.LogError("slotList에 null이 들어있습니다!");
+                continue;
+            }
+
             if (slot.currentItem == null && slot.currentShopItem == null)
             {
                 slot.SetShopItem(shopItemData);
