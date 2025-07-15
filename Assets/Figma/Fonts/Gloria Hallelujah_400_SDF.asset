@@ -37,7 +37,7 @@ Texture2D:
     m_WrapV: 0
     m_WrapW: 0
   m_LightmapFormat: 0
-  m_ColorSpace: 1
+  m_ColorSpace: 0
   m_PlatformBlob: 
   image data: 1
   _typelessdata: 00
@@ -88,19 +88,19 @@ MonoBehaviour:
     sourceFontFileGUID: 
     faceIndex: 0
     pointSizeSamplingMode: 0
-    pointSize: 0
-    padding: 0
+    pointSize: 90
+    padding: 9
     paddingMode: 0
     packingMode: 0
-    atlasWidth: 0
-    atlasHeight: 0
+    atlasWidth: 4096
+    atlasHeight: 4096
     characterSetSelectionMode: 0
     characterSequence: 
     referencedFontAssetGUID: 
     referencedTextAssetGUID: 
     fontStyle: 0
     fontStyleModifier: 0
-    renderMode: 0
+    renderMode: 4165
     includeFontFeatures: 0
   m_SourceFontFile: {fileID: 12800000, guid: 598c0c6de741b7943860c04ea17fc7ea, type: 3}
   m_SourceFontFilePath: 
@@ -237,8 +237,8 @@ Material:
     - _StencilOp: 0
     - _StencilReadMask: 255
     - _StencilWriteMask: 255
-    - _TextureHeight: 1024
-    - _TextureWidth: 1024
+    - _TextureHeight: 4096
+    - _TextureWidth: 4096
     - _UnderlayDilate: 0
     - _UnderlayOffsetX: 0
     - _UnderlayOffsetY: 0

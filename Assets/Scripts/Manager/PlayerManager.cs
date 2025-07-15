@@ -2,7 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class PlayerManager : MonoBehaviour // 후에 이 코드는 PlayerManager에 옮기기
+public class PlayerManager : MonoBehaviour
 {
     public PlayerController playerController;
     public IntStatValueSO healthLevel;
@@ -47,7 +47,8 @@ public class PlayerManager : MonoBehaviour // 후에 이 코드는 PlayerManager
             healthLevel.current -= HealthLossSpeed;
             yield return new WaitForSeconds(HealthLossInterval);
         }
-
+        // 집으로 보내는 이벤트 실행
+        
         Debug.Log("체력이 0이 되었습니다!");
     }
     #endregion
@@ -82,10 +83,6 @@ public class PlayerManager : MonoBehaviour // 후에 이 코드는 PlayerManager
         Debug.Log("스태미나가 0이 되었습니다!");
     }
     #endregion
-
-
-
-
 
 
     public void ResetPlayerData()

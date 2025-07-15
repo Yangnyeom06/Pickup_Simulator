@@ -172,7 +172,7 @@ public class ItemRaycast : MonoBehaviour
             // mItemActionCustomFunc.InteractionItem(mCurrentItem.Item, mCurrentItem.gameObject); (이 글에서는 설명 X)
 
             
-                mInventory.AddItem(mCurrentItem.itemData);
+                mInventory.AddItem(mCurrentItem.itemData, mCurrentItem);
                 Destroy(mCurrentItem.gameObject);
             
 

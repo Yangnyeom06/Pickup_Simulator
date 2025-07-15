@@ -10,6 +10,7 @@ GameObject:
   m_Component:
   - component: {fileID: 5540393440912869947}
   - component: {fileID: 1816180526837257802}
+  - component: {fileID: 433141965435215252}
   - component: {fileID: 3685618790804671851}
   m_Layer: 0
   m_Name: ExitButton
@@ -59,6 +60,21 @@ MonoBehaviour:
   m_FlexibleWidth: -1
   m_FlexibleHeight: -1
   m_LayoutPriority: 1
+--- !u!114 &433141965435215252
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 778087582659835208}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: cfabb0440166ab443bba8876756fdfa9, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  m_EffectColor: {r: 0, g: 0, b: 0, a: 0.25}
+  m_EffectDistance: {x: 4, y: -4}
+  m_UseGraphicAlpha: 1
 --- !u!114 &3685618790804671851
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -201,7 +217,7 @@ MonoBehaviour:
   m_PixelsPerUnitMultiplier: 1
   m_Shape: 0
   m_StrokeColor: {r: 1, g: 1, b: 1, a: 1}
-  m_FillColor: {r: 0.9607843, g: 0.9607843, b: 0.9607843, a: 0.9}
+  m_FillColor: {r: 1, g: 1, b: 1, a: 1}
   m_StrokeWidth: 0
   m_CornerRadius: {x: 20, y: 20, z: 20, w: 20}
   m_StrokePosition: 0
@@ -282,7 +298,7 @@ RectTransform:
   m_AnchorMin: {x: 0, y: 0}
   m_AnchorMax: {x: 1, y: 1}
   m_AnchoredPosition: {x: 167, y: -31}
-  m_SizeDelta: {x: -349, y: -59}
+  m_SizeDelta: {x: 0, y: 0}
   m_Pivot: {x: 0, y: 1}
 --- !u!114 &1503028373284373697
 MonoBehaviour:
@@ -297,10 +313,10 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   m_IgnoreLayout: 0
-  m_MinWidth: 124
-  m_MinHeight: 63
-  m_PreferredWidth: 124
-  m_PreferredHeight: 63
+  m_MinWidth: 138
+  m_MinHeight: 61
+  m_PreferredWidth: 138
+  m_PreferredHeight: 61
   m_FlexibleWidth: -1
   m_FlexibleHeight: -1
   m_LayoutPriority: 1
@@ -334,14 +350,14 @@ MonoBehaviour:
       m_Calls: []
   m_text: "\uB098\uAC00\uAE30"
   m_isRightToLeft: 0
-  m_fontAsset: {fileID: 11400000, guid: 2f5c1bdf39b7d04409e648051cce227d, type: 2}
-  m_sharedMaterial: {fileID: 5357344739448137100, guid: 2f5c1bdf39b7d04409e648051cce227d, type: 2}
+  m_fontAsset: {fileID: 11400000, guid: a68a2b692a487544da75e5c011ac5457, type: 2}
+  m_sharedMaterial: {fileID: -3880939668730580069, guid: a68a2b692a487544da75e5c011ac5457, type: 2}
   m_fontSharedMaterials: []
   m_fontMaterial: {fileID: 0}
   m_fontMaterials: []
   m_fontColor32:
     serializedVersion: 2
-    rgba: 4294967295
+    rgba: 4278190080
   m_fontColor: {r: 0, g: 0, b: 0, a: 1}
   m_enableVertexGradient: 0
   m_colorMode: 3
@@ -354,7 +370,7 @@ MonoBehaviour:
   m_spriteAsset: {fileID: 0}
   m_tintAllSprites: 0
   m_StyleSheet: {fileID: 0}
-  m_TextStyleHashCode: 0
+  m_TextStyleHashCode: -1183493901
   m_overrideHtmlColors: 0
   m_faceColor:
     serializedVersion: 2

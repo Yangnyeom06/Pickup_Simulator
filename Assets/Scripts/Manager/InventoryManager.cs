@@ -12,9 +12,9 @@ public class InventoryManager : MonoBehaviour
     public IntSlotValueSO inventorySlotCount; // 업그레이드 반영된 슬롯 수
     public GameObject inventory;
     public SaveManager saveManager;
+    public asdfManager asdf;
     [SerializeField] public List<InventorySlotData> slotList = new();
     public List<ItemInstanceData> savedItems = new();
-    private int slotNum = -1;
 
     private void Awake()
     {
@@ -59,32 +59,17 @@ public class InventoryManager : MonoBehaviour
         }
     }
 
-    public void ResetSlots()
+
+    public bool AddItem(ItemData itemData, Item item)
     {
-        savedItems = new List<ItemInstanceData>();
-        
-        foreach (Transform child in contentParent)
+        for (int i = 0; i < slotList.Count; i++)
         {
-            Destroy(child.gameObject);
-        }
-        slotList.Clear();
-
-        inventorySlotCount.SetValueWithoutNotify(20);
-
-        UpdateSlots(inventorySlotCount.Value);
-    }
-
-    public bool AddItem(ItemData itemData)
-    {
-        foreach (var slot in slotList)
-        {
-            slotNum += 1;
-            if (slot.currentItem == null) // 빈 슬롯 발견
+            if (slotList[i].currentItem == null) // 빈 슬롯 발견
             {
-                itemData.slotNum = slotNum;
-                slot.SetItem(itemData);
-                savedItems.Add(new ItemInstanceData(itemData.itemID, itemData.itemName, itemData.icon, itemData.description, itemData.itemType, itemData.dirty, itemData.value, itemData.slotNum));
-                slotNum = -1;
+                itemData.slotNum = i; // 슬롯 인덱스를 그대로 사용
+                slotList[i].SetItem(itemData);
+                savedItems.Add(new ItemInstanceData(item.uniqueID, itemData.itemID, itemData.itemName, itemData.icon, itemData.description, itemData.itemType, itemData.dirty, itemData.value, itemData.slotNum));
+                asdf.pickUpItemCounts += 1;
                 return true; // 아이템 추가 성공
             }
         }
@@ -121,5 +106,20 @@ public class InventoryManager : MonoBehaviour
     public void Exit() // UpGradeUI 닫기
     {
         inventory.SetActive(false);
+    }
+
+    public void ResetSlots()
+    {
+        savedItems = new List<ItemInstanceData>();
+
+        foreach (Transform child in contentParent)
+        {
+            Destroy(child.gameObject);
+        }
+        slotList.Clear();
+
+        inventorySlotCount.SetValueWithoutNotify(20);
+
+        UpdateSlots(inventorySlotCount.Value);
     }
 }
