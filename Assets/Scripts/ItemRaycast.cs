@@ -49,7 +49,10 @@ public class ItemRaycast : MonoBehaviour
         //     TryPickUp();
         // }
 
-        if (mIsPickupActive) { TryPickItem(); }
+        if (mIsPickupActive) 
+        { 
+            TryPickItem(); 
+        }
 
     }
 
@@ -60,7 +63,6 @@ public class ItemRaycast : MonoBehaviour
     {
         if (Input.GetKeyDown(KeyCode.E))
         {
-            
             {
                 //현재 인벤토리 아이템 가져오기
                 int count = 0;
@@ -87,66 +89,56 @@ public class ItemRaycast : MonoBehaviour
     /// 
     // 
     private void CheckItem()
-
     {
-        Debug.DrawRay(mRayCamera.transform.position, mRayCamera.transform.forward * mRayDistance, Color.red);
-
-        if (Physics.Raycast(mRayCamera.transform.position, mRayCamera.transform.forward, out mHit, mRayDistance))
+        Ray ray = mRayCamera.ScreenPointToRay(Input.mousePosition);
+        if (Physics.Raycast(ray, out mHit, mRayDistance))
         {
-            //Debug.Log("raycast 확인");
-            //레이캐스트 결과의 태그가 아이템이라면?
-            if (mHit.transform.tag == "Item")
+
+            if (mHit.transform.CompareTag("Item") || mHit.transform.root.CompareTag("Item"))
             {
 
-                //현재 레이캐스트된 아이템
+                // 자식 오브젝트에 닿은 경우에도 부모에서 Item을 찾아줌
                 Item rayCastedItem = mHit.transform.GetComponent<Item>();
+                if (rayCastedItem == null)
+                {
+                    rayCastedItem = mHit.transform.GetComponentInParent<Item>();
+                }
 
-            if(mCurrentItem == rayCastedItem) { return; } 
-                //아이템 얻어오기 및 정보 호출
-                mCurrentItem = mHit.transform.GetComponent<Item>();
-                // mItemRaycastInfoText.EnableText(mHit.transform.position + Vector3.up * rayCastedItem.IndicatorHeight, mCurrentItem.Item); (이 글에서는 설명 X)
-            
+                if (rayCastedItem == null)
+                {
+                    ItemInfoDisappear();
+                    return;
+                }
 
-               followMouseImage.SetActive(true); // 아이템 설명 이미지+텍스트 보이도록..
-            if (mCurrentItem != null && mCurrentItem.GetComponent<Item>() != null )
-            {
-                explainText.text = mCurrentItem.itemData.itemName;
-                explainText.text += mCurrentItem.itemData.itemRarity.ToString();
-                explainText.text += mCurrentItem.itemData.itemType.ToString();
-                explainText.text += mCurrentItem.itemData.value.ToString();
-                explainText.text += mCurrentItem.itemData.dirty.ToString();
-                explainText.text += mCurrentItem.itemData.description;
-            }
-            else
-            {
-                followMouseImage.SetActive(false);
-                //explainText.text = ""; // 또는 다른 기본 텍스트를 넣어줄 수 있습니다.
-            }
+                if (mCurrentItem == rayCastedItem)
+                {
+                    return; // 같은 아이템이면 갱신 안 함
+                }
 
-            if (mHit.transform.tag != "Item" ) // 슬롯에서 벗어났으면 설명창 닫기
-            {
-                followMouseImage.SetActive(false);
-            }
-
-                Debug.LogFormat("아이템: {0} 획득 가능", mCurrentItem.itemData.itemName);
-
+                mCurrentItem = rayCastedItem;
                 mIsPickupActive = true;
+                followMouseImage.SetActive(true);
 
-                return;
+                // 아이템 설명 텍스트 표시
+                var itemData = mCurrentItem.itemData;
+                explainText.text = itemData.itemName +
+                               itemData.itemRarity.ToString() +
+                               itemData.itemType.ToString() +
+                               itemData.value.ToString() +
+                               itemData.dirty.ToString() +
+                               itemData.description;
+
+                Debug.LogFormat("아이템: {0} 획득 가능", itemData.itemName);
             }
-            //레이캐스트 닿았을 때, 아이템이 아닌경우에는 비활성화
             else
             {
                 ItemInfoDisappear();
             }
         }
-        //레이캐스트 결과가 없으면 비활성화
         else
         {
             ItemInfoDisappear();
         }
-
-
     }
 
     /// <summary>
@@ -169,29 +161,17 @@ public class ItemRaycast : MonoBehaviour
     /// </summary>
     public void TryPickUp()
     {
-        Debug.Log("mIsPickupActive: " + mIsPickupActive);
-        Debug.Log("mCurrentItem is null? " + (mCurrentItem == null));
-
-
-        if (!mIsPickupActive || mCurrentItem == null) 
+        if (mIsPickupActive)
         {
-            Debug.Log("[Pickup] 아이템 습득 불가능 - 활성화되지 않았거나 아이템이 없음");
-            return;
+            // mItemActionCustomFunc.InteractionItem(mCurrentItem.Item, mCurrentItem.gameObject); (이 글에서는 설명 X)
+
+            
+                mInventory.AddItem(mCurrentItem.itemData);
+                Destroy(mCurrentItem.gameObject);
+            
+
+            ItemInfoDisappear(); 
         }
-
-        Debug.Log("[Pickup] TryPickUp 실행됨, 아이템: " + mCurrentItem?.itemData?.itemName);
-
-        mInventory.AddItem(mCurrentItem.itemData);
-        Destroy(mCurrentItem.gameObject);
-
-        // 판매 시스템에 아이템 습득 알림
-        if (saleSystem != null)
-        {
-            saleSystem.OnItemPickedUp();
-        }
-
-        // 아이템 정보 UI 비활성화
-        ItemInfoDisappear(); 
     }
 }
 

@@ -20,9 +20,7 @@ public class QuantityDialog : MonoBehaviour
         itemData     = data;
         maxQuantity  = maxQty;
         saleSystem.selectedQuantity = 1;
-        quantityText.text = "1";
-
-        quantityText.text = saleSystem.selectedQuantity.ToString();
+        UpdateQuantity(saleSystem.selectedQuantity);    
 
         // 버튼 리스너 바인딩 (프리팹 인스펙터 OnClick은 모두 지워두세요)
         plusButton.onClick.RemoveAllListeners();
@@ -38,7 +36,7 @@ public class QuantityDialog : MonoBehaviour
     public void OnPlusButtonClicked()
     {
         saleSystem.IncreaseQuantity(maxQuantity);
-        quantityText.text = saleSystem.selectedQuantity.ToString();
+        UpdateQuantity(saleSystem.selectedQuantity);
     }
 
     /// <summary>
@@ -47,7 +45,7 @@ public class QuantityDialog : MonoBehaviour
     public void OnMinusButtonClicked()
     {
         saleSystem.DecreaseQuantity();
-        quantityText.text = saleSystem.selectedQuantity.ToString();
+        UpdateQuantity(saleSystem.selectedQuantity);
     }
 
     /// <summary>
@@ -56,5 +54,8 @@ public class QuantityDialog : MonoBehaviour
     public void UpdateQuantity(int quantity)
     {
         quantityText.text = quantity.ToString();
+        minusButton.interactable = quantity > 1;
+        plusButton.interactable = quantity < maxQuantity;
+
     }
 }

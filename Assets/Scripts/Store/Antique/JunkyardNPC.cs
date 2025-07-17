@@ -1,19 +1,18 @@
-using UnityEditor;
 using UnityEngine;
 using UnityEngine.EventSystems;
 using System.Collections.Generic;
 using UnityEngine.UI;
 using TMPro;
 
-public class AntiqueShopNPC : MonoBehaviour, IPointerClickHandler, ISaleSystem
+public class JunkyardNPC : MonoBehaviour, ISaleSystem
 {
     public Camera mainCamera;
     public float rayDistance = 100f;
 
     public PlayerData playerData;
 
-    [Header("Inspector 에서 드래그해서 지정할 클릭 대상들")]
-    public List<Transform> clickableTargets;
+    // [Header("Inspector 에서 드래그해서 지정할 클릭 대상들")]
+    // public List<Transform> clickableTargets;
 
     [Header("UI References")]
     public GameObject sellUI;                   // Sell 모드 전체 패널
@@ -44,44 +43,33 @@ public class AntiqueShopNPC : MonoBehaviour, IPointerClickHandler, ISaleSystem
             {
                 if (hit.transform.gameObject == this.gameObject)
                 {
-                    UpdateSellUI();
+                    ShowSellUI();
                 }
             }
         }
     }
-    
-    // NPC 클릭 시 호출될 메서드
-    public void OnPointerClick(PointerEventData eventData)
+
+    public void ShowSellUI()
     {
-        // NPC를 클릭했을 때 열릴 UI 로직
         sellUI.SetActive(true);
-
-        if (quantityDialog != null)
-            quantityDialog.gameObject.SetActive(false);
-
         sellConfirmButton.interactable = false;
-        UpdateSellUI();
+        ResetSaleState();
+
+         if (quantityDialog != null)
+             quantityDialog.gameObject.SetActive(false);
+
+         sellConfirmButton.interactable = false;
+         RefreshSellSlots();
     }
-
-    // (1) Sell 버튼 클릭
-    // public void OnNPCClicked()
-    // {
-    //     // SellUI 열고, 판매 확정 비활성
-    //     sellUI.SetActive(true);
-    //     sellConfirmButton.interactable = false;
-
-    //     // 슬롯 리스트 갱신
-    //     RefreshSellSlots();
-    // }
 
 
     /// (2) 인벤토리 데이터 → SellUI 슬롯으로 복제
-    public void UpdateSellUI()
+    public void RefreshSellSlots()
     {
         // 참조 누락 방어
         if (slotParent == null || slotPrefab == null || inventoryManager == null)
         {
-            Debug.LogError("[AntiqueSystem] slotParent/slotPrefab/inventoryManager 설정이 필요합니다!");
+            Debug.LogError("[JunkyardSystem] slotParent/slotPrefab/inventoryManager 설정이 필요합니다!");
             return;
         }
 
@@ -98,8 +86,7 @@ public class AntiqueShopNPC : MonoBehaviour, IPointerClickHandler, ISaleSystem
             if (item == null || data.currentItemCount <= 0)
                 continue;
 
-            // ItemType.Large(대형)인 것만 노출
-            if (item.itemType != ItemType.Large)
+            if (!CanSell(item))
                 continue;
 
             var go = Instantiate(slotPrefab, slotParent);
@@ -121,7 +108,7 @@ public class AntiqueShopNPC : MonoBehaviour, IPointerClickHandler, ISaleSystem
         // 대형 아이템 여부 재확인
         if (slot.currentItem.itemType != ItemType.Large)
         {
-            Debug.Log("[AntiqueSystem] 대형 아이템만 판매할 수 있습니다.");
+            Debug.Log("[JunkyardSystem] 대형 아이템만 판매할 수 있습니다.");
             return;
         }
 
@@ -142,6 +129,11 @@ public class AntiqueShopNPC : MonoBehaviour, IPointerClickHandler, ISaleSystem
 
         sellConfirmButton.interactable = true;
 
+    }
+
+    public bool CanSell(ItemData item)
+    {
+        return item != null && item.itemType == ItemType.Large && item.value > 0;
     }
 
     public void IncreaseQuantity(int maxQty)
@@ -180,24 +172,40 @@ public class AntiqueShopNPC : MonoBehaviour, IPointerClickHandler, ISaleSystem
         // 4) 남은 수량이 0이면, 저장된 itemID로 슬롯 자체 삭제
         if (selectedSlot.currentItemCount <= 0)
         {
-            // inventoryManager.RemoveItemById(itemID);
-            Destroy(slotPrefab.gameObject);
+            inventoryManager.RemoveItemById(itemID);
+            Destroy(selectedSlot.gameObject);
         }
 
         // 5) UI 갱신
-        UpdateSellUI();
+        RefreshSellSlots();
+        ResetSaleState(); 
 
-        // 6) 다이얼로그 & 상태 초기화
-        if (quantityDialog != null) Destroy(quantityDialog.gameObject);
-        quantityDialog    = null;
-        selectedSlot      = null;
-        sellConfirmButton.interactable = false;
+        // // 6) 다이얼로그 & 상태 초기화
+        // if (quantityDialog != null) Destroy(quantityDialog.gameObject);
+        // quantityDialog    = null;
+        // selectedSlot      = null;
+        // sellConfirmButton.interactable = false;
 
         Debug.Log($"판매 완료: +{gain}G");
+        playerMoneyText.text = $"Money: {playerData.money} G";
+    }
+
+    private void ResetSaleState()
+    {
+        if (quantityDialog != null)
+        {
+            Destroy(quantityDialog.gameObject);
+            quantityDialog = null;
+        }
+
+        selectedSlot = null;
+        selectedQuantity = 0;
+        sellConfirmButton.interactable = false;
     }
 
     public void CancelSell() 
     {
         sellUI.SetActive(false);
+        ResetSaleState();
     }
 }
