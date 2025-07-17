@@ -9,19 +9,18 @@ public class QuantityDialog : MonoBehaviour
     public Button   plusButton;
     public Button   minusButton;
 
-    private SaleSystem saleSystem;
-    private ItemData itemData;
-    private int        maxQuantity;
+    private ISaleSystem saleSystem;
+    private ItemData    itemData;
+    private int         maxQuantity;
 
-    /// <summary>
-    /// (3) SaleSystem.OnSlotClicked()에서 반드시 한 번 호출
-    /// </summary>
-    public void Setup(SaleSystem system, ItemData data, int maxQty)
+    // 첫 번째 파라미터를 ISaleSystem, 두 번째 ItemData, 세 번째 int 순으로
+    public void Setup(ISaleSystem system, ItemData data, int maxQty)
     {
         saleSystem   = system;
-        itemData = data;
+        itemData     = data;
         maxQuantity  = maxQty;
         saleSystem.selectedQuantity = 1;
+        quantityText.text = "1";
 
         quantityText.text = saleSystem.selectedQuantity.ToString();
 

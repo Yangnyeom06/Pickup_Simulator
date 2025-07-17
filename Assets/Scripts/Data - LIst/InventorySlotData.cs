@@ -12,7 +12,8 @@ public class InventorySlotData : MonoBehaviour
     public ShopItemData currentShopItem;
     public int currentItemCount = 1; // 슬롯에 들어있는 아이템 수량
 
-    private SaleSystem saleSystem;
+    private ISaleSystem saleSystem;
+    private AntiqueShopNPC antiqueShopNPC;
 
 
     private void Awake()
@@ -118,7 +119,7 @@ public class InventorySlotData : MonoBehaviour
     /// <summary>
     /// SellUI용 슬롯 초기화: 데이터 모델과 버튼 이벤트를 여기서 확실히 셋업!
     /// </summary>
-    public void SetupSlot(ItemData item, int count, SaleSystem system)
+    public void SetupSlot(ItemData item, int count, ISaleSystem system)
     {
         saleSystem         = system;
         currentItem        = item;
@@ -139,11 +140,7 @@ public class InventorySlotData : MonoBehaviour
     {
         Debug.Log($"[InventorySlotData] 슬롯 클릭: {currentItem.itemName} x{currentItemCount}");
         // SellUI가 활성화된 상태라면 판매 모드로 간주
-        if (saleSystem != null && saleSystem.sellUI.activeSelf)
-        {
-            saleSystem.OnSlotClicked(this);
-            return;
-        }
+        antiqueShopNPC?.OnSlotClicked(this);
 
         // 그렇지 않으면 기존 정보 출력
         OnInfoButtonClicked();
