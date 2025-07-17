@@ -52,27 +52,14 @@ public class JunkyardNPC : MonoBehaviour, ISaleSystem
     public void ShowSellUI()
     {
         sellUI.SetActive(true);
-        sellConfirmButton.interactable = false;
         ResetSaleState();
-
-         if (quantityDialog != null)
-             quantityDialog.gameObject.SetActive(false);
-
-         sellConfirmButton.interactable = false;
-         RefreshSellSlots();
+        RefreshSellSlots();
     }
 
 
     /// (2) 인벤토리 데이터 → SellUI 슬롯으로 복제
     public void RefreshSellSlots()
     {
-        // 참조 누락 방어
-        if (slotParent == null || slotPrefab == null || inventoryManager == null)
-        {
-            Debug.LogError("[JunkyardSystem] slotParent/slotPrefab/inventoryManager 설정이 필요합니다!");
-            return;
-        }
-
         // 기존 슬롯 전부 삭제
         foreach (Transform child in slotParent)
         {
@@ -83,27 +70,27 @@ public class JunkyardNPC : MonoBehaviour, ISaleSystem
         foreach (var data in inventoryManager.slotList)
         {
             var item = data.currentItem;
-            if (item == null || data.currentItemCount <= 0)
-                continue;
 
-            if (!CanSell(item))
-                continue;
+            if (item == null || data.currentItemCount <= 0) continue;
+            if (!CanSell(item)) continue;
 
-            var go = Instantiate(slotPrefab, slotParent);
-            var ui = go.GetComponent<InventorySlotData>();
-            ui.SetupSlot(item, data.currentItemCount, this);
+
+            for (int i = 0; i < data.currentItemCount; i++)
+            {
+                var go = Instantiate(slotPrefab, slotParent);
+                var ui = go.GetComponent<InventorySlotData>();
+    
+                ui.SetupSlot(item, 1, this); // 슬롯 하나에 아이템 1개
+                ui.originalInventorySlot = data;
+            }
+
         }
-
-        // 소지금 표시
-        int playerMoney = playerData.money;
-        playerMoneyText.text = $"Money: {playerMoney} G";
     }
 
     // (3) 슬롯 클릭 → 다이얼로그 띄우기 + 판매 확정 버튼 활성
     public void OnSlotClicked(InventorySlotData slot)
     {
-        if (slot == null || slot.currentItem == null)
-            return;
+        if (slot == null || slot.currentItem == null) return;
 
         // 대형 아이템 여부 재확인
         if (slot.currentItem.itemType != ItemType.Large)
@@ -116,9 +103,13 @@ public class JunkyardNPC : MonoBehaviour, ISaleSystem
         selectedQuantity = 1;
 
         if (quantityDialog != null)
+        {
             Destroy(quantityDialog.gameObject);
+            quantityDialog = null;
+        }
 
-        var dlgGO = Instantiate(quantityDialogPrefab, quantityDialogParent);
+        quantityDialogPrefab.SetActive(true);
+        var dlgGO = Instantiate(quantityDialogPrefab, quantityDialogParent, false);
         quantityDialog = dlgGO.GetComponent<QuantityDialog>();
 
         quantityDialog.Setup(
@@ -133,47 +124,47 @@ public class JunkyardNPC : MonoBehaviour, ISaleSystem
 
     public bool CanSell(ItemData item)
     {
-        return item != null && item.itemType == ItemType.Large && item.value > 0;
+        return item != null && item.itemType == ItemType.Large;
     }
 
     public void IncreaseQuantity(int maxQty)
     {
         selectedQuantity = Mathf.Min(selectedQuantity + 1, maxQty);
-        if (quantityDialog != null)
-            quantityDialog.UpdateQuantity(selectedQuantity);
+        quantityDialog?.UpdateQuantity(selectedQuantity);
     }
 
     public void DecreaseQuantity()
     {
         selectedQuantity = Mathf.Max(selectedQuantity - 1, 1);
-        if (quantityDialog != null)
-            quantityDialog.UpdateQuantity(selectedQuantity);
+        quantityDialog?.UpdateQuantity(selectedQuantity);
     }
 
     // 판매 버튼 클릭 시 호출
     public void ConfirmSell()
     {
-        if (selectedSlot == null || selectedSlot.currentItem == null)
-        return;
+        Debug.Log("selectedSlot 상태: " + selectedSlot);
+        Debug.Log("currentItem 상태: " + (selectedSlot != null ? selectedSlot.currentItem : "null"));
+        if (selectedSlot == null || selectedSlot.currentItem == null || selectedQuantity <= 0) return;
 
         // 1) 판매 정보 미리 저장
         var itemData  = selectedSlot.currentItem;
-        var itemName = itemData.itemName;
-        var itemID    = itemData.itemID;
-        int sellCount = selectedQuantity;
-        int gain      = itemData.value * sellCount;
+        int gain      = itemData.value * selectedQuantity;
 
         // 2) 돈 입금
         moneyManager.AddMoney(gain);
 
         // 3) 슬롯에서 수량 차감
-        selectedSlot.RemoveItem(sellCount);
+        selectedSlot.RemoveItem(selectedQuantity);
 
         // 4) 남은 수량이 0이면, 저장된 itemID로 슬롯 자체 삭제
         if (selectedSlot.currentItemCount <= 0)
         {
-            inventoryManager.RemoveItemById(itemID);
-            Destroy(selectedSlot.gameObject);
+            GameObject slotObj = selectedSlot.gameObject;
+            inventoryManager.RemoveItemByInstance(selectedSlot.originalInventorySlot);
+            RefreshSellSlots();
+            ResetSaleState();
+            Destroy(slotObj);
+
         }
 
         // 5) UI 갱신
@@ -185,6 +176,8 @@ public class JunkyardNPC : MonoBehaviour, ISaleSystem
         // quantityDialog    = null;
         // selectedSlot      = null;
         // sellConfirmButton.interactable = false;
+
+        sellUI.SetActive(false);
 
         Debug.Log($"판매 완료: +{gain}G");
         playerMoneyText.text = $"Money: {playerData.money} G";

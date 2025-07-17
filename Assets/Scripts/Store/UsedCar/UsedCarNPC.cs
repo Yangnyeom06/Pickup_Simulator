@@ -19,8 +19,8 @@ public class UsedCarNPC : MonoBehaviour, ISaleSystem
     public GameObject slotPrefab;               // 슬롯 프리팹 (InventorySlotData 컴포넌트 포함)
     public Transform  slotParent;               // 슬롯이 붙을 부모 (Layout Group 등)
     public Button     sellConfirmButton;        // 최종 판매 확정 버튼
-    public GameObject quantityDialogPrefab;     // QuantityDialog 프리팹
-    public Transform  quantityDialogParent;     // 다이얼로그를 붙일 부모
+    // public GameObject quantityDialogPrefab;     // QuantityDialog 프리팹
+    // public Transform  quantityDialogParent;     // 다이얼로그를 붙일 부모
 
     [Header("Managers")]
     public MoneyManager     moneyManager;
@@ -29,7 +29,7 @@ public class UsedCarNPC : MonoBehaviour, ISaleSystem
     // 현재 선택된 슬롯·수량
     private InventorySlotData selectedSlot;
     public int selectedQuantity { get; set; } = 0;
-    private QuantityDialog    quantityDialog;
+    // private QuantityDialog    quantityDialog;
 
     [SerializeField] private TMP_Text playerMoneyText;
 
@@ -52,27 +52,13 @@ public class UsedCarNPC : MonoBehaviour, ISaleSystem
     public void ShowSellUI()
     {
         sellUI.SetActive(true);
-        sellConfirmButton.interactable = false;
         ResetSaleState();
-
-        if (quantityDialog != null)
-        {
-            quantityDialog.gameObject.SetActive(false);
-        }
-
         RefreshSellSlots();
     }
 
     /// (2) 인벤토리 데이터 → SellUI 슬롯으로 복제
     public void RefreshSellSlots()
     {
-        // 참조 누락 방어
-        if (slotParent == null || slotPrefab == null || inventoryManager == null)
-        {
-            Debug.LogError("[UsedCarSystem] slotParent/slotPrefab/inventoryManager 설정이 필요합니다!");
-            return;
-        }
-
         // 기존 슬롯 전부 삭제
         foreach (Transform child in slotParent)
         {
@@ -83,102 +69,101 @@ public class UsedCarNPC : MonoBehaviour, ISaleSystem
         foreach (var data in inventoryManager.slotList)
         {
             var item = data.currentItem;
-            if (item == null || data.currentItemCount <= 0)
-                continue;
 
-            if (!CanSell(item))
-                continue;
+            if (item == null || data.currentItemCount <= 0) continue;
+            if (!CanSell(item)) continue;
 
-            var go = Instantiate(slotPrefab, slotParent);
-            var ui = go.GetComponent<InventorySlotData>();
-            ui.SetupSlot(item, data.currentItemCount, this);
+
+            for (int i = 0; i < data.currentItemCount; i++)
+            {
+                var go = Instantiate(slotPrefab, slotParent);
+                var ui = go.GetComponent<InventorySlotData>();
+    
+                ui.SetupSlot(item, 1, this); // 슬롯 하나에 아이템 1개
+                ui.originalInventorySlot = data;
+            }
+
         }
-
-        // 소지금 표시
-        int playerMoney = playerData.money;
-        playerMoneyText.text = $"Money: {playerMoney} G";
     }
 
     // (3) 슬롯 클릭 → 다이얼로그 띄우기 + 판매 확정 버튼 활성
     public void OnSlotClicked(InventorySlotData slot)
     {
-        if (slot == null || slot.currentItem == null)
-            return;
-
-        // 대형 아이템 여부 재확인
-        if (slot.currentItem.itemType != ItemType.Large)
-        {
-            Debug.Log("[UsedCarSystem] 대형 아이템만 판매할 수 있습니다.");
-            return;
-        }
+        if (slot == null || slot.currentItem == null) return;
 
         selectedSlot     = slot;
         selectedQuantity = 1;
 
-        if (quantityDialog != null)
-            Destroy(quantityDialog.gameObject);
+        // 기존 다이얼로그 제거
+        // if (quantityDialog != null)
+        // {
+        //     Destroy(quantityDialog.gameObject);
+        //     quantityDialog = null;
+        // }
 
-        var dlgGO = Instantiate(quantityDialogPrefab, quantityDialogParent);
-        quantityDialog = dlgGO.GetComponent<QuantityDialog>();
+        // 다이얼로그 생성
+        // quantityDialogPrefab.SetActive(true);
+        // var dlgGO = Instantiate(quantityDialogPrefab, quantityDialogParent, false);
+        // quantityDialog   = dlgGO.GetComponent<QuantityDialog>();
+        // quantityDialog.Setup(
+            // this,                     // SaleSystem 인스턴스
+            // slot.currentItem,         // 판매할 아이템 정보
+            // slot.currentItemCount     // 최대 선택 가능한 수량
+        // );
 
-        quantityDialog.Setup(
-            this,
-            slot.currentItem,
-            slot.currentItemCount
-        );
-
+        // 판매 확정 버튼 활성화 등…
         sellConfirmButton.interactable = true;
 
     }
 
     public bool CanSell(ItemData item)
     {
-        return item != null && item.itemType == ItemType.Large && item.value > 0;
+        return item != null && item.itemType == ItemType.Large;
     }
 
     public void IncreaseQuantity(int maxQty)
     {
         selectedQuantity = Mathf.Min(selectedQuantity + 1, maxQty);
-        if (quantityDialog != null)
-            quantityDialog.UpdateQuantity(selectedQuantity);
+        // quantityDialog?.UpdateQuantity(selectedQuantity);
     }
 
     public void DecreaseQuantity()
     {
         selectedQuantity = Mathf.Max(selectedQuantity - 1, 1);
-        if (quantityDialog != null)
-            quantityDialog.UpdateQuantity(selectedQuantity);
+        // quantityDialog?.UpdateQuantity(selectedQuantity);
     }
 
     // 판매 버튼 클릭 시 호출
     public void ConfirmSell()
     {
-        if (selectedSlot == null || selectedSlot.currentItem == null)
-        return;
+        Debug.Log("selectedSlot 상태: " + selectedSlot);
+        Debug.Log("currentItem 상태: " + (selectedSlot != null ? selectedSlot.currentItem : "null"));
+        if (selectedSlot == null || selectedSlot.currentItem == null) return;
 
         // 1) 판매 정보 미리 저장
         var itemData  = selectedSlot.currentItem;
-        // var itemName = itemData.itemName;
-        var itemID    = itemData.itemID;
-        int sellCount = selectedQuantity;
-        int gain      = itemData.value * sellCount;
+        int gain      = itemData.value * selectedQuantity;
 
         // 2) 돈 입금
         moneyManager.AddMoney(gain);
 
         // 3) 슬롯에서 수량 차감
-        selectedSlot.RemoveItem(sellCount);
+        selectedSlot.RemoveItem(selectedQuantity);
 
         // 4) 남은 수량이 0이면, 저장된 itemID로 슬롯 자체 삭제
-        if (selectedSlot.currentItemCount <= 0)
-        {
-            inventoryManager.RemoveItemById(itemID);
-            Destroy(selectedSlot.gameObject);
-        }
+        // if (selectedSlot.currentItemCount <= 0)
+        // {
+            GameObject slotObj = selectedSlot.gameObject;
+            inventoryManager.RemoveItemByInstance(selectedSlot.originalInventorySlot);
+            RefreshSellSlots();
+            ResetSaleState();
+            Destroy(slotObj);
+
+        // }
 
         // 5) UI 갱신
         RefreshSellSlots();
-        ResetSaleState(); 
+        ResetSaleState();
 
         // // 6) 다이얼로그 & 상태 초기화
         // if (quantityDialog != null) Destroy(quantityDialog.gameObject);
@@ -186,17 +171,19 @@ public class UsedCarNPC : MonoBehaviour, ISaleSystem
         // // selectedSlot      = null;
         // sellConfirmButton.interactable = false;
 
+        sellUI.SetActive(false);
+
         Debug.Log($"판매 완료: +{gain}G");
         playerMoneyText.text = $"Money: {playerData.money} G";
     }
 
     private void ResetSaleState()
     {
-        if (quantityDialog != null)
-        {
-            Destroy(quantityDialog.gameObject);
-            quantityDialog = null;
-        }
+        // if (quantityDialog != null)
+        // {
+        //     Destroy(quantityDialog.gameObject);
+        //     quantityDialog = null;
+        // }
 
         selectedSlot = null;
         selectedQuantity = 0;

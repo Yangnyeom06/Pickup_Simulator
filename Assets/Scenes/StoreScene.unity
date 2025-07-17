@@ -3983,7 +3983,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!224 &602161308
 RectTransform:
   m_ObjectHideFlags: 0
@@ -11311,8 +11311,6 @@ MonoBehaviour:
   slotPrefab: {fileID: 8628462866040172977, guid: 2f567f8a11968e643a7f2ec0cc6540f8, type: 3}
   slotParent: {fileID: 1372963257}
   sellConfirmButton: {fileID: 8513084355160530218}
-  quantityDialogPrefab: {fileID: 8443440807381985085, guid: a7a1675a18a767e41acb37d482b9e9ca, type: 3}
-  quantityDialogParent: {fileID: 1044270692}
   moneyManager: {fileID: 959090249}
   inventoryManager: {fileID: 1154057377}
   playerMoneyText: {fileID: 26719511}
@@ -15173,6 +15171,30 @@ MonoBehaviour:
           m_StringArgument: 
           m_BoolArgument: 0
         m_CallState: 2
+      - m_Target: {fileID: 251056295}
+        m_TargetAssemblyTypeName: JunkyardNPC, Assembly-CSharp
+        m_MethodName: OnSlotClicked
+        m_Mode: 2
+        m_Arguments:
+          m_ObjectArgument: {fileID: 5510037882810434324}
+          m_ObjectArgumentAssemblyTypeName: InventorySlotData, Assembly-CSharp
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
+      - m_Target: {fileID: 1951375152}
+        m_TargetAssemblyTypeName: UsedCarNPC, Assembly-CSharp
+        m_MethodName: OnSlotClicked
+        m_Mode: 2
+        m_Arguments:
+          m_ObjectArgument: {fileID: 5510037882810434324}
+          m_ObjectArgumentAssemblyTypeName: InventorySlotData, Assembly-CSharp
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
 --- !u!114 &4604380626031015075
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -17339,6 +17361,30 @@ MonoBehaviour:
       m_Calls:
       - m_Target: {fileID: 20943566}
         m_TargetAssemblyTypeName: SaleSystem, Assembly-CSharp
+        m_MethodName: ConfirmSell
+        m_Mode: 1
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
+      - m_Target: {fileID: 251056295}
+        m_TargetAssemblyTypeName: JunkyardNPC, Assembly-CSharp
+        m_MethodName: ConfirmSell
+        m_Mode: 1
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
+      - m_Target: {fileID: 1951375152}
+        m_TargetAssemblyTypeName: UsedCarNPC, Assembly-CSharp
         m_MethodName: ConfirmSell
         m_Mode: 1
         m_Arguments:
