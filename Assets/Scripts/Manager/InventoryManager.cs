@@ -12,6 +12,7 @@ public class InventoryManager : MonoBehaviour
     public IntSlotValueSO inventorySlotCount; // 업그레이드 반영된 슬롯 수
     public GameObject inventory;
     public SaveManager saveManager;
+    public SaleSystem saleSystem;
 
     [SerializeField] public List<InventorySlotData> slotList = new();
     public List<ItemInstanceData> savedItems = new();
@@ -191,4 +192,14 @@ public class InventoryManager : MonoBehaviour
         int removedCount = savedItems.RemoveAll(item => item.itemID == itemId);
         return removed || removedCount > 0;
     }
+
+    public void RemoveItemByInstance(InventorySlotData slot)
+    {
+        if (slotList.Contains(slot))
+        {
+            slotList.Remove(slot);
+            Destroy(slot.gameObject);
+        }
+    }
+
 }

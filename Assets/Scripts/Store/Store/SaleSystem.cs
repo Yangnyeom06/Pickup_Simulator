@@ -60,6 +60,7 @@ public class SaleSystem : MonoBehaviour, ISaleSystem
         // SellUI 열고, Sell 버튼 숨기고, 확정 비활성
         sellUI.SetActive(true);
         sellButton.gameObject.SetActive(false);
+        quantityDialogPrefab.SetActive(false);
         ResetSaleState();
 
         // 슬롯 리스트 갱신
@@ -77,35 +78,30 @@ public class SaleSystem : MonoBehaviour, ISaleSystem
     // (2) 인벤토리 데이터 → SellUI 슬롯으로 복제
     public void RefreshSellSlots()
     {
-        // 참조 누락 방어
-        if (slotParent == null || slotPrefab == null || inventoryManager == null)
-        {
-            Debug.LogError("[SaleSystem] slotParent/slotPrefab/inventoryManager 설정이 필요합니다!");
-            return;
-        }
-
         // 기존 슬롯 전부 삭제
         foreach (Transform child in slotParent)
+        {
             Destroy(child.gameObject);
-
+        }
+            
         // InventoryManager.slotList 순회
         foreach (var data in inventoryManager.slotList)
         {
             var item = data.currentItem;
-            if (item == null || data.currentItemCount <= 0)
-                continue;
 
-            if (!CanSell(item))
-                continue;
+            if (item == null || data.currentItemCount <= 0) continue;
+            if (!CanSell(item)) continue;
 
-            // 슬롯 복제
-            var go = Instantiate(slotPrefab, slotParent);
-            var ui = go.GetComponent<InventorySlotData>();
-            ui.SetupSlot(
-                data.currentItem,
-                data.currentItemCount,
-                this
-            );
+
+            for (int i = 0; i < data.currentItemCount; i++)
+            {
+                var go = Instantiate(slotPrefab, slotParent);
+                var ui = go.GetComponent<InventorySlotData>();
+    
+                ui.SetupSlot(item, 1, this); // 슬롯 하나에 아이템 1개
+                ui.originalInventorySlot = data;
+            }
+
         }
     }
 
@@ -119,13 +115,15 @@ public class SaleSystem : MonoBehaviour, ISaleSystem
 
         // 기존 다이얼로그 제거
         if (quantityDialog != null)
+        {
             Destroy(quantityDialog.gameObject);
+            quantityDialog = null;
+        }
 
         // 다이얼로그 생성
-        var dlgGO = Instantiate(quantityDialogPrefab, quantityDialogParent);
+        quantityDialogPrefab.SetActive(true);
+        var dlgGO = Instantiate(quantityDialogPrefab, quantityDialogParent, false);
         quantityDialog   = dlgGO.GetComponent<QuantityDialog>();
-
-        // ★ 여기서 반드시 ItemData 와 maxQty(=slot.currentItemCount) 두 개를 넘겨줍니다.
         quantityDialog.Setup(
             this,                     // SaleSystem 인스턴스
             slot.currentItem,         // 판매할 아이템 정보
@@ -160,8 +158,9 @@ public class SaleSystem : MonoBehaviour, ISaleSystem
     // (5) 판매 확정 버튼 클릭
     public void ConfirmSell()
     {
-        if (selectedSlot == null || selectedSlot.currentItem == null)
-        return;
+        Debug.Log("selectedSlot 상태: " + selectedSlot);
+        Debug.Log("currentItem 상태: " + (selectedSlot != null ? selectedSlot.currentItem : "null"));
+        if (selectedSlot == null || selectedSlot.currentItem == null || selectedQuantity <= 0) return;
 
         // 1) 판매 정보 미리 저장
         var itemData  = selectedSlot.currentItem;
@@ -176,8 +175,11 @@ public class SaleSystem : MonoBehaviour, ISaleSystem
         // 4) 남은 수량이 0이면, 저장된 itemID로 슬롯 자체 삭제
         if (selectedSlot.currentItemCount <= 0)
         {
-            inventoryManager.RemoveItemById(itemData.itemID);
-            Destroy(selectedSlot.gameObject);
+            GameObject slotObj = selectedSlot.gameObject;
+            inventoryManager.RemoveItemByInstance(selectedSlot.originalInventorySlot);
+            RefreshSellSlots();
+            ResetSaleState();
+            Destroy(slotObj);
 
         }
 
@@ -190,6 +192,9 @@ public class SaleSystem : MonoBehaviour, ISaleSystem
         // quantityDialog    = null;
         // // selectedSlot      = null;
         // sellConfirmButton.interactable = false;
+
+        sellUI.SetActive(false);
+        sellButton.gameObject.SetActive(false);
 
         Debug.Log($"판매 완료: +{gain}G");
         playerMoneyText.text = $"Money: {playerData.money} G";

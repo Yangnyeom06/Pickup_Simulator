@@ -16,7 +16,10 @@ public class QuantityDialog : MonoBehaviour
     // 첫 번째 파라미터를 ISaleSystem, 두 번째 ItemData, 세 번째 int 순으로
     public void Setup(ISaleSystem system, ItemData data, int maxQty)
     {
+        Debug.Log("QuantityDialog.Setup 호출! system=" + system);
+
         saleSystem   = system;
+        Debug.Assert(saleSystem != null, "saleSystem이 null입니다!");
         itemData     = data;
         maxQuantity  = maxQty;
         saleSystem.selectedQuantity = 1;
@@ -44,6 +47,11 @@ public class QuantityDialog : MonoBehaviour
     /// </summary>
     public void OnMinusButtonClicked()
     {
+        if (saleSystem == null)
+        {
+            Debug.LogError("saleSystem이 할당되지 않았어요!");
+        }
+        
         saleSystem.DecreaseQuantity();
         UpdateQuantity(saleSystem.selectedQuantity);
     }

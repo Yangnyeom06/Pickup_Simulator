@@ -28,7 +28,7 @@ public class UsedCarNPC : MonoBehaviour, ISaleSystem
 
     // 현재 선택된 슬롯·수량
     private InventorySlotData selectedSlot;
-    public int selectedQuantity { get; set; }
+    public int selectedQuantity { get; set; } = 0;
     private QuantityDialog    quantityDialog;
 
     [SerializeField] private TMP_Text playerMoneyText;

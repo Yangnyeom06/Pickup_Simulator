@@ -13,6 +13,8 @@ public class InventorySlotData : MonoBehaviour
     public int currentItemCount = 1; // 슬롯에 들어있는 아이템 수량
 
     private ISaleSystem saleSystem;
+
+    public InventorySlotData originalInventorySlot;
     // private JunkyardNPC junkyardNPC;
 
 
@@ -121,9 +123,13 @@ public class InventorySlotData : MonoBehaviour
     /// </summary>
     public void SetupSlot(ItemData item, int count, ISaleSystem system)
     {
-        saleSystem         = system;
+        saleSystem = system;
         currentItem        = item;
         currentItemCount   = count;
+
+        GetComponent<Button>().onClick.RemoveAllListeners();
+        GetComponent<Button>().onClick.AddListener(() => saleSystem.OnSlotClicked(this));
+
 
         // 아이콘 & 수량 UI 갱신
         ItemSlotImage.sprite = item.icon;
