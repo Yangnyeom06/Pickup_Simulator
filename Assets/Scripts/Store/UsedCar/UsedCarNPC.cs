@@ -12,6 +12,9 @@ public class UsedCarNPC : MonoBehaviour, IPointerClickHandler, ISaleSystem
 
     public PlayerData playerData;
 
+    [Header("Inspector 에서 드래그해서 지정할 클릭 대상들")]
+    public List<Transform> clickableTargets;
+
     [Header("UI References")]
     public GameObject sellUI;                   // Sell 모드 전체 패널
     public GameObject slotPrefab;               // 슬롯 프리팹 (InventorySlotData 컴포넌트 포함)
@@ -41,10 +44,23 @@ public class UsedCarNPC : MonoBehaviour, IPointerClickHandler, ISaleSystem
             {
                 if (hit.transform.gameObject == this.gameObject)
                 {
-                    UpdateSellUI();
+                    ShowSellUI();
                 }
             }
         }
+    }
+
+    void ShowSellUI()
+    {
+        sellUI.SetActive(true);
+        sellConfirmButton.interactable = false;
+
+        if (quantityDialog != null)
+        {
+            quantityDialog.gameObject.SetActive(false);
+        }
+
+        UpdateSellUI();
     }
     
     // NPC 클릭 시 호출될 메서드
@@ -163,7 +179,7 @@ public class UsedCarNPC : MonoBehaviour, IPointerClickHandler, ISaleSystem
 
         // 1) 판매 정보 미리 저장
         var itemData  = selectedSlot.currentItem;
-        var itemName = itemData.itemName;
+        // var itemName = itemData.itemName;
         var itemID    = itemData.itemID;
         int sellCount = selectedQuantity;
         int gain      = itemData.value * sellCount;
@@ -177,8 +193,10 @@ public class UsedCarNPC : MonoBehaviour, IPointerClickHandler, ISaleSystem
         // 4) 남은 수량이 0이면, 저장된 itemID로 슬롯 자체 삭제
         if (selectedSlot.currentItemCount <= 0)
         {
-            // inventoryManager.RemoveItemById(itemID);
-            Destroy(slotPrefab.gameObject);
+            inventoryManager.RemoveItemById(itemID);
+            Destroy(selectedSlot.gameObject);
+
+            selectedSlot = null;
         }
 
         // 5) UI 갱신
@@ -187,7 +205,7 @@ public class UsedCarNPC : MonoBehaviour, IPointerClickHandler, ISaleSystem
         // 6) 다이얼로그 & 상태 초기화
         if (quantityDialog != null) Destroy(quantityDialog.gameObject);
         quantityDialog    = null;
-        selectedSlot      = null;
+        // selectedSlot      = null;
         sellConfirmButton.interactable = false;
 
         Debug.Log($"판매 완료: +{gain}G");

@@ -43,10 +43,40 @@ public class ItemRaycast : MonoBehaviour
     {
         CheckItem();
 
-        // 이제 마우스 클릭이 아닌 'E' 키로 아이템 획득
+        // // 이제 마우스 클릭이 아닌 'E' 키로 아이템 획득
+        // if (Input.GetKeyDown(KeyCode.E))
+        // {
+        //     TryPickUp();
+        // }
+
+        if (mIsPickupActive) { TryPickItem(); }
+
+    }
+
+    /// <summary>
+    /// 아이템을 주울 수 있는지 확인한다.
+    /// </summary>
+    private void TryPickItem()
+    {
         if (Input.GetKeyDown(KeyCode.E))
         {
+            
+            {
+                //현재 인벤토리 아이템 가져오기
+                int count = 0;
+
+                for (; count < mInventory.slotList.Count; ++count)
+                {                    //현재 아이템 칸이 null이라면 주울 수 있는 상태
+                    if (mInventory.slotList[count].currentItem == null) { break; }
+                }
+                //모든 칸이 null이 아니고, 중첩이 불가능하면 주울 수 없음
+                if (count == mInventory.slotList.Count) { return; }
+                //아이템 줍는 효과음 재생
+                
+            }
+
             TryPickUp();
+            ItemInfoDisappear();
         }
     }
 
@@ -59,6 +89,8 @@ public class ItemRaycast : MonoBehaviour
     private void CheckItem()
 
     {
+        Debug.DrawRay(mRayCamera.transform.position, mRayCamera.transform.forward * mRayDistance, Color.red);
+
         if (Physics.Raycast(mRayCamera.transform.position, mRayCamera.transform.forward, out mHit, mRayDistance))
         {
             //Debug.Log("raycast 확인");
@@ -137,19 +169,29 @@ public class ItemRaycast : MonoBehaviour
     /// </summary>
     public void TryPickUp()
     {
-        if (mIsPickupActive)
+        Debug.Log("mIsPickupActive: " + mIsPickupActive);
+        Debug.Log("mCurrentItem is null? " + (mCurrentItem == null));
+
+
+        if (!mIsPickupActive || mCurrentItem == null) 
         {
-            Debug.Log("[Pickup] TryPickUp 실행됨, 아이템: " + mCurrentItem?.itemData?.itemName);
-            mInventory.AddItem(mCurrentItem.itemData);
-            Destroy(mCurrentItem.gameObject);
-            
-            if (saleSystem != null && saleSystem.sellUI.activeSelf)
-            {
-                saleSystem.RefreshSellSlots();
-                Debug.Log("[Pickup] RefreshSellSlots 호출됨");
-            }
-            ItemInfoDisappear(); 
+            Debug.Log("[Pickup] 아이템 습득 불가능 - 활성화되지 않았거나 아이템이 없음");
+            return;
         }
+
+        Debug.Log("[Pickup] TryPickUp 실행됨, 아이템: " + mCurrentItem?.itemData?.itemName);
+
+        mInventory.AddItem(mCurrentItem.itemData);
+        Destroy(mCurrentItem.gameObject);
+
+        // 판매 시스템에 아이템 습득 알림
+        if (saleSystem != null)
+        {
+            saleSystem.OnItemPickedUp();
+        }
+
+        // 아이템 정보 UI 비활성화
+        ItemInfoDisappear(); 
     }
 }
 

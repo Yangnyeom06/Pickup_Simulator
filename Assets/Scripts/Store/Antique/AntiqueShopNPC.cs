@@ -12,6 +12,9 @@ public class AntiqueShopNPC : MonoBehaviour, IPointerClickHandler, ISaleSystem
 
     public PlayerData playerData;
 
+    [Header("Inspector 에서 드래그해서 지정할 클릭 대상들")]
+    public List<Transform> clickableTargets;
+
     [Header("UI References")]
     public GameObject sellUI;                   // Sell 모드 전체 패널
     public GameObject slotPrefab;               // 슬롯 프리팹 (InventorySlotData 컴포넌트 포함)

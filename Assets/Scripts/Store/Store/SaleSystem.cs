@@ -37,9 +37,18 @@ public class SaleSystem : MonoBehaviour, ISaleSystem
         sellUI.SetActive(false);
     }
 
-    /// <summary>
-    /// (1) Sell 버튼 클릭
-    /// </summary>
+    // 아이템 습득 시 호출되는 메서드
+    public void OnItemPickedUp()
+    {
+        // 판매 UI가 활성화된 경우에만 슬롯 갱신
+        if (sellUI != null && sellUI.activeSelf)
+        {
+            RefreshSellSlots();
+            Debug.Log("[SaleSystem] 아이템 습득 감지 - 판매 슬롯 갱신됨");
+        }
+    }
+
+    // Sell 버튼 클릭
     public void OnSellButtonClicked()
     {
         // SellUI 열고, Sell 버튼 숨기고, 확정 비활성
@@ -51,9 +60,7 @@ public class SaleSystem : MonoBehaviour, ISaleSystem
         RefreshSellSlots();
     }
 
-    /// <summary>
-    /// (2) 인벤토리 데이터 → SellUI 슬롯으로 복제
-    /// </summary>
+    // (2) 인벤토리 데이터 → SellUI 슬롯으로 복제
     public void RefreshSellSlots()
     {
         // 참조 누락 방어
@@ -84,9 +91,7 @@ public class SaleSystem : MonoBehaviour, ISaleSystem
         }
     }
 
-    /// <summary>
-    /// (3) 슬롯 클릭 → 다이얼로그 띄우기 + 판매 확정 버튼 활성
-    /// </summary>
+    // (3) 슬롯 클릭 → 다이얼로그 띄우기 + 판매 확정 버튼 활성
     public void OnSlotClicked(InventorySlotData slot)
     {
         if (slot == null || slot.currentItem == null) return;
@@ -113,9 +118,7 @@ public class SaleSystem : MonoBehaviour, ISaleSystem
         sellConfirmButton.interactable = true;
     }
 
-    /// <summary>
-    /// (4) 수량 + 버튼
-    /// </summary>
+    // (4) 수량 + 버튼>
     public void IncreaseQuantity(int maxQuantity)
     {
         selectedQuantity = Mathf.Min(selectedQuantity + 1, maxQuantity);
@@ -123,9 +126,7 @@ public class SaleSystem : MonoBehaviour, ISaleSystem
             quantityDialog.UpdateQuantity(selectedQuantity);
     }
 
-    /// <summary>
-    /// (4) 수량 – 버튼
-    /// </summary>
+    // (4) 수량 – 버튼
     public void DecreaseQuantity()
     {
         selectedQuantity = Mathf.Max(selectedQuantity - 1, 1);
@@ -133,9 +134,7 @@ public class SaleSystem : MonoBehaviour, ISaleSystem
             quantityDialog.UpdateQuantity(selectedQuantity);
     }
 
-    /// <summary>
-    /// (5) 판매 확정 버튼 클릭
-    /// </summary>
+    // (5) 판매 확정 버튼 클릭
     public void ConfirmSell()
     {
         if (selectedSlot == null || selectedSlot.currentItem == null)
