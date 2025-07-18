@@ -14,6 +14,7 @@ public class InventoryManager : MonoBehaviour
     public SaveManager saveManager;
     [SerializeField] public List<InventorySlotData> slotList = new();
     public List<ItemInstanceData> savedItems = new();
+    public List<SnackInstanceData> savedSnacks = new();
 
     private void Awake()
     {
@@ -79,14 +80,35 @@ public class InventoryManager : MonoBehaviour
         {
             if (slotList[i].currentItem == null) // 빈 슬롯 발견
             {
-                itemData.slotNum = i; // 슬롯 인덱스를 그대로 사용
-                slotList[i].SetItem(itemData);
-                savedItems.Add(new ItemInstanceData(itemData.itemID, itemData.itemName, itemData.icon, itemData.description, itemData.itemType, itemData.dirty, itemData.value, itemData.slotNum));
+                if (slotList[i].currentItem == itemData) 
+                {
+                    itemData.slotNum = i; // 슬롯 인덱스를 그대로 사용
+                    slotList[i].SetItem(itemData);
+                    savedItems.Add(new ItemInstanceData(itemData.itemID, itemData.itemName, itemData.icon, itemData.description, itemData.itemType, itemData.dirty, itemData.value, itemData.slotNum));
+                }
+                return true; // 아이템 추가 성공
+            }
+
+        }
+        Debug.Log("인벤토리가 가득 찼습니다!");
+        return false; // 실패
+    }
+
+    public bool AddSnack(SnackData snackData)
+    {
+        for (int i = 0; i < slotList.Count; i++)
+        {
+            if (slotList[i].currentSnack == null) // 빈 슬롯 발견
+            {
+                if (slotList[i].currentSnack == snackData)
+                {
+                    snackData.slotNum = i;
+                    slotList[i].SetSnack(snackData);
+                    savedSnacks.Add(new SnackInstanceData(snackData.itemID, snackData.itemName, snackData.icon, snackData.description, snackData.itemStat, snackData.slotNum));
+                }
                 return true; // 아이템 추가 성공
             }
         }
-
-
         Debug.Log("인벤토리가 가득 찼습니다!");
         return false; // 실패
     }
@@ -107,6 +129,17 @@ public class InventoryManager : MonoBehaviour
             {
                 Debug.LogWarning($"이미 {sItem.slotNum} 번 슬롯에 아이템이 있습니다.");
             }
+        }
+    }
+
+    public void RemoveSnackBySlot(InventorySlotData slot)
+    {
+        if (slot != null && slot.currentSnack != null)
+        {
+            // savedSnacks 리스트에서 제거
+            savedSnacks.RemoveAll(snack => snack.slotNum == slotList.IndexOf(slot));
+
+            Debug.Log($"{slot.currentSnack.itemName} 간식을 인벤토리에서 제거했습니다.");
         }
     }
 

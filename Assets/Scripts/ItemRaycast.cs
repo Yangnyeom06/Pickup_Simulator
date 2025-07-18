@@ -33,6 +33,7 @@ public class ItemRaycast : MonoBehaviour
     private bool mIsPickupActive = false;  //아이템 습득이 가능한가?
 
     private Item mCurrentItem; //활성화시 현재 등록된 아이템
+    private Snack mCurrentSnack;
 
     [Header("레이캐스트를 쏠 카메라")]
     [SerializeField] private Camera mRayCamera; //레이를 쏠 카메라 (메인카메라)
@@ -173,6 +174,7 @@ public class ItemRaycast : MonoBehaviour
 
             
                 mInventory.AddItem(mCurrentItem.itemData);
+                mInventory.AddSnack(mCurrentSnack.snackData);
                 Destroy(mCurrentItem.gameObject);
             
 
