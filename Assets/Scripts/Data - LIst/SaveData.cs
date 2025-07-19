@@ -8,6 +8,5 @@ public class SaveData
     public PlayerData playerData;
     public InventoryData inventoryData;
     public GameDate gameData;
-    public List<ObjectSaveData> objects = new();
     public List<UISaveData> uiObjects = new();
 }

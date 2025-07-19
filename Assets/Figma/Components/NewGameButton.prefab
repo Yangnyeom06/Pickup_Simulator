@@ -10,7 +10,6 @@ GameObject:
   m_Component:
   - component: {fileID: 5503254473590904912}
   - component: {fileID: 8711831858855564801}
-  - component: {fileID: 7145515810509269594}
   - component: {fileID: 2219526650528378428}
   m_Layer: 0
   m_Name: NewGameButton
@@ -60,21 +59,6 @@ MonoBehaviour:
   m_FlexibleWidth: -1
   m_FlexibleHeight: -1
   m_LayoutPriority: 1
---- !u!114 &7145515810509269594
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 4427157172432676235}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: cfabb0440166ab443bba8876756fdfa9, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  m_EffectColor: {r: 0, g: 0, b: 0, a: 0.25}
-  m_EffectDistance: {x: 4, y: -4}
-  m_UseGraphicAlpha: 1
 --- !u!114 &2219526650528378428
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -217,7 +201,7 @@ MonoBehaviour:
   m_PixelsPerUnitMultiplier: 1
   m_Shape: 0
   m_StrokeColor: {r: 1, g: 1, b: 1, a: 1}
-  m_FillColor: {r: 0.972549, g: 0.9490196, b: 0.9490196, a: 1}
+  m_FillColor: {r: 1, g: 1, b: 1, a: 1}
   m_StrokeWidth: 0
   m_CornerRadius: {x: 20, y: 20, z: 20, w: 20}
   m_StrokePosition: 0
@@ -298,7 +282,7 @@ RectTransform:
   m_AnchorMin: {x: 0, y: 0}
   m_AnchorMax: {x: 1, y: 1}
   m_AnchoredPosition: {x: 160, y: -31}
-  m_SizeDelta: {x: -320, y: -61}
+  m_SizeDelta: {x: 0, y: 0}
   m_Pivot: {x: 0, y: 1}
 --- !u!114 &8805893788090870250
 MonoBehaviour:
@@ -313,10 +297,10 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   m_IgnoreLayout: 0
-  m_MinWidth: 153
-  m_MinHeight: 61
-  m_PreferredWidth: 153
-  m_PreferredHeight: 61
+  m_MinWidth: 145
+  m_MinHeight: 63
+  m_PreferredWidth: 145
+  m_PreferredHeight: 63
   m_FlexibleWidth: -1
   m_FlexibleHeight: -1
   m_LayoutPriority: 1
@@ -350,14 +334,14 @@ MonoBehaviour:
       m_Calls: []
   m_text: "\uC0C8 \uAC8C\uC784"
   m_isRightToLeft: 0
-  m_fontAsset: {fileID: 11400000, guid: a68a2b692a487544da75e5c011ac5457, type: 2}
-  m_sharedMaterial: {fileID: -3880939668730580069, guid: a68a2b692a487544da75e5c011ac5457, type: 2}
+  m_fontAsset: {fileID: 11400000, guid: 2f5c1bdf39b7d04409e648051cce227d, type: 2}
+  m_sharedMaterial: {fileID: 5357344739448137100, guid: 2f5c1bdf39b7d04409e648051cce227d, type: 2}
   m_fontSharedMaterials: []
   m_fontMaterial: {fileID: 0}
   m_fontMaterials: []
   m_fontColor32:
     serializedVersion: 2
-    rgba: 4294967295
+    rgba: 4278190080
   m_fontColor: {r: 0, g: 0, b: 0, a: 1}
   m_enableVertexGradient: 0
   m_colorMode: 3
@@ -370,7 +354,7 @@ MonoBehaviour:
   m_spriteAsset: {fileID: 0}
   m_tintAllSprites: 0
   m_StyleSheet: {fileID: 0}
-  m_TextStyleHashCode: 0
+  m_TextStyleHashCode: -1183493901
   m_overrideHtmlColors: 0
   m_faceColor:
     serializedVersion: 2

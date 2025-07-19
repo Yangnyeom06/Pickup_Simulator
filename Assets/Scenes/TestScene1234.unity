@@ -7933,6 +7933,37 @@ MonoBehaviour:
   m_FlexibleWidth: -1
   m_FlexibleHeight: -1
   m_LayoutPriority: 1
+--- !u!1 &752652118
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 752652119}
+  m_Layer: 8
+  m_Name: Hand
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &752652119
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 752652118}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: -0.6427876, w: 0.7660445}
+  m_LocalPosition: {x: 0, y: -0.7, z: 0.85}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 1680475513}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: -80}
 --- !u!1 &756184443
 GameObject:
   m_ObjectHideFlags: 0
@@ -11438,13 +11469,14 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   contentParent: {fileID: 1300445949}
-  slotPrefab: {fileID: 5154870395727952965, guid: b424eccc76d56124fa7fd7c948db4ec2, type: 3}
+  slotPrefab: {fileID: 5154870395727952965, guid: 54444e5254e2b244a92849c2a3953c78, type: 3}
   inventorySlotCount: {fileID: 11400000, guid: 1b5b8cf178f339b4cbe4839519847a90, type: 2}
   inventory: {fileID: 4157086624461975529}
   saveManager: {fileID: 2051972929}
   asdf: {fileID: 329279977}
   slotList: []
   savedItems: []
+  savedSnacks: []
 --- !u!4 &1154057378
 Transform:
   m_ObjectHideFlags: 0
@@ -14239,6 +14271,7 @@ MonoBehaviour:
   explainText: {fileID: 510540011}
   followMouseImage: {fileID: 736668332}
   mRayDistance: 5
+  mHoldPoint: {fileID: 752652119}
   mRayCamera: {fileID: 1680475512}
   mInventory: {fileID: 1154057377}
 --- !u!1 &1393387851
@@ -16500,7 +16533,8 @@ Transform:
   m_LocalPosition: {x: 0, y: 0.5, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
-  m_Children: []
+  m_Children:
+  - {fileID: 752652119}
   m_Father: {fileID: 1367856119}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &1685827379
@@ -20237,7 +20271,6 @@ MonoBehaviour:
       sellItemCounts: 0
       todayGetMoney: 0
       todaySpendMoney: 0
-    objects: []
     uiObjects: []
   player: {fileID: 0}
   inventory: {fileID: 1154057377}

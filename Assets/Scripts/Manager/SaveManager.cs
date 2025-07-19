@@ -44,7 +44,6 @@ public class SaveManager : MonoBehaviour
         currentSaveData.gameData = GameDate.FromData(asdf);
 
         // 오브젝트와 UI 저장
-        currentSaveData.objects.Clear();
         currentSaveData.uiObjects.Clear();
 
         foreach (var u in Resources.FindObjectsOfTypeAll<Item>())
@@ -57,10 +56,7 @@ public class SaveManager : MonoBehaviour
             {
                 currentSaveData.uiObjects.Add(new UISaveData(go));
             }
-            else
-            {
-                currentSaveData.objects.Add(new ObjectSaveData(go));
-            }
+
         }
 
         string json = JsonUtility.ToJson(currentSaveData, true);
@@ -79,9 +75,6 @@ public class SaveManager : MonoBehaviour
             currentSaveData.playerData.ApplyToPlayer(player);
             currentSaveData.inventoryData.ApplyToInventory(inventory);
             currentSaveData.gameData.ApplyToGame(asdf);
-
-            foreach (var objData in currentSaveData.objects)
-                objData.Apply();
 
             foreach (var uiData in currentSaveData.uiObjects)
                 uiData.Apply();
