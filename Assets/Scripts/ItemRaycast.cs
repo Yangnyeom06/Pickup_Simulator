@@ -25,7 +25,7 @@ public class ItemRaycast : MonoBehaviour
     /// <summary>
     /// 레이캐스트 거리
     /// </summary>
-    [SerializeField] private float mRayDistance;
+    [SerializeField] public float mRayDistance;
 
     private bool mIsPickupActive = false;  //아이템 습득이 가능한가?
 
@@ -39,7 +39,7 @@ public class ItemRaycast : MonoBehaviour
     private bool hand;
 
     [Header("레이캐스트를 쏠 카메라")]
-    [SerializeField] private Camera mRayCamera; //레이를 쏠 카메라 (메인카메라)
+    [SerializeField] public Camera mRayCamera; //레이를 쏠 카메라 (메인카메라)
 
     [SerializeField] private InventoryManager mInventory; //인벤토리 메인
     // [SerializeField] private ItemActionManager mItemActionCustomFunc; //아이템 상호작용 커스텀 함수 매니저 (이 글에서는 설명 X)

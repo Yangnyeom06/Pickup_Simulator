@@ -17,9 +17,10 @@ public class asdfManager : MonoBehaviour
     public int todayGetMoney;
     public int todaySpendMoney;
 
-    [Header ("Don't Saved Data")]
+    [Header("Don't Saved Data")]
     public GameObject player;
     public GameObject timer;
+    public GameObject note;
     public PlayerManager playerManager;
     public TextMeshProUGUI today;
     public float rotationSpeed;
@@ -31,7 +32,10 @@ public class asdfManager : MonoBehaviour
     public TextMeshProUGUI todaySpendMoneyText;
     public TextMeshProUGUI ownMoney;
     private bool isTimerRunning = true;
-    
+    public ItemRaycast itemRaycast;
+    bool noteActive = false;
+    public FadeInOut FadeInout;
+
     void Start()
     {
         today.text = $"{month}/{day}";
@@ -50,6 +54,20 @@ public class asdfManager : MonoBehaviour
                 isTimerRunning = false;
                 timerTime = 0f;
                 Debug.Log("끝");
+            }
+        }
+        if (noteActive == true)
+        {
+            if (Input.GetKeyDown(KeyCode.E))
+            {
+                RaycastHit hit;
+                if (Physics.Raycast(itemRaycast.mRayCamera.transform.position, itemRaycast.mRayCamera.transform.forward, out hit, itemRaycast.mRayDistance))
+                {
+                    if (hit.transform.gameObject == note.gameObject)
+                    {
+                        Open();
+                    }
+                }
             }
         }
     }
@@ -81,6 +99,11 @@ public class asdfManager : MonoBehaviour
     public void StartDay()
     {
         player.transform.position = new Vector3(0, 2, 0);
+        playerManager.healthLevel.current = playerManager.healthLevel.max;
+        playerManager.staminaLevel.current = playerManager.staminaLevel.max;
+        playerManager.StartHealthLoss();
+        noteActive = false;
+        note.SetActive(false);
         AdvanceTime();
         pickUpItemCounts = 0;
         sellItemCounts = 0;
@@ -90,6 +113,16 @@ public class asdfManager : MonoBehaviour
         angles.z = 0f;
         timer.transform.eulerAngles = angles;
         timerTime = 1000000f;
+    }
+
+    public void End()
+    {
+        FadeInout.StartFadeInAndOut(() =>
+        {
+            player.transform.position = note.transform.position;
+            noteActive = true;
+            note.SetActive(true);
+        });
     }
 
     public void Settle()

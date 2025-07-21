@@ -4,7 +4,7 @@ using System.Collections.Generic;
 using UnityEngine.UI;
 using TMPro;
 
-public class JunkyardNPC : MonoBehaviour, ISaleSystem
+public class UsedCarNPC : MonoBehaviour, ISaleSystem
 {
     public Camera mainCamera;
     public float rayDistance = 100f;
@@ -37,9 +37,8 @@ public class JunkyardNPC : MonoBehaviour, ISaleSystem
     {
         if (Input.GetKeyDown(KeyCode.E))
         {
-            Ray ray = mainCamera.ScreenPointToRay(Input.mousePosition);
             RaycastHit hit;
-            if (Physics.Raycast(ray, out hit, rayDistance))
+            if (Physics.Raycast(mainCamera.transform.position, mainCamera.transform.forward ,out hit, rayDistance))
             {
                 if (hit.transform.gameObject == this.gameObject)
                 {
@@ -55,7 +54,6 @@ public class JunkyardNPC : MonoBehaviour, ISaleSystem
         ResetSaleState();
         RefreshSellSlots();
     }
-
 
     /// (2) 인벤토리 데이터 → SellUI 슬롯으로 복제
     public void RefreshSellSlots()
@@ -92,32 +90,27 @@ public class JunkyardNPC : MonoBehaviour, ISaleSystem
     {
         if (slot == null || slot.currentItem == null) return;
 
-        // 대형 아이템 여부 재확인
-        if (slot.currentItem.itemType != ItemType.Large)
-        {
-            Debug.Log("[JunkyardSystem] 대형 아이템만 판매할 수 있습니다.");
-            return;
-        }
-
         // selectedSlot     = slot;
         // selectedQuantity = 1;
 
+        // 기존 다이얼로그 제거
         // if (quantityDialog != null)
         // {
         //     Destroy(quantityDialog.gameObject);
         //     quantityDialog = null;
         // }
 
+        // 다이얼로그 생성
         // quantityDialogPrefab.SetActive(true);
         // var dlgGO = Instantiate(quantityDialogPrefab, quantityDialogParent, false);
-        // quantityDialog = dlgGO.GetComponent<QuantityDialog>();
-
+        // quantityDialog   = dlgGO.GetComponent<QuantityDialog>();
         // quantityDialog.Setup(
-        //     this,
-        //     slot.currentItem,
-        //     slot.currentItemCount
+            // this,                     // SaleSystem 인스턴스
+            // slot.currentItem,         // 판매할 아이템 정보
+            // slot.currentItemCount     // 최대 선택 가능한 수량
         // );
 
+        // 판매 확정 버튼 활성화 등…
         sellConfirmButton.interactable = true;
 
     }
@@ -130,13 +123,13 @@ public class JunkyardNPC : MonoBehaviour, ISaleSystem
     // public void IncreaseQuantity(int maxQty)
     // {
     //     selectedQuantity = Mathf.Min(selectedQuantity + 1, maxQty);
-    //     quantityDialog?.UpdateQuantity(selectedQuantity);
+    //     // quantityDialog?.UpdateQuantity(selectedQuantity);
     // }
 
     // public void DecreaseQuantity()
     // {
     //     selectedQuantity = Mathf.Max(selectedQuantity - 1, 1);
-    //     quantityDialog?.UpdateQuantity(selectedQuantity);
+    //     // quantityDialog?.UpdateQuantity(selectedQuantity);
     // }
 
     // 판매 버튼 클릭 시 호출
@@ -170,12 +163,12 @@ public class JunkyardNPC : MonoBehaviour, ISaleSystem
 
         // 5) UI 갱신
         RefreshSellSlots();
-        ResetSaleState(); 
+        ResetSaleState();
 
         // // 6) 다이얼로그 & 상태 초기화
         // if (quantityDialog != null) Destroy(quantityDialog.gameObject);
         // quantityDialog    = null;
-        // selectedSlot      = null;
+        // // selectedSlot      = null;
         // sellConfirmButton.interactable = false;
 
         sellUI.SetActive(false);
