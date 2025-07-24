@@ -89,6 +89,8 @@ public class PlayerController : MonoBehaviour {
         CameraRotation();
         CharacterRotation();
 
+        Interact();
+
 	}
 
     // 앉기 시도
@@ -245,5 +247,32 @@ public class PlayerController : MonoBehaviour {
 
         theCamera.transform.localEulerAngles = new Vector3(currentCameraRotationX, 0f, 0f);
     }
+
+    private void Interact()
+    {
+        if (Input.GetKeyDown(KeyCode.E))
+        {
+            Ray ray = theCamera.ScreenPointToRay(new Vector3(Screen.width / 2, Screen.height / 2));
+            if (Physics.Raycast(ray, out RaycastHit hit, 3f))
+            {
+                // 양쪽 문
+                DoorInteract doubleDoor = hit.collider.GetComponent<DoorInteract>();
+                if (doubleDoor != null)
+                {
+                    doubleDoor.Interact();
+                    return;
+                }
+
+                // 한쪽 문
+                SingleDoorInteract singleDoor = hit.collider.GetComponent<SingleDoorInteract>();
+                if (singleDoor != null)
+                {
+                    singleDoor.Interact();
+                    return;
+                }
+            }
+        }
+    }
+
 
 }
