@@ -6,89 +6,62 @@ using System;
 
 public class UpGradeManager : MonoBehaviour
 {
-    public PlayerStats playerStats;
+    public static UpGradeManager Instance { get; private set; }
+    public PlayerManager player;
     public SaveManager saveManager;
     public InventoryManager inventory;
-    public TextMeshProUGUI healthLevelText;
-    public TextMeshProUGUI staminaLevelText;
-    public TextMeshProUGUI speedLevelText;
-    public TextMeshProUGUI inventoryLevelText;
-    public TextMeshProUGUI mapLevelText;
     public GameObject UpGradeGround;
 
-    // (스탯, 텍스트, 콜백 함수)를 저장하는 리스트
-    private List<(IntValueSO stat, TextMeshProUGUI text, Action<int> callback)> bindings = new();
 
-    void Start()
+
+    private void Start()
     {
-        // 업그레이드 할때마다 TextUI를 갱신해 주기 위해서 호출
-        TextUpdate(playerStats.healthLevel, healthLevelText);
-        TextUpdate(playerStats.staminaLevel, staminaLevelText);
-        TextUpdate(playerStats.speedLevel, speedLevelText);
-        TextUpdate(playerStats.inventoryLevel, inventoryLevelText);
-        TextUpdate(playerStats.mapLevel, mapLevelText);
-    }
-
-    void TextUpdate(IntValueSO Level, TextMeshProUGUI LevelText) // TextUI 갱신용 함수
-    {
-        Action<int> callback = newValue => 
-        {
-            LevelText.text = newValue.ToString();
-            Debug.Log($"{LevelText.name}Level 바뀜: {LevelText.text}");
-        };
-        Level.Register(callback); // 변경 감지 등록
-        LevelText.text = Level.Value.ToString(); // 초기 값 설정
-        bindings.Add((Level, LevelText, callback)); // 해제할 수 있도록 저장
-    }
-
-    void OnDestroy()
-    {
-        foreach (var (stat, _, callback) in bindings)
-        {
-            stat.Unregister(callback); // 콜백 해제
-        }
-    }
-
-
-    public void HealthUpGrade() // 체력 업그레이드
-    {
-        if (playerStats.healthLevel.Value < 10) {
-            playerStats.healthLevel.Value += 1;
-        }
         
+    }
+
+
+    public void HealthUpGrade(int level) // 체력 업그레이드
+    {
+        if (player.healthLevel.Value < player.healthLevel.maxLevel)
+        {
+            player.healthLevel.Value += level;
+            player.healthLevel.max += 10;
+            player.healthLevel.current += 10;
+        }
     }
 
     public void StaminaUpgrade()  // 스태미나 업그레이드
     {
-        if (playerStats.staminaLevel.Value < 10) {
-            playerStats.staminaLevel.Value += 1;
+        if (player.staminaLevel.Value < player.staminaLevel.maxLevel)
+        {
+            player.staminaLevel.Value += 1;
+            player.staminaLevel.max += 10;
+            player.staminaLevel.current += 10;
         }
-        
     }
     
     public void SpeedUpgrade() // 이동 속도 업그레이드
     {
-        if (playerStats.speedLevel.Value < 10) {
-            playerStats.speedLevel.Value += 1;
+        if (player.speedLevel.Value < player.speedLevel.maxLevel)
+        {
+            player.speedLevel.Value += 1;
+            player.speedLevel.current += 1;
         }
-        
     }
 
     public void InventoryUpgrade() // 가방 업그레이드
     {
-        if (playerStats.inventoryLevel.Value < 10) {
-            playerStats.inventoryLevel.Value += 1;
-            inventory.inventorySlotCount.Value += 4;
+        if (player.inventoryLevel.Value < player.inventoryLevel.maxLevel) {
+            player.inventoryLevel.Value += 1;
+            inventory.inventorySlotCount.Value += inventory.inventorySlotCount.upgradeCount;
         }
-        
     }
 
     public void MapUpgrade() // 지도 업그레이드
     {
-        if (playerStats.mapLevel.Value < 10) {
-            playerStats.mapLevel.Value += 1;
+        if (player.mapLevel.Value < player.mapLevel.maxLevel) {
+            player.mapLevel.Value += 1;
         }
-        
     }
 
     public void Open() // UpGradeUI 열기
