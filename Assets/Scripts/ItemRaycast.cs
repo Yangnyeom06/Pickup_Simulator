@@ -41,8 +41,7 @@ public class ItemRaycast : MonoBehaviour
     [Header("레이캐스트를 쏠 카메라")]
     [SerializeField] public Camera mRayCamera; //레이를 쏠 카메라 (메인카메라)
 
-    [SerializeField] public InventoryManager mInventory;
-    [SerializeField] public SaleSystem saleSystem;
+    [SerializeField] private InventoryManager mInventory; //인벤토리 메인
     // [SerializeField] private ItemActionManager mItemActionCustomFunc; //아이템 상호작용 커스텀 함수 매니저 (이 글에서는 설명 X)
     // [SerializeField] private ItemRaycastInfoText mItemRaycastInfoText; //아이템 상호작용 가능시 보여질 텍스트 매니저 (이 글에서는 설명 X)
     

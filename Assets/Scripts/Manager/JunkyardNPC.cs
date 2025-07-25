@@ -37,8 +37,9 @@ public class JunkyardNPC : MonoBehaviour, ISaleSystem
     {
         if (Input.GetKeyDown(KeyCode.E))
         {
+            Ray ray = mainCamera.ScreenPointToRay(Input.mousePosition);
             RaycastHit hit;
-            if (Physics.Raycast(mainCamera.transform.position, mainCamera.transform.forward ,out hit, rayDistance))
+            if (Physics.Raycast(ray, out hit, rayDistance))
             {
                 if (hit.transform.gameObject == this.gameObject)
                 {

@@ -34,8 +34,9 @@ public class StoreNPC : MonoBehaviour
     {
         if (Input.GetKeyDown(KeyCode.E))
         {
+            Ray ray = mainCamera.ScreenPointToRay(Input.mousePosition);
             RaycastHit hit;
-            if (Physics.Raycast(mainCamera.transform.position, mainCamera.transform.forward ,out hit, rayDistance))
+            if (Physics.Raycast(ray, out hit, rayDistance))
             {
                 if (hit.transform.gameObject == this.gameObject)
                 {
@@ -51,7 +52,7 @@ public class StoreNPC : MonoBehaviour
         sellButton.gameObject.SetActive(true);
     }
 
-    public void HideButtons()
+    void HideButtons()
     {
         buyButton.gameObject.SetActive(false);
         sellButton.gameObject.SetActive(false);
