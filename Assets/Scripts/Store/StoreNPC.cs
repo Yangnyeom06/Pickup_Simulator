@@ -43,6 +43,8 @@ public class StoreNPC : MonoBehaviour
                 }
             }
         }
+
+        CancelBtn();
     }
 
     void ShowButtons()
@@ -75,6 +77,15 @@ public class StoreNPC : MonoBehaviour
             saleSystem.sellUI.SetActive(true);
         }
         HideButtons();
+    }
+
+    public void CancelBtn()
+    {
+        if (Input.GetKeyDown(KeyCode.Escape))
+        {
+            buyButton.gameObject.SetActive(false);
+            sellButton.gameObject.SetActive(false); 
+        }
     }
 }
 
