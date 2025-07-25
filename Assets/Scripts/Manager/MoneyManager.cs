@@ -9,6 +9,7 @@ public class MoneyManager : MonoBehaviour
 {
     public static MoneyManager Instance { get; private set; }
     public PlayerManager player;
+    public asdfManager asdf;
     [SerializeField] private List<TextMeshProUGUI> moneyTexts = new();
 
     private void Awake()
@@ -25,6 +26,7 @@ public class MoneyManager : MonoBehaviour
     public void AddMoney(int amount)
     {
         player.money += amount;
+        asdf.todayGetMoney += amount;
         UpdateMoneyUI();
     }
 
@@ -33,6 +35,7 @@ public class MoneyManager : MonoBehaviour
         if (player.money >= amount)
         {
             player.money -= amount;
+            asdf.todaySpendMoney -= amount;
             UpdateMoneyUI();
         }
         else

@@ -1,19 +1,17 @@
 using UnityEngine;
 using System.IO;
 using UnityEngine.SceneManagement;
-
+using System.Collections.Generic;
 
 public class SaveManager : MonoBehaviour
 {
-    // SaveManager의 유일한 인스턴스를 보장
     public static SaveManager Instance { get; private set; }
 
-    // 현재 게임 데이터를 담을 SaveData 객체
     public SaveData currentSaveData = new();
 
-    // 필요한 게임 데이터들
     public PlayerManager player;
     public InventoryManager inventory;
+    public asdfManager asdf;
 
     public int slotId;
 
@@ -22,11 +20,11 @@ public class SaveManager : MonoBehaviour
         if (Instance == null)
         {
             Instance = this;
-            DontDestroyOnLoad(gameObject); // 씬이 변경돼도 이 오브젝트는 유지
+            DontDestroyOnLoad(gameObject);
         }
         else
         {
-            Destroy(gameObject); // 이미 인스턴스가 있으면 새로 생성된 오브젝트는 파괴
+            Destroy(gameObject);
         }
     }
 
@@ -39,36 +37,47 @@ public class SaveManager : MonoBehaviour
         return Application.persistentDataPath + $"/gameSave_slot_{slotId}.json";
     }
 
-    // 게임 데이터를 JSON으로 저장하는 함수
     public void SaveGame(int slotId)
     {
-        // PlayerStats의 최신 상태를 currentSaveData에 반영
         currentSaveData.playerData = PlayerData.FromData(player);
         currentSaveData.inventoryData = InventoryData.FromData(inventory);
+        currentSaveData.gameData = GameDate.FromData(asdf);
 
-        // currentSaveData를 JSON 형식으로 변환
+        // 오브젝트와 UI 저장
+        currentSaveData.uiObjects.Clear();
+
+        foreach (var u in Resources.FindObjectsOfTypeAll<Item>())
+        {
+            if (!u.gameObject.scene.IsValid()) continue;
+
+            GameObject go = u.gameObject;
+
+            if (go.GetComponent<UnityEngine.UI.Text>() || go.GetComponent<TMPro.TMP_Text>() || go.GetComponent<UnityEngine.UI.Slider>() || go.GetComponent<UnityEngine.UI.Image>())
+            {
+                currentSaveData.uiObjects.Add(new UISaveData(go));
+            }
+
+        }
+
         string json = JsonUtility.ToJson(currentSaveData, true);
-
-        // 파일로 저장
         File.WriteAllText(GetSavePath(slotId), json);
         Debug.Log($"세이브 완료 (슬롯 {slotId})");
     }
 
-    // 게임 데이터를 JSON에서 불러오는 함수
     public void LoadGame(int slotId)
     {
         string savePath = GetSavePath(slotId);
         if (File.Exists(savePath))
         {
-            // JSON 파일을 읽어 currentSaveData로 로드
             string json = File.ReadAllText(savePath);
             currentSaveData = JsonUtility.FromJson<SaveData>(json);
 
-            // PlayerStats에 로드된 데이터를 반영
             currentSaveData.playerData.ApplyToPlayer(player);
-
-            // InventoryManager에 로드된 데이터를 반영
             currentSaveData.inventoryData.ApplyToInventory(inventory);
+            currentSaveData.gameData.ApplyToGame(asdf);
+
+            foreach (var uiData in currentSaveData.uiObjects)
+                uiData.Apply();
 
             Debug.Log($"로드 완료 (슬롯 {slotId})");
         }
@@ -77,18 +86,18 @@ public class SaveManager : MonoBehaviour
             Debug.LogWarning($"세이브 파일 없음: 슬롯 {slotId}");
         }
     }
-    
+
     public void OnSceneLoaded(Scene scene, LoadSceneMode mode)
     {
-        if (scene.name == "TestScene1234") // PlayScene 이름으로 확인
+        if (scene.name == "TestScene1234")
         {
             player = FindFirstObjectByType<PlayerManager>();
             inventory = FindFirstObjectByType<InventoryManager>();
+            asdf = FindFirstObjectByType<asdfManager>();
 
             if (player != null && inventory != null)
             {
                 slotId = SceneChangeManager.Instance.selectSlotId;
-                // 로드된 데이터 반영
                 LoadGame(slotId);
 
                 Debug.Log($"{scene.name}씬 로드 후 {slotId}번 데이터 적용 완료");
@@ -105,12 +114,9 @@ public class SaveManager : MonoBehaviour
         Debug.Log(slotId);
         player.ResetPlayerData();
         inventory.ResetSlots();
+        asdf.ResetasdfData();
 
-
-        // 저장된 파일도 삭제 (SaveManager가 save.json 등에 저장한다고 가정)
         DeleteSaveFile(slotId);
-
-        // 새로 저장
         SaveGame(slotId);
 
         Debug.Log($"{slotId}번 세이브 파일 리셋 완료");
