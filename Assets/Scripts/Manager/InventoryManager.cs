@@ -12,21 +12,11 @@ public class InventoryManager : MonoBehaviour
     public IntSlotValueSO inventorySlotCount; // 업그레이드 반영된 슬롯 수
     public GameObject inventory;
     public SaveManager saveManager;
-<<<<<<< HEAD
-    public SaleSystem saleSystem;
-
-    [SerializeField] public List<InventorySlotData> slotList = new();
-    public List<ItemInstanceData> savedItems = new();
-
-    public ShopItemData currentShopItem;
-    private List<ShopItemData> purchasedItems = new List<ShopItemData>();
-=======
     public asdfManager asdf;
     [SerializeField] public List<InventorySlotData> slotList = new();
     public List<ItemInstanceData> savedItems = new();
     public List<SnackInstanceData> savedSnacks = new();
 
->>>>>>> b1474ee3016d9fd679b9a8a2c25df41a812864ad
 
     private void Awake()
     {
@@ -76,42 +66,6 @@ public class InventoryManager : MonoBehaviour
     {
         for (int i = 0; i < slotList.Count; i++)
         {
-<<<<<<< HEAD
-            Destroy(child.gameObject);
-        }
-        slotList.Clear();
-
-        inventorySlotCount.SetValueWithoutNotify(20);
-
-        UpdateSlots(inventorySlotCount.Value);
-    }
-
-    // 아이템 줍는 상황에서의 AddItem
-    public bool AddItem(ItemData itemData)
-    {
-        // 1) 이미 같은 아이템이 들어있는 슬롯이 있는지 찾는다
-        var existing = slotList.Find(s => 
-            s.currentItem != null && s.currentItem.itemName == itemData.itemName);
-        if (existing != null)
-        {
-            // 이미 있으면 수량만 +1
-            existing.currentItemCount++;
-            if (existing.countText != null)
-                existing.countText.text = existing.currentItemCount.ToString();
-            return true;
-        }
-
-        // 2) 빈 슬롯이 있으면 새 아이템으로 채운다
-        foreach (var slot in slotList)
-        {
-            if (slot.currentItem == null)
-            {
-                slot.SetItem(itemData);
-                slot.currentItemCount = 1;
-                if (slot.countText != null)
-                    slot.countText.text = "1";
-                return true;
-=======
             if (slotList[i].currentItem == null) // 빈 슬롯 발견
             {
                 itemData.slotNum = i; // 슬롯 인덱스를 그대로 사용
@@ -119,47 +73,12 @@ public class InventoryManager : MonoBehaviour
                 savedItems.Add(new ItemInstanceData(item.uniqueID, itemData.itemID, itemData.itemName, itemData.icon, itemData.description, itemData.itemType, itemData.dirty, itemData.value, itemData.slotNum));
                 asdf.pickUpItemCounts += 1;
                 return true; // 아이템 추가 성공
->>>>>>> b1474ee3016d9fd679b9a8a2c25df41a812864ad
             }
         }
 
-        // 3) 빈 슬롯이 하나도 없으면 실패
-        Debug.Log("인벤토리가 가득 찼습니다!");
-        return false;
-    }
-
-    // 상점에서 구매한 아이템 추가
-    public bool AddShopItem(ShopItemData shopItemData)
-    {
-        if (shopItemData == null)
-        {
-            Debug.LogError("shopItemData가 null입니다!");
-            return false;
-        }
-
-        foreach (var slot in slotList)
-        {
-            if (slot == null)
-            {
-                Debug.LogError("slotList에 null이 들어있습니다!");
-                continue;
-            }
-
-            if (slot.currentItem == null && slot.currentShopItem == null)
-            {
-                slot.SetShopItem(shopItemData);
-                Debug.Log($"{shopItemData.itemName}이(가) 인벤토리에 추가되었습니다.");
-                return true;
-            }
-        }
 
         Debug.Log("인벤토리가 가득 찼습니다!");
-        return false;
-    }
-
-    public List<ShopItemData> GetInventory()
-    {
-        return purchasedItems;
+        return false; // 실패
     }
 
     // 상점에서 구매한 아이템 추가
@@ -249,35 +168,6 @@ public class InventoryManager : MonoBehaviour
         inventory.SetActive(false);
     }
 
-<<<<<<< HEAD
-    // 아이템 ID로 인벤토리에서 아이템을 삭제
-    public bool RemoveItemById(string itemId)
-    {
-        bool removed = false;
-        // slotList에서 해당 아이템을 가진 슬롯을 찾아 삭제
-        foreach (var slot in slotList)
-        {
-            if (slot.currentItem != null && slot.currentItem.itemID == itemId)
-            {
-                slot.ClearSlot();
-                removed = true;
-                break; // 한 개만 삭제 (중복 아이템이 있을 경우 첫 번째만 삭제)
-            }
-        }
-        // savedItems에서도 해당 아이템 데이터 삭제
-        int removedCount = savedItems.RemoveAll(item => item.itemID == itemId);
-        return removed || removedCount > 0;
-    }
-
-    public void RemoveItemByInstance(InventorySlotData slot)
-    {
-        if (slotList.Contains(slot))
-        {
-            slotList.Remove(slot);
-            Destroy(slot.gameObject);
-        }
-    }
-=======
     public void ResetSlots()
     {
         savedItems = new List<ItemInstanceData>();
@@ -293,6 +183,5 @@ public class InventoryManager : MonoBehaviour
         UpdateSlots(inventorySlotCount.Value);
     }
 
->>>>>>> b1474ee3016d9fd679b9a8a2c25df41a812864ad
 
 }

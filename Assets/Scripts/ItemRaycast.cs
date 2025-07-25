@@ -14,10 +14,6 @@ using UnityEngine.UIElements;
 /// </summary>
 public class ItemRaycast : MonoBehaviour
 {
-<<<<<<< HEAD
-    
-=======
->>>>>>> b1474ee3016d9fd679b9a8a2c25df41a812864ad
     public TextMeshProUGUI explainText;
     public GameObject followMouseImage;
 
@@ -60,22 +56,8 @@ public class ItemRaycast : MonoBehaviour
     {
         CheckItem();
 
-<<<<<<< HEAD
-        // // 이제 마우스 클릭이 아닌 'E' 키로 아이템 획득
-        // if (Input.GetKeyDown(KeyCode.E))
-        // {
-        //     TryPickUp();
-        // }
-
-        if (mIsPickupActive) 
-        { 
-            TryPickItem(); 
-        }
-
-=======
         if (mIsPickupActive) { TryPickItem(); }
         if (hand == true && Input.GetKeyDown(KeyCode.G)) { DropDownItem(); }
->>>>>>> b1474ee3016d9fd679b9a8a2c25df41a812864ad
     }
 
     /// <summary>
@@ -85,15 +67,12 @@ public class ItemRaycast : MonoBehaviour
     {
         if (Input.GetKeyDown(KeyCode.E))
         {
-<<<<<<< HEAD
-=======
             if (mCurrentItem.itemData.itemType == ItemType.Large && hand == false)
             {
                 TryPickUpLarge();
                 ItemInfoDisappear();
             }
             else
->>>>>>> b1474ee3016d9fd679b9a8a2c25df41a812864ad
             {
                 //현재 인벤토리 아이템 가져오기
                 int count = 0;
@@ -115,68 +94,20 @@ public class ItemRaycast : MonoBehaviour
     /// <summary>
     /// 레이캐스트를 이용하여 아이템을 확인한다.
     /// </summary>
-<<<<<<< HEAD
-    /// 
-    /// 
-    // 
-=======
     ///
 
->>>>>>> b1474ee3016d9fd679b9a8a2c25df41a812864ad
     private void CheckItem()
-    {
-<<<<<<< HEAD
-        Ray ray = mRayCamera.ScreenPointToRay(Input.mousePosition);
-        if (Physics.Raycast(ray, out mHit, mRayDistance))
-        {
 
-            if (mHit.transform.CompareTag("Item") || mHit.transform.root.CompareTag("Item"))
-=======
+    {
 
         {
             if (Physics.Raycast(mRayCamera.transform.position, mRayCamera.transform.forward, out mHit, mRayDistance))
->>>>>>> b1474ee3016d9fd679b9a8a2c25df41a812864ad
             {
                 //Debug.Log("raycast 확인");
                 //레이캐스트 결과의 태그가 아이템이라면?
                 if (mHit.transform.tag == "Item")
                 {
 
-<<<<<<< HEAD
-                // 자식 오브젝트에 닿은 경우에도 부모에서 Item을 찾아줌
-                Item rayCastedItem = mHit.transform.GetComponent<Item>();
-                if (rayCastedItem == null)
-                {
-                    rayCastedItem = mHit.transform.GetComponentInParent<Item>();
-                }
-
-                if (rayCastedItem == null)
-                {
-                    ItemInfoDisappear();
-                    return;
-                }
-
-                if (mCurrentItem == rayCastedItem)
-                {
-                    return; // 같은 아이템이면 갱신 안 함
-                }
-
-                mCurrentItem = rayCastedItem;
-                mIsPickupActive = true;
-                followMouseImage.SetActive(true);
-
-                // 아이템 설명 텍스트 표시
-                var itemData = mCurrentItem.itemData;
-                explainText.text = itemData.itemName +
-                               itemData.itemRarity.ToString() +
-                               itemData.itemType.ToString() +
-                               itemData.value.ToString() +
-                               itemData.dirty.ToString() +
-                               itemData.description;
-
-                Debug.LogFormat("아이템: {0} 획득 가능", itemData.itemName);
-            }
-=======
                     //현재 레이캐스트된 아이템
                     Item rayCastedItem = mHit.transform.GetComponent<Item>();
 
@@ -224,19 +155,11 @@ public class ItemRaycast : MonoBehaviour
                 }
             }
             //레이캐스트 결과가 없으면 비활성화
->>>>>>> b1474ee3016d9fd679b9a8a2c25df41a812864ad
             else
             {
                 ItemInfoDisappear();
             }
         }
-<<<<<<< HEAD
-        else
-        {
-            ItemInfoDisappear();
-        }
-=======
->>>>>>> b1474ee3016d9fd679b9a8a2c25df41a812864ad
     }
 
     /// <summary>
@@ -257,7 +180,7 @@ public class ItemRaycast : MonoBehaviour
     /// <summary>
     /// 아이템을 습득한다.
     /// </summary>
-    public void TryPickUp()
+    private void TryPickUp()
     {
         if (mIsPickupActive)
         {

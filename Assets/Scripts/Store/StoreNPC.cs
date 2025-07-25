@@ -34,14 +34,8 @@ public class StoreNPC : MonoBehaviour
     {
         if (Input.GetKeyDown(KeyCode.E))
         {
-<<<<<<< HEAD
-            Ray ray = mainCamera.ScreenPointToRay(Input.mousePosition);
-            RaycastHit hit;
-            if (Physics.Raycast(ray, out hit, rayDistance))
-=======
             RaycastHit hit;
             if (Physics.Raycast(mainCamera.transform.position, mainCamera.transform.forward ,out hit, rayDistance))
->>>>>>> b1474ee3016d9fd679b9a8a2c25df41a812864ad
             {
                 if (hit.transform.gameObject == this.gameObject)
                 {
@@ -57,11 +51,7 @@ public class StoreNPC : MonoBehaviour
         sellButton.gameObject.SetActive(true);
     }
 
-<<<<<<< HEAD
-    void HideButtons()
-=======
     public void HideButtons()
->>>>>>> b1474ee3016d9fd679b9a8a2c25df41a812864ad
     {
         buyButton.gameObject.SetActive(false);
         sellButton.gameObject.SetActive(false);
@@ -87,4 +77,3 @@ public class StoreNPC : MonoBehaviour
         HideButtons();
     }
 }
-
