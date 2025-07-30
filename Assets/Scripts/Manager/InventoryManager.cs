@@ -6,6 +6,7 @@ using System;
 
 public class InventoryManager : MonoBehaviour
 {
+    [SerializeField] public TextMeshProUGUI explainText;
     public static InventoryManager Instance { get; private set; }
     public Transform contentParent; // ScrollView 안 content
     public GameObject slotPrefab;
@@ -16,6 +17,9 @@ public class InventoryManager : MonoBehaviour
     [SerializeField] public List<InventorySlotData> slotList = new();
     public List<ItemInstanceData> savedItems = new();
     public List<SnackInstanceData> savedSnacks = new();
+    public GameObject followMouseImage;
+    public bool isInfoPanelActive = false;
+    
 
 
     private void Awake()
