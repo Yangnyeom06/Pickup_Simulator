@@ -25,17 +25,38 @@ public class MoneyManager : MonoBehaviour
 
     public void AddMoney(int amount)
     {
-        player.money += amount;
-        asdf.todayGetMoney += amount;
+        if (player != null)
+        {
+            player.money += amount;
+        }
+        
+        if (asdf != null)
+        {
+            asdf.todayGetMoney += amount;
+        }
+        else
+        {
+            Debug.LogWarning("asdfManager가 할당되지 않았습니다!");
+        }
+        
         UpdateMoneyUI();
     }
 
     public void SpendMoney(int amount)
     {
-        if (player.money >= amount)
+        if (player != null && player.money >= amount)
         {
             player.money -= amount;
-            asdf.todaySpendMoney -= amount;
+            
+            if (asdf != null)
+            {
+                asdf.todaySpendMoney -= amount;
+            }
+            else
+            {
+                Debug.LogWarning("asdfManager가 할당되지 않았습니다!");
+            }
+            
             UpdateMoneyUI();
         }
         else
@@ -46,9 +67,15 @@ public class MoneyManager : MonoBehaviour
 
     private void UpdateMoneyUI()
     {
-        foreach (var text in moneyTexts)
+        if (player != null)
         {
-            text.text = player.money.ToString();
+            foreach (var text in moneyTexts)
+            {
+                if (text != null)
+                {
+                    text.text = player.money.ToString();
+                }
+            }
         }
     }
     
