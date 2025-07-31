@@ -69,9 +69,14 @@ public class StoreNPC : MonoBehaviour
 
     public void OnSellClicked()
     {
-        if (currentItem != null)
+        if (saleSystem != null)
         {
-            saleSystem.sellUI.SetActive(true);
+            saleSystem.ShowSellUI();
+            Debug.Log("SaleSystem.ShowSellUI() 호출됨");
+        }
+        else
+        {
+            Debug.LogError("SaleSystem이 null입니다!");
         }
         HideButtons();
     }

@@ -169,26 +169,50 @@ public class SaleSystem : MonoBehaviour, ISaleSystem
         // 2) 돈 입금
         moneyManager.AddMoney(gain);
 
-        // 3) 인벤토리에서 아이템 내용만 제거 (슬롯은 유지)
-        inventoryManager.ClearSlotContents(selectedSlot.originalInventorySlot);
-        
-        Debug.Log($"아이템 판매 완료: {itemData.itemName} - 슬롯은 유지됨");
+        // 3) 인벤토리에서 해당 아이템 1개만 제거 (슬롯은 유지)
+        if (selectedSlot.originalInventorySlot != null)
+        {
+            var originalSlot = selectedSlot.originalInventorySlot;
+            
+            if (originalSlot.currentItemCount > 1)
+            {
+                // 여러 개가 있으면 1개만 감소
+                originalSlot.currentItemCount--;
+                
+                // 수량 텍스트 업데이트
+                if (originalSlot.countText != null)
+                {
+                    originalSlot.countText.text = originalSlot.currentItemCount.ToString();
+                }
+                
+                Debug.Log($"아이템 1개 판매: {itemData.itemName} - 남은 개수: {originalSlot.currentItemCount}");
+            }
+            else
+            {
+                // 1개만 있으면 슬롯 내용 완전 제거
+                inventoryManager.ClearSlotContents(originalSlot);
+                Debug.Log($"마지막 아이템 판매: {itemData.itemName} - 슬롯 비워짐");
+            }
+        }
+        else
+        {
+            Debug.LogWarning("originalInventorySlot이 null입니다!");
+        }
 
-        // 5) UI 갱신
+        // 4) SellUI 슬롯 새로고침 (SellUI는 열린 상태 유지)
         RefreshSellSlots();
-        ResetSaleState();
+        
+        // 5) 선택 상태만 초기화 (SellUI는 닫지 않음)
+        selectedSlot = null;
+        sellConfirmButton.interactable = false;
 
-        // // 6) 다이얼로그 & 상태 초기화
-        // if (quantityDialog != null) Destroy(quantityDialog.gameObject);
-        // quantityDialog    = null;
-        // // selectedSlot      = null;
-        // sellConfirmButton.interactable = false;
-
-        sellUI.SetActive(false);
-        sellButton.gameObject.SetActive(false);
-
-        Debug.Log($"판매 완료: +{gain}G");
-        playerMoneyText.text = $"Money: {playerData.money} G";
+        Debug.Log($"판매 완료: +{gain}G - SellUI는 계속 열려있음");
+        
+        // 6) 플레이어 돈 UI 업데이트
+        if (playerMoneyText != null)
+        {
+            playerMoneyText.text = $"Money: {playerData.money} G";
+        }
     }
 
     private void ResetSaleState()

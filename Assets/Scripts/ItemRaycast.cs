@@ -126,22 +126,38 @@ public class ItemRaycast : MonoBehaviour
             // 일반 아이템 처리
             if (mCurrentItem != null)
             {
+                Debug.Log($"아이템 줍기 시도: {mCurrentItem.itemData.itemName}, ItemType: {mCurrentItem.itemData.itemType}, hand: {hand}");
+                
                 if (mCurrentItem.itemData.itemType == ItemType.Large && hand == false)
                 {
+                    Debug.Log("Large 아이템 줍기 로직 실행");
                     TryPickUpLarge();
                     ItemInfoDisappear();
                 }
                 else
                 {
+                    Debug.Log("일반 아이템 줍기 로직 실행");
                     //현재 인벤토리 아이템 가져오기
                     int count = 0;
+                    Debug.Log($"인벤토리 슬롯 검사 시작 - 총 슬롯 수: {mInventory.slotList.Count}");
 
                     for (; count < mInventory.slotList.Count; ++count)
                     {                    //현재 아이템 칸이 null이라면 주울 수 있는 상태
-                        if (mInventory.slotList[count].currentItem == null) { break; }
+                        bool isNull = (mInventory.slotList[count].currentItem == null);
+                        Debug.Log($"슬롯 {count}: currentItem이 null인가? {isNull}");
+                        if (isNull) { break; }
                     }
+                    Debug.Log($"슬롯 검사 완료 - count: {count}, slotList.Count: {mInventory.slotList.Count}");
+                    
                     //모든 칸이 null이 아니고, 중첩이 불가능하면 주울 수 없음
-                    if (count == mInventory.slotList.Count) { return; }
+                    if (count == mInventory.slotList.Count) { 
+                        Debug.Log("인벤토리가 가득함 - 줍기 실패");
+                        return; 
+                    }
+                    else
+                    {
+                        Debug.Log($"빈 슬롯 발견 - 슬롯 인덱스: {count}");
+                    }
                     //아이템 줍는 효과음 재생
                     TryPickUp();
                     ItemInfoDisappear();

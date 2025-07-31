@@ -29,6 +29,16 @@ public class InventoryManager : MonoBehaviour
         Instance = this;
     }
 
+    private void Start()
+    {
+        // 게임 시작 시 슬롯이 비어있다면 초기화
+        if (slotList.Count == 0)
+        {
+            Debug.Log("슬롯이 비어있어서 초기화합니다.");
+            InitializeSlots();
+        }
+    }
+
     private void OnEnable()
     {
         inventorySlotCount.OnValueChanged += UpgradeSlots;
@@ -37,6 +47,15 @@ public class InventoryManager : MonoBehaviour
     private void OnDisable()
     {
         inventorySlotCount.OnValueChanged -= UpgradeSlots;
+    }
+
+    // 초기 슬롯 생성
+    private void InitializeSlots()
+    {
+        // 기본 20개 슬롯 생성
+        inventorySlotCount.SetValueWithoutNotify(20);
+        UpdateSlots(inventorySlotCount.Value);
+        Debug.Log($"인벤토리 슬롯 {inventorySlotCount.Value}개 생성 완료!");
     }
 
     public void UpdateSlots(int newCount)
