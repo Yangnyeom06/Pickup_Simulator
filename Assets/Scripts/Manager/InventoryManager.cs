@@ -89,39 +89,9 @@ public class InventoryManager : MonoBehaviour
             return false;
         }
 
-        // 1단계: 같은 아이템이 있는 슬롯을 먼저 찾아서 스택킹 시도
-        for (int i = 0; i < slotList.Count; i++)
-        {
-            var slot = slotList[i];
-            if (slot != null && slot.currentItem != null)
-            {
-                Debug.Log($"  슬롯 {i}: '{slot.currentItem.itemName}' (ID: {slot.currentItem.itemID}) - 개수: {slot.currentItemCount}/{slot.currentItem.maxStackSize}");
-                
-                if (slot.IsSameItem(itemData))
-                {
-                    Debug.Log($"  → 같은 아이템 발견! 스택킹 가능: {slot.CanAddMore()}");
-                    
-                    if (slot.CanAddMore())
-                    {
-                        int added = slot.AddItemCount(1);
-                        if (added > 0)
-                        {
-                            // 스택킹 성공
-                            savedItems.Add(new ItemInstanceData(item.uniqueID, itemData.itemID, itemData.itemName, itemData.icon, itemData.description, itemData.itemType, itemData.dirty, itemData.value, itemData.slotNum));
-                            asdf.pickUpItemCounts += 1;
-                            Debug.Log($"✅ '{itemData.itemName}' 스택킹 완료! 현재 개수: {slot.currentItemCount}");
-                            return true;
-                        }
-                    }
-                }
-            }
-            else if (slot != null)
-            {
-                Debug.Log($"  슬롯 {i}: [빈 슬롯]");
-            }
-        }
+        Debug.Log($"아이템 추가 시도: '{itemData.itemName}' - 개별 슬롯에 저장");
 
-        // 2단계: 스택킹이 안 되면 새로운 빈 슬롯 찾기
+        // 스택킹 없이 항상 새로운 빈 슬롯에 개별적으로 저장
         for (int i = 0; i < slotList.Count; i++)
         {
             if (slotList[i].currentItem == null) // 빈 슬롯 발견
@@ -132,6 +102,10 @@ public class InventoryManager : MonoBehaviour
                 asdf.pickUpItemCounts += 1;
                 Debug.Log($"'{itemData.itemName}' 새로운 슬롯에 추가됨!");
                 return true; // 아이템 추가 성공
+            }
+            else if (slotList[i].currentItem != null)
+            {
+                Debug.Log($"  슬롯 {i}: '{slotList[i].currentItem.itemName}' (사용 중)");
             }
         }
 
