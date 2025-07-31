@@ -15,9 +15,10 @@ public class BuySystem : MonoBehaviour, IPointerClickHandler
 
     // 장바구니에 있는 아이템이 담긴 딕셔너리
     private Dictionary<ShopItemData, int> cartItems = new Dictionary<ShopItemData, int>();
+    private Dictionary<SnackData, int> cartSnacks = new Dictionary<SnackData, int>();
 		
     // 아이템을 장바구니에 추가하는 메서드
-    public void AddToCart(ShopItemData shopItemData)
+    public void AddToShopItemCart(ShopItemData shopItemData)
     {
         // cartItems 딕셔너리 안에 해당 item이 있는지 확인
         if (cartItems.ContainsKey(shopItemData))
@@ -34,19 +35,17 @@ public class BuySystem : MonoBehaviour, IPointerClickHandler
         UpdateCartUI();
     }
 
-    // 장바구니에서 아이템 수량 조절
-    public void AdjustItemQuantity(ShopItemData shopItemData, int amount)
+    public void AddToSnackCart(SnackData snackData)
     {
-        if (cartItems.ContainsKey(shopItemData))
+        if (cartSnacks.ContainsKey(snackData))
         {
-            // 수량 증가
-            cartItems[shopItemData] += amount;
-            // 수량이 0이면 장바구니에서 제거
-            if (cartItems[shopItemData] <= 0)
-            {
-                cartItems.Remove(shopItemData);
-            }
+            cartSnacks[snackData] ++;
         }
+        else
+        {
+            cartSnacks.Add(snackData, 1);
+        }
+
         UpdateCartUI();
     }
 
@@ -61,9 +60,30 @@ public class BuySystem : MonoBehaviour, IPointerClickHandler
         return total;
     }
 
-    // NPC 클릭 시 호출될 메서드
     public void OnPointerClick(PointerEventData eventData)
     {
+        cartDialog.SetActive(true);
+        // 플레이어가 가진 Snack 데이터를 모두 장바구니에 담음
+        foreach (SnackData snack in InventoryManager.Instance.GetAllSnacks())
+        {
+            AddToSnackCart(snack);
+        }
+
+    UpdateCartUI();
+
+    }
+
+    public void OpenCartWithInventorySnacks()
+    {
+        cartSnacks.Clear(); // 기존 장바구니 초기화
+
+        List<SnackData> snacks = InventoryManager.Instance.GetPickedUpSnacks();
+        foreach (SnackData snack in snacks)
+        {
+            AddToSnackCart(snack);
+        }
+
+        UpdateCartUI();
         cartDialog.SetActive(true);
     }
 
@@ -89,8 +109,18 @@ public class BuySystem : MonoBehaviour, IPointerClickHandler
         {
             GameObject slotObj = Instantiate(cartItemSlot, cartContentParent);
             CartItemSlot slot = slotObj.GetComponent<CartItemSlot>();
-            slot.Setup(item.Key, item.Value, this);
+            slot.ItemSetup(item.Key, item.Value, this);
         }
+
+        // UpdateCartUI 내에 추가
+        foreach (var snack in cartSnacks)
+        {
+            GameObject slotObj = Instantiate(cartItemSlot, cartContentParent);
+            CartItemSlot slot = slotObj.GetComponent<CartItemSlot>();
+            slot.SnackSetup(snack.Key, snack.Value, this); // 오버로드된 Setup 메서드를 만들거나 통일
+        }
+
+        emptyCartMessage.SetActive(cartItems.Count == 0 && cartSnacks.Count == 0);
 
         // 총 아이템 금액 구현
         int totalPrice = CalculateTotalPrice();

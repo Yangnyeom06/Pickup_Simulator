@@ -12,34 +12,30 @@ public class ShopItem : MonoBehaviour
     /// </summary>
     private RaycastHit mHit;
 
-    /// <summary>
-    /// 레이캐스트 거리
-    /// </summary>
-    [SerializeField] private float mRayDistance;
-
-
     public ShopItemData shopItemData;
     public BuySystem buySystem;
+
+    private void Update()
+    {
+        if (Input.GetKeyDown(KeyCode.E))
+        {
+            TryBuyItem();
+        }
+    }
 
 
     private void TryBuyItem()
     {
-        if (Physics.Raycast(mRayCamera.transform.position, mRayCamera.transform.forward, out mHit, mRayDistance))
+        if (!Physics.Raycast(mRayCamera.transform.position, mRayCamera.transform.forward, out mHit, rayDistance)) return;
+
+        ShopItem shopItem = mHit.transform.GetComponent<ShopItem>();
+        if (shopItem == null || shopItem.shopItemData == null || shopItem.buySystem == null)
         {
-            if (Input.GetKeyDown(KeyCode.E)) 
-            {
-                if (buySystem != null && shopItemData != null)
-                {
-                    buySystem.AddToCart(shopItemData);
-                    Debug.Log($"{shopItemData.itemName}이(가) 장바구니에 추가되었습니다.");
-                }
-                else
-                {
-                    Debug.LogWarning("BuySystem, ShopItemData가 비어 있습니다.");
-                }
-            }
-            
+            Debug.LogWarning("BuySystem, ShopItemData가 비어 있습니다.");
+            return;
         }
-        
+
+        shopItem.buySystem.AddToShopItemCart(shopItem.shopItemData);
+        Debug.Log($"{shopItem.shopItemData.itemName}이(가) 장바구니에 추가되었습니다.");
     }
 }

@@ -10,7 +10,7 @@ public class PlayerManager : MonoBehaviour
     public IntStatValueSO speedLevel;
     public IntStatValueSO inventoryLevel;
     public IntStatValueSO mapLevel;
-    public asdfManager asdfManager;
+    // public asdfManager asdfManager;
     public int money;
     private Coroutine healthLossCoroutine;
     public float HealthLossInterval = 1f;
@@ -50,7 +50,8 @@ public class PlayerManager : MonoBehaviour
         }
         // 집으로 보내는 이벤트 실행
 
-        asdfManager.End();
+        // 나중에 바꿔주기
+        // asdfManager.End();
         Debug.Log("체력이 0이 되었습니다!");
     }
     #endregion

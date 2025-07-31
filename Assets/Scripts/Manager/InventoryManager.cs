@@ -121,13 +121,37 @@ public class InventoryManager : MonoBehaviour
                 {
                     snackData.slotNum = i;
                     slotList[i].SetSnack(snackData);
-                    savedSnacks.Add(new SnackInstanceData(snackData.itemID, snackData.itemName, snackData.icon, snackData.description, snackData.itemStat, snackData.slotNum));
+                    savedSnacks.Add(new SnackInstanceData(snackData.itemID, snackData.snackName, snackData.icon, snackData.description, snackData.itemStat, snackData.slotNum));
                 }
                 return true; // 아이템 추가 성공
             }
         }
         Debug.Log("인벤토리가 가득 찼습니다!");
         return false; // 실패
+    }
+
+    public List<SnackData> GetPickedUpSnacks()
+    {
+        List<SnackData> result = new();
+        foreach (var slot in slotList)
+        {
+            if (slot.currentSnack != null)
+            {
+                result.Add(slot.currentSnack);
+            }
+        }
+        return result;
+    }
+
+    public List<SnackData> GetAllSnacks()
+    {
+        List<SnackData> result = new();
+        foreach (var slot in slotList)
+        {
+            if (slot.currentSnack != null)
+                result.Add(slot.currentSnack);
+        }
+        return result;
     }
 
     public void LoadItemToInventorySlot()

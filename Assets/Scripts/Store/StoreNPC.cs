@@ -21,6 +21,7 @@ public class StoreNPC : MonoBehaviour
     public SaleSystem saleSystem;
 
     private ShopItemData shopItem;
+    private SnackData snackItem;
     private ItemData itemData;
     private Item currentItem;
 
@@ -61,12 +62,7 @@ public class StoreNPC : MonoBehaviour
 
     public void OnBuyClicked()
     {
-        if (currentItem != null)
-        {
-            buySystem.AddToCart(shopItem);
-            buySystem.UpdateCartUI();
-            buySystem.cartDialog.SetActive(true);
-        }
+        buySystem.OpenCartWithInventorySnacks(); // 인벤토리 기반 장바구니 UI 열기
         HideButtons();
     }
 

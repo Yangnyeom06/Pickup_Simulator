@@ -5,40 +5,27 @@ using TMPro;           // TMP_Text를 위한 네임스페이스
 public class CartItemSlot : MonoBehaviour
 {
     public TMP_Text itemNameText;
-    public TMP_Text quantityText;
-    public Button plusButton;
-    public Button minusButton;
     private ShopItemData itemData;
+    private SnackData snackData;
     private BuySystem buySystem;
 
-    public void Setup(ShopItemData data, int quantity, BuySystem system)
+    public void ItemSetup(ShopItemData data, int quantity, BuySystem system)
     {
         if (itemNameText == null) Debug.LogError("itemNameText is null");
-        if (quantityText == null) Debug.LogError("quantityText is null");
-        if (plusButton == null) Debug.LogError("plusButton is null");
-        if (minusButton == null) Debug.LogError("minusButton is null");
 
         itemData = data;
         buySystem = system;
         itemNameText.text = data.itemName;
-        quantityText.text = quantity.ToString();
-
-        plusButton.onClick.AddListener(OnPlusButtonClicked);
-        minusButton.onClick.AddListener(OnMinusButtonClicked);
     }
 
-    public void OnPlusButtonClicked()
+    public void SnackSetup(SnackData data, int quantity, BuySystem system)
     {
-        buySystem.AdjustItemQuantity(itemData, 1);
-    }
-    
-    public void OnMinusButtonClicked()
-    {
-        buySystem.AdjustItemQuantity(itemData, -1);
-    }
+        if (itemNameText == null) Debug.LogError("itemNameText is null");
 
-    public void UpdateQuantity(int quantity)
-    {
-        quantityText.text = quantity.ToString();
+
+        snackData = data;
+        itemData = null;
+        buySystem = system;
+
     }
 }
