@@ -9,6 +9,17 @@ using TMPro;           // TMP_Text를 위한 네임스페이스
 // Buy버튼에 적용
 public class BuySystem : MonoBehaviour, IPointerClickHandler
 {
+    public static BuySystem Instance { get; private set; }
+
+    private void Awake()
+    {
+        if (Instance != null && Instance != this)
+        {
+            Destroy(gameObject);
+            return;
+        }
+        Instance = this;
+    }
     public PlayerData playerData;
     public MoneyManager moneyManager;
     public GameObject cartDialog; // 장바구니 UI 프리팹
@@ -64,7 +75,7 @@ public class BuySystem : MonoBehaviour, IPointerClickHandler
         Debug.Log($"AddToSnackCart 완료 - 총 cartSnacks 개수: {cartSnacks.Count}");
         
         // CartUI가 열려있을 때만 즉시 갱신
-        if (cartDialog.activeSelf)
+        if (cartDialog != null && cartDialog.activeSelf)
         {
             UpdateCartUI();
         }
@@ -81,11 +92,10 @@ public class BuySystem : MonoBehaviour, IPointerClickHandler
             total += item.Key.price * item.Value;
         }
         
-        // 스낵 가격 계산 (스낵에 가격이 있다면)
+        // 스낵 가격 계산
         foreach (var snack in cartSnacks)
         {
-            // SnackData에 price 필드가 있다면 추가
-            // total += snack.Key.price * snack.Value;
+            total += snack.Key.price * snack.Value;
         }
         
         return total;
@@ -100,6 +110,12 @@ public class BuySystem : MonoBehaviour, IPointerClickHandler
     // 장바구니 열기 (공통 메서드)
     public void OpenCart()
     {
+        if (cartDialog == null)
+        {
+            Debug.LogError("cartDialog is not assigned!");
+            return;
+        }
+        
         Debug.Log("CartUI 열기");
         cartDialog.SetActive(true);
         needsUIRefresh = true; // CartUI를 열 때 갱신 필요
@@ -112,6 +128,12 @@ public class BuySystem : MonoBehaviour, IPointerClickHandler
         if (InventoryManager.Instance == null)
         {
             Debug.LogError("InventoryManager.Instance is null!");
+            return;
+        }
+
+        if (cartDialog == null)
+        {
+            Debug.LogError("cartDialog is not assigned! Please assign the cart dialog GameObject in the inspector.");
             return;
         }
 
@@ -230,42 +252,60 @@ public class BuySystem : MonoBehaviour, IPointerClickHandler
             Dictionary<ShopItemData, int> remainingItems = new Dictionary<ShopItemData, int>();
             Dictionary<SnackData, int> remainingSnacks = new Dictionary<SnackData, int>();
             
-            // 아이템들을 인벤토리에 추가
-            // foreach (var item in cartItems) // 장바구니에 있는 아이템과 수량을 저장하는 딕셔너리
-            // {
-            //     // item.Value : 장바구니에 담긴 아이템 수량
-            //     int remaining = item.Value;
+            // 일반 아이템들을 인벤토리에 추가
+            foreach (var item in cartItems) // 장바구니에 있는 아이템과 수량을 저장하는 딕셔너리
+            {
+                // item.Value : 장바구니에 담긴 아이템 수량
+                int remaining = item.Value;
 
-            //     // 남은 수량만큼 인벤토리에 추가 시도
-            //     for (int i = 0; i < remaining; i++)
-            //     {
-            //         // 현재 장바구니에서 꺼낸 아이템(item.Key)을 인벤토리에 넣어보고, 넣기에 성공했는지 여부를 added에 저장
-            //         bool added = InventoryManager.Instance.AddShopItem(item.Key);
+                // 남은 수량만큼 인벤토리에 추가 시도
+                for (int i = 0; i < remaining; i++)
+                {
+                    // 현재 장바구니에서 꺼낸 아이템(item.Key)을 인벤토리에 넣어보고, 넣기에 성공했는지 여부를 added에 저장
+                    bool added = InventoryManager.Instance.AddShopItem(item.Key);
 
-            //         // 만약 성공하면 장바구니에 담긴 아이템 수량 감소
-            //         if (added)
-            //         {
-            //             remaining--;
-            //         }
-            //         // 실패한 경우
-            //         else
-            //         {
-            //             break; // 인벤토리가 가득 차면 더 이상 시도하지 않음
-            //         }
-            //     }
-            //     // 남은 수량이 있으면 장바구니에 남김
-            //     if (remaining > 0)
-            //     {
-            //         remainingItems[item.Key] = remaining;
-            //     }
-            // }
+                    // 만약 성공하면 장바구니에 담긴 아이템 수량 감소
+                    if (added)
+                    {
+                        remaining--;
+                    }
+                    // 실패한 경우
+                    else
+                    {
+                        break; // 인벤토리가 가득 차면 더 이상 시도하지 않음
+                    }
+                }
+                // 남은 수량이 있으면 장바구니에 남김
+                if (remaining > 0)
+                {
+                    remainingItems[item.Key] = remaining;
+                }
+            }
 
             // cartSnacks에 있는 모든 스낵을 인벤토리에 추가
             foreach (var snack in cartSnacks)
             {
-                for (int i = 0; i < snack.Value; i++)
+                int remaining = snack.Value;
+                
+                // 남은 수량만큼 인벤토리에 추가 시도
+                for (int i = 0; i < remaining; i++)
                 {
-                    InventoryManager.Instance.AddSnack(snack.Key);
+                    bool added = InventoryManager.Instance.AddSnack(snack.Key);
+                    
+                    if (added)
+                    {
+                        remaining--;
+                    }
+                    else
+                    {
+                        break; // 인벤토리가 가득 차면 더 이상 시도하지 않음
+                    }
+                }
+                
+                // 남은 수량이 있으면 장바구니에 남김
+                if (remaining > 0)
+                {
+                    remainingSnacks[snack.Key] = remaining;
                 }
             }
 
@@ -275,9 +315,9 @@ public class BuySystem : MonoBehaviour, IPointerClickHandler
             needsUIRefresh = true; // 구매 후 UI 갱신 필요
             UpdateCartUI();
 
-            if (cartItems.Count == 0 || cartSnacks.Count == 0)
+            if (cartItems.Count == 0 && cartSnacks.Count == 0)
             {
-                Debug.Log("구매 완료");
+                Debug.Log("구매 완료! 모든 아이템이 인벤토리에 추가되었습니다.");
             }
             else
             {
@@ -353,6 +393,13 @@ public class BuySystem : MonoBehaviour, IPointerClickHandler
     // 장바구니 닫기
     public void CloseCartDialog()
     {
-        cartDialog.SetActive(false);
+        if (cartDialog != null)
+        {
+            cartDialog.SetActive(false);
+        }
+        else
+        {
+            Debug.LogError("cartDialog is not assigned! Please assign the cart dialog GameObject in the inspector.");
+        }
     }
 }

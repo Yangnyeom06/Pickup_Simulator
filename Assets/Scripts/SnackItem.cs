@@ -17,8 +17,37 @@ public class SnackItem : MonoBehaviour
 
     private void Awake()
     {
+        // Inspector에서 할당되지 않은 경우 싱글톤 사용
         if (buySystem == null)
-            buySystem = FindObjectOfType<BuySystem>();
+        {
+            // 싱글톤 Instance 먼저 확인
+            if (BuySystem.Instance != null)
+            {
+                buySystem = BuySystem.Instance;
+                Debug.Log($"SnackItem: BuySystem 싱글톤을 사용합니다: {buySystem.gameObject.name}");
+            }
+            else
+            {
+                // 싱글톤이 없으면 직접 찾기
+                buySystem = FindObjectOfType<BuySystem>();
+                
+                // 비활성화된 것도 포함해서 찾기
+                if (buySystem == null)
+                {
+                    buySystem = FindObjectOfType<BuySystem>(true);
+                }
+                
+                if (buySystem == null)
+                {
+                    Debug.LogError("SnackItem: BuySystem을 찾을 수 없습니다! 씬에 BuySystem이 있는지 확인하세요.");
+                    Debug.LogError("해결방법: 1) BuySystem GameObject가 활성화되어 있는지 확인 2) Inspector에서 직접 할당");
+                }
+                else
+                {
+                    Debug.Log($"SnackItem: BuySystem을 자동으로 찾았습니다: {buySystem.gameObject.name}");
+                }
+            }
+        }
 
         if (snackItemData == null)
             snackItemData = GetComponent<SnackData>(); // 또는 직접 생성하거나 리소스에서 로드

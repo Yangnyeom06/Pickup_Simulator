@@ -9,10 +9,8 @@ MonoBehaviour:
   m_GameObject: {fileID: 0}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: c13d13916e13947409b2600d65e2879e, type: 3}
-  m_Name: InventorySlotData
+  m_Script: {fileID: 11500000, guid: 1d351fe99f959724097d23336f38d4c0, type: 3}
+  m_Name: IntSlotValueSO
   m_EditorClassIdentifier: 
-  itemName: Item1
-  icon: {fileID: 1466528823, guid: c8b07876a8128c14baa906c4314c7a02, type: 3}
-  description: item1
-  itemCode: 1
+  _value: 0
+  upgradeCount: 0

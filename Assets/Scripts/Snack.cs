@@ -30,7 +30,11 @@ public class Snack : MonoBehaviour
 
     public void GotSnackItem()
     {
-        inventoryManager.AddSnack(snackData);
+        bool success = inventoryManager.AddSnack(snackData);
+        if (!success)
+        {
+            Debug.LogWarning($"인벤토리가 가득 차서 {snackData.snackName}을(를) 추가할 수 없습니다!");
+        }
     }
 
     public void DeleteSnackItem()

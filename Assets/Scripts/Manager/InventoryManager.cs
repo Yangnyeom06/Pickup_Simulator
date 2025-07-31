@@ -110,20 +110,33 @@ public class InventoryManager : MonoBehaviour
         return false;
     }
 
-    public void AddSnack(SnackData snack)
+    public bool AddSnack(SnackData snack)
     {
+        if (snack == null)
+        {
+            Debug.LogError("AddSnack: snack이 null입니다!");
+            return false;
+        }
+
         // slotList의 빈 슬롯에 snack을 넣는 로직을 구현해야 함
         // 예시:
         foreach (var slot in slotList)
         {
+            if (slot == null)
+            {
+                Debug.LogError("slotList에 null이 들어있습니다!");
+                continue;
+            }
+
             if (slot.currentSnack == null)
             {
                 slot.SetSnack(snack); // SetSnack은 슬롯에 스낵을 할당하는 메서드여야 함
                 Debug.Log($"{snack.snackName}이(가) 인벤토리에 추가되었습니다.");
-                return;
+                return true;
             }
         }
         Debug.Log("인벤토리가 가득 찼습니다!");
+        return false;
     }
 
     public List<SnackData> GetPickedUpSnacks()
@@ -131,6 +144,12 @@ public class InventoryManager : MonoBehaviour
         List<SnackData> result = new();
         foreach (var slot in slotList)
         {
+            if (slot == null)
+            {
+                Debug.LogError("slotList에 null이 들어있습니다!");
+                continue;
+            }
+
             if (slot.currentSnack != null)
             {
                 result.Add(slot.currentSnack);
@@ -144,6 +163,12 @@ public class InventoryManager : MonoBehaviour
         List<SnackData> result = new();
         foreach (var slot in slotList)
         {
+            if (slot == null)
+            {
+                Debug.LogError("slotList에 null이 들어있습니다!");
+                continue;
+            }
+
             if (slot.currentSnack != null)
                 result.Add(slot.currentSnack);
         }
