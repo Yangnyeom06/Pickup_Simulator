@@ -290,6 +290,66 @@ public class BuySystem : MonoBehaviour, IPointerClickHandler
         }
     }
 
+    // 장바구니에서 스낵 삭제
+    public void DeleteSnackFromCart(SnackData snackData)
+    {
+        if (snackData == null)
+        {
+            Debug.LogWarning("삭제하려는 SnackData가 null입니다!");
+            return;
+        }
+
+        if (cartSnacks.ContainsKey(snackData))
+        {
+            cartSnacks[snackData]--;
+            Debug.Log($"{snackData.snackName} 수량 감소: {cartSnacks[snackData]}");
+
+            // 수량이 0이 되면 완전히 제거
+            if (cartSnacks[snackData] <= 0)
+            {
+                cartSnacks.Remove(snackData);
+                Debug.Log($"{snackData.snackName}이(가) 장바구니에서 완전히 제거되었습니다.");
+            }
+
+            needsUIRefresh = true; // UI 갱신 필요
+            UpdateCartUI();
+        }
+        else
+        {
+            Debug.LogWarning($"{snackData.snackName}이(가) 장바구니에 없습니다!");
+        }
+    }
+
+    // 장바구니에서 일반 아이템 삭제
+    public void DeleteShopItemFromCart(ShopItemData shopItemData)
+    {
+        if (shopItemData == null)
+        {
+            Debug.LogWarning("삭제하려는 ShopItemData가 null입니다!");
+            return;
+        }
+
+        if (cartItems.ContainsKey(shopItemData))
+        {
+            cartItems[shopItemData]--;
+            Debug.Log($"{shopItemData.itemName} 수량 감소: {cartItems[shopItemData]}");
+
+            // 수량이 0이 되면 완전히 제거
+            if (cartItems[shopItemData] <= 0)
+            {
+                cartItems.Remove(shopItemData);
+                Debug.Log($"{shopItemData.itemName}이(가) 장바구니에서 완전히 제거되었습니다.");
+            }
+
+            needsUIRefresh = true; // UI 갱신 필요
+            UpdateCartUI();
+        }
+        else
+        {
+            Debug.LogWarning($"{shopItemData.itemName}이(가) 장바구니에 없습니다!");
+        }
+    }
+
     // 장바구니 닫기
     public void CloseCartDialog()
     {
