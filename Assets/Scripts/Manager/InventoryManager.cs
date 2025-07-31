@@ -64,6 +64,45 @@ public class InventoryManager : MonoBehaviour
 
     public bool AddItem(ItemData itemData, Item item)
     {
+        if (itemData == null)
+        {
+            Debug.LogError("AddItem: itemData가 null입니다!");
+            return false;
+        }
+
+        // 1단계: 같은 아이템이 있는 슬롯을 먼저 찾아서 스택킹 시도
+        for (int i = 0; i < slotList.Count; i++)
+        {
+            var slot = slotList[i];
+            if (slot != null && slot.currentItem != null)
+            {
+                Debug.Log($"  슬롯 {i}: '{slot.currentItem.itemName}' (ID: {slot.currentItem.itemID}) - 개수: {slot.currentItemCount}/{slot.currentItem.maxStackSize}");
+                
+                if (slot.IsSameItem(itemData))
+                {
+                    Debug.Log($"  → 같은 아이템 발견! 스택킹 가능: {slot.CanAddMore()}");
+                    
+                    if (slot.CanAddMore())
+                    {
+                        int added = slot.AddItemCount(1);
+                        if (added > 0)
+                        {
+                            // 스택킹 성공
+                            savedItems.Add(new ItemInstanceData(item.uniqueID, itemData.itemID, itemData.itemName, itemData.icon, itemData.description, itemData.itemType, itemData.dirty, itemData.value, itemData.slotNum));
+                            asdf.pickUpItemCounts += 1;
+                            Debug.Log($"✅ '{itemData.itemName}' 스택킹 완료! 현재 개수: {slot.currentItemCount}");
+                            return true;
+                        }
+                    }
+                }
+            }
+            else if (slot != null)
+            {
+                Debug.Log($"  슬롯 {i}: [빈 슬롯]");
+            }
+        }
+
+        // 2단계: 스택킹이 안 되면 새로운 빈 슬롯 찾기
         for (int i = 0; i < slotList.Count; i++)
         {
             if (slotList[i].currentItem == null) // 빈 슬롯 발견
@@ -72,12 +111,13 @@ public class InventoryManager : MonoBehaviour
                 slotList[i].SetItem(itemData);
                 savedItems.Add(new ItemInstanceData(item.uniqueID, itemData.itemID, itemData.itemName, itemData.icon, itemData.description, itemData.itemType, itemData.dirty, itemData.value, itemData.slotNum));
                 asdf.pickUpItemCounts += 1;
+                Debug.Log($"'{itemData.itemName}' 새로운 슬롯에 추가됨!");
                 return true; // 아이템 추가 성공
             }
         }
 
-
-        Debug.Log("인벤토리가 가득 찼습니다!");
+        // 3단계: 인벤토리가 가득 참
+        Debug.Log($"인벤토리가 가득 찼습니다! '{itemData.itemName}'을(를) 추가할 수 없습니다.");
         return false; // 실패
     }
 
@@ -201,6 +241,30 @@ public class InventoryManager : MonoBehaviour
         {
             slotList.Remove(slot);
             Destroy(slot.gameObject);
+        }
+    }
+
+    /// <summary>
+    /// 슬롯은 유지하고 아이템 내용만 제거합니다 (판매용)
+    /// </summary>
+    /// <param name="slot">내용을 비울 슬롯</param>
+    public void ClearSlotContents(InventorySlotData slot)
+    {
+        if (slot == null)
+        {
+            Debug.LogWarning("ClearSlotContents: slot이 null입니다!");
+            return;
+        }
+
+        if (slotList.Contains(slot))
+        {
+            // 슬롯 내용만 비우기 (슬롯 자체는 유지)
+            slot.ClearSlot();
+            Debug.Log($"슬롯 내용 제거 완료 - 슬롯은 유지됨");
+        }
+        else
+        {
+            Debug.LogWarning("ClearSlotContents: 해당 슬롯이 slotList에 없습니다!");
         }
     }
 

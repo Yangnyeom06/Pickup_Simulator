@@ -164,26 +164,15 @@ public class SaleSystem : MonoBehaviour, ISaleSystem
 
         // 1) 판매 정보 미리 저장
         var itemData  = selectedSlot.currentItem;
-        int gain      = itemData.value;
+        int gain      = itemData.price;
 
         // 2) 돈 입금
         moneyManager.AddMoney(gain);
 
-        // 3) 인벤토리에서 아이템 제거
-        inventoryManager.RemoveItemByInstance(selectedSlot.originalInventorySlot);
-        Destroy(selectedSlot.gameObject); // 슬롯 객체 삭제
-
-
-        // // 4) 남은 수량이 0이면, 저장된 itemID로 슬롯 자체 삭제
-        // if (selectedSlot.currentItemCount <= 0)
-        // {
-            GameObject slotObj = selectedSlot.gameObject;
-            inventoryManager.RemoveItemByInstance(selectedSlot.originalInventorySlot);
-            RefreshSellSlots();
-            ResetSaleState();
-            Destroy(slotObj);
-
-        // }
+        // 3) 인벤토리에서 아이템 내용만 제거 (슬롯은 유지)
+        inventoryManager.ClearSlotContents(selectedSlot.originalInventorySlot);
+        
+        Debug.Log($"아이템 판매 완료: {itemData.itemName} - 슬롯은 유지됨");
 
         // 5) UI 갱신
         RefreshSellSlots();

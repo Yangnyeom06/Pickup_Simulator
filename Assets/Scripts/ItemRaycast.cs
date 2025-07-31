@@ -43,12 +43,60 @@ public class ItemRaycast : MonoBehaviour
     [SerializeField] public Camera mRayCamera; //레이를 쏠 카메라 (메인카메라)
 
     [SerializeField] private InventoryManager mInventory; //인벤토리 메인
+
+    // Large 아이템 상태를 외부에서 접근할 수 있도록 하는 프로퍼티들
+    public bool IsHoldingLargeItem => hand;
+    public GameObject CurrentLargeItem => mLargeItemObject;
+    public Item CurrentLargeItemData => mLargeItemObject?.GetComponent<Item>();
+    
+    /// <summary>
+    /// 현재 들고 있는 Large 아이템을 판매로 인해 제거합니다
+    /// </summary>
+    public void SellCurrentLargeItem()
+    {
+        if (hand && mLargeItemObject != null)
+        {
+            string itemName = mLargeItemObject.name;
+            Debug.Log($"[SellCurrentLargeItem] Large 아이템 판매로 인한 제거: {itemName}");
+            Debug.Log($"[SellCurrentLargeItem] 제거 전 상태 - hand: {hand}, mLargeItemObject: {mLargeItemObject != null}");
+            
+            Destroy(mLargeItemObject);
+            mLargeItemObject = null;
+            hand = false;
+            
+            Debug.Log($"[SellCurrentLargeItem] 제거 후 상태 - hand: {hand}, mLargeItemObject: {mLargeItemObject != null}");
+            Debug.Log($"[SellCurrentLargeItem] IsHoldingLargeItem: {IsHoldingLargeItem}");
+        }
+        else
+        {
+            Debug.LogWarning($"[SellCurrentLargeItem] 제거할 수 없음 - hand: {hand}, mLargeItemObject: {mLargeItemObject != null}");
+        }
+    }
     // [SerializeField] private ItemActionManager mItemActionCustomFunc; //아이템 상호작용 커스텀 함수 매니저 (이 글에서는 설명 X)
     // [SerializeField] private ItemRaycastInfoText mItemRaycastInfoText; //아이템 상호작용 가능시 보여질 텍스트 매니저 (이 글에서는 설명 X)
     
     private void Start()
     {
         mPlayerTransform = this.transform;
+        
+        // 필수 컴포넌트들이 할당되었는지 확인
+        if (mRayCamera == null)
+        {
+            Debug.LogError("ItemRaycast: mRayCamera가 할당되지 않았습니다!");
+        }
+        
+        if (mInventory == null)
+        {
+            Debug.LogError("ItemRaycast: mInventory가 할당되지 않았습니다!");
+            // 자동으로 찾아보기
+            mInventory = FindFirstObjectByType<InventoryManager>();
+            if (mInventory != null)
+            {
+                Debug.Log("ItemRaycast: InventoryManager를 자동으로 찾았습니다.");
+            }
+        }
+        
+        Debug.Log($"ItemRaycast 초기화 완료 - 레이캐스트 거리: {mRayDistance}");
     }
     
 
@@ -114,7 +162,8 @@ public class ItemRaycast : MonoBehaviour
         {
             if (Physics.Raycast(mRayCamera.transform.position, mRayCamera.transform.forward, out mHit, mRayDistance))
             {
-                //Debug.Log("raycast 확인");
+                // 레이캐스트가 뭔가에 닿았을 때 디버깅
+                //Debug.Log($"레이캐스트 적중: {mHit.transform.name} (태그: {mHit.transform.tag})");
                 // 스낵 아이템 먼저 체크
                 SnackItem snackItem = mHit.transform.GetComponent<SnackItem>();
                 if (snackItem != null)
@@ -148,6 +197,13 @@ public class ItemRaycast : MonoBehaviour
                 {
                     //현재 레이캐스트된 아이템
                     Item rayCastedItem = mHit.transform.GetComponent<Item>();
+                    
+                    if (rayCastedItem == null)
+                    {
+                        Debug.LogWarning($"'{mHit.transform.name}'은 'Item' 태그를 가지고 있지만 Item 컴포넌트가 없습니다!");
+                        ItemInfoDisappear();
+                        return;
+                    }
 
                     if (mCurrentItem == rayCastedItem)
                     {
@@ -162,7 +218,7 @@ public class ItemRaycast : MonoBehaviour
                     followMouseImage.SetActive(true); // 아이템 설명 이미지+텍스트 보이도록..
 
 
-                    if (mCurrentItem != null && mCurrentItem.GetComponent<Item>() != null)
+                    if (mCurrentItem != null && mCurrentItem.itemData != null)
                     {
                         explainText.text = mCurrentItem.itemData.itemName;
                         explainText.text += mCurrentItem.itemData.itemRarity.ToString();
@@ -170,21 +226,17 @@ public class ItemRaycast : MonoBehaviour
                         explainText.text += mCurrentItem.itemData.value.ToString();
                         explainText.text += mCurrentItem.itemData.dirty.ToString();
                         explainText.text += mCurrentItem.itemData.description;
+                        
+                        Debug.LogFormat("아이템: {0} 획득 가능", mCurrentItem.itemData.itemName);
+                        mIsPickupActive = true;
                     }
                     else
                     {
                         followMouseImage.SetActive(false);
-                        //explainText.text = ""; // 또는 다른 기본 텍스트를 넣어줄 수 있습니다.
+                        Debug.LogWarning($"'{mHit.transform.name}'의 itemData가 null입니다!");
+                        ItemInfoDisappear();
+                        return;
                     }
-
-                    if (mHit.transform.tag != "Item") // 슬롯에서 벗어났으면 설명창 닫기
-                    {
-                        followMouseImage.SetActive(false);
-                    }
-
-                    Debug.LogFormat("아이템: {0} 획득 가능", mCurrentItem.itemData.itemName);
-
-                    mIsPickupActive = true;
 
                     return;
                 }
@@ -197,6 +249,8 @@ public class ItemRaycast : MonoBehaviour
             //레이캐스트 결과가 없으면 비활성화
             else
             {
+                // 레이캐스트가 아무것도 감지하지 못함
+                //Debug.Log("레이캐스트 결과 없음");
                 ItemInfoDisappear();
             }
         }
@@ -227,14 +281,52 @@ public class ItemRaycast : MonoBehaviour
     {
         if (mIsPickupActive)
         {
-            // mItemActionCustomFunc.InteractionItem(mCurrentItem.Item, mCurrentItem.gameObject); (이 글에서는 설명 X)
-
-
-            mInventory.AddItem(mCurrentItem.itemData, mCurrentItem);
-            Destroy(mCurrentItem.gameObject);
-
+            if (mCurrentItem == null)
+            {
+                Debug.LogError("TryPickUp: mCurrentItem이 null입니다!");
+                ItemInfoDisappear();
+                return;
+            }
+            
+            if (mInventory == null)
+            {
+                Debug.LogError("TryPickUp: mInventory가 null입니다! Inspector에서 할당하세요.");
+                // 다시 한번 찾아보기
+                mInventory = FindFirstObjectByType<InventoryManager>();
+                if (mInventory == null)
+                {
+                    Debug.LogError("InventoryManager를 찾을 수 없습니다!");
+                    return;
+                }
+            }
+            
+            if (mCurrentItem.itemData == null)
+            {
+                Debug.LogError($"TryPickUp: {mCurrentItem.name}의 itemData가 null입니다!");
+                ItemInfoDisappear();
+                return;
+            }
+            
+            Debug.Log($"아이템 '{mCurrentItem.itemData.itemName}' 줍기 시도 중...");
+            
+            // 인벤토리에 아이템 추가 시도
+            bool success = mInventory.AddItem(mCurrentItem.itemData, mCurrentItem);
+            
+            if (success)
+            {
+                Debug.Log($"✅ '{mCurrentItem.itemData.itemName}' 성공적으로 주웠습니다!");
+                Destroy(mCurrentItem.gameObject);
+            }
+            else
+            {
+                Debug.Log($"❌ '{mCurrentItem.itemData.itemName}' 줍기 실패 - 인벤토리가 가득참");
+            }
 
             ItemInfoDisappear();
+        }
+        else
+        {
+            Debug.LogWarning("TryPickUp 호출되었지만 mIsPickupActive가 false입니다.");
         }
     }
 

@@ -46,7 +46,7 @@ public class SaveManager : MonoBehaviour
         // 오브젝트와 UI 저장
         currentSaveData.uiObjects.Clear();
 
-        foreach (var u in Resources.FindObjectsOfTypeAll<Item>())
+        foreach (var u in Object.FindObjectsByType<Item>(FindObjectsInactive.Include, FindObjectsSortMode.None))
         {
             if (!u.gameObject.scene.IsValid()) continue;
 

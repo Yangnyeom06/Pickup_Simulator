@@ -29,12 +29,12 @@ public class SnackItem : MonoBehaviour
             else
             {
                 // 싱글톤이 없으면 직접 찾기
-                buySystem = FindObjectOfType<BuySystem>();
+                buySystem = FindFirstObjectByType<BuySystem>();
                 
                 // 비활성화된 것도 포함해서 찾기
                 if (buySystem == null)
                 {
-                    buySystem = FindObjectOfType<BuySystem>(true);
+                    buySystem = FindFirstObjectByType<BuySystem>(FindObjectsInactive.Include);
                 }
                 
                 if (buySystem == null)

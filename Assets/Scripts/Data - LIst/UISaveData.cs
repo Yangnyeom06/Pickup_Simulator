@@ -42,7 +42,7 @@ public class UISaveData
 
     public void Apply()
     {
-        foreach (var obj in GameObject.FindObjectsOfType<Item>())
+        foreach (var obj in Object.FindObjectsByType<Item>(FindObjectsSortMode.None))
         {
             if (obj.uniqueID == uniqueID)
             {

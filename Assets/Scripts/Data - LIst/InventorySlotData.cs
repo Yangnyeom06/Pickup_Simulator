@@ -123,6 +123,78 @@ public class InventorySlotData : MonoBehaviour
         }
     }
 
+    /// <summary>
+    /// 같은 아이템이 있는 슬롯에 아이템 개수를 증가시킵니다
+    /// </summary>
+    /// <param name="amount">증가시킬 개수</param>
+    /// <returns>실제로 추가된 개수</returns>
+    public int AddItemCount(int amount = 1)
+    {
+        if (currentItem == null) return 0;
+        
+        int maxStack = currentItem.maxStackSize;
+        int canAdd = maxStack - currentItemCount;
+        int actualAdded = Mathf.Min(amount, canAdd);
+        
+        currentItemCount += actualAdded;
+        
+        // UI 업데이트
+        if (countText != null)
+        {
+            countText.text = currentItemCount.ToString();
+        }
+        
+        return actualAdded;
+    }
+
+    /// <summary>
+    /// 같은 아이템인지 확인합니다 (itemID 기준)
+    /// </summary>
+    /// <param name="otherItem">비교할 아이템</param>
+    /// <returns>같은 아이템이면 true</returns>
+    public bool IsSameItem(ItemData otherItem)
+    {
+        if (currentItem == null || otherItem == null)
+        {
+            Debug.Log($"[IsSameItem] null 체크 실패 - currentItem: {currentItem != null}, otherItem: {otherItem != null}");
+            return false;
+        }
+        
+        // 다양한 방법으로 아이템 비교
+        bool isSame = false;
+        
+        // 1순위: ScriptableObject 참조 직접 비교 (가장 정확)
+        if (currentItem == otherItem)
+        {
+            isSame = true;
+            Debug.Log($"[IsSameItem] 참조 비교: 같은 ScriptableObject → {isSame}");
+        }
+        // 2순위: itemID 비교
+        else if (!string.IsNullOrEmpty(currentItem.itemID) && !string.IsNullOrEmpty(otherItem.itemID))
+        {
+            isSame = currentItem.itemID == otherItem.itemID;
+            Debug.Log($"[IsSameItem] ID 비교: '{currentItem.itemName}' (ID: '{currentItem.itemID}') vs '{otherItem.itemName}' (ID: '{otherItem.itemID}') → {isSame}");
+        }
+        // 3순위: itemName 비교
+        else
+        {
+            isSame = currentItem.itemName == otherItem.itemName;
+            Debug.Log($"[IsSameItem] 이름 비교: '{currentItem.itemName}' vs '{otherItem.itemName}' → {isSame}");
+        }
+        
+        return isSame;
+    }
+
+    /// <summary>
+    /// 이 슬롯에 더 많은 아이템을 추가할 수 있는지 확인합니다
+    /// </summary>
+    /// <returns>추가 가능하면 true</returns>
+    public bool CanAddMore()
+    {
+        if (currentItem == null) return false;
+        return currentItemCount < currentItem.maxStackSize;
+    }
+
     public void OnInfoButtonClicked()
     {
         if (currentItem != null)
@@ -179,23 +251,62 @@ public class InventorySlotData : MonoBehaviour
 
     public void SetupSlot(ItemData item, int count, ISaleSystem system)
     {
+        Debug.Log($"[SetupSlot] ★★★ 슬롯 설정 시작 ★★★");
+        Debug.Log($"[SetupSlot] item: {item}");
+        Debug.Log($"[SetupSlot] item.itemName: {(item != null ? item.itemName : "NULL")}");
+        Debug.Log($"[SetupSlot] count: {count}");
+        Debug.Log($"[SetupSlot] system: {system}");
+        
         saleSystem = system;
-        currentItem        = item;
-        // currentItemCount   = count;
+        currentItem = item;
+        currentItemCount = count;
+        
+        Debug.Log($"[SetupSlot] 설정 완료 - currentItem: {currentItem}");
 
-        GetComponent<Button>().onClick.RemoveAllListeners();
-        GetComponent<Button>().onClick.AddListener(() => saleSystem.OnSlotClicked(this));
-
+        // Main Button 설정 (판매 시스템용)
+        var mainButton = GetComponent<Button>();
+        if (mainButton != null)
+        {
+            mainButton.onClick.RemoveAllListeners();
+            mainButton.onClick.AddListener(() => {
+                Debug.Log($"[SetupSlot] ★★★ 메인 버튼 클릭됨: {item.itemName} ★★★");
+                Debug.Log($"[SetupSlot] 클릭 시 currentItem: {currentItem}");
+                Debug.Log($"[SetupSlot] 클릭 시 saleSystem: {saleSystem}");
+                saleSystem.OnSlotClicked(this);
+            });
+        }
+        else
+        {
+            Debug.LogError($"[SetupSlot] GetComponent<Button>()가 null을 반환했습니다! GameObject: {gameObject.name}");
+        }
 
         // 아이콘 & 수량 UI 갱신
         ItemSlotImage.sprite = item.icon;
         ItemSlotImage.enabled = true;
-        // if (countText != null)
-        //     countText.text = currentItemCount.ToString();
+        if (countText != null)
+        {
+            countText.text = currentItemCount.ToString();
+        }
 
-        // 클릭 리스너: 이 슬롯이 클릭되면 바로 SaleSystem.OnSlotClicked(this)
-        ItemSlotButton.onClick.RemoveAllListeners();
-        ItemSlotButton.onClick.AddListener(OnSlotButtonClicked);
+        // ItemSlotButton도 판매 시스템에 연결 (보조 버튼)
+        if (ItemSlotButton != null)
+        {
+            ItemSlotButton.onClick.RemoveAllListeners();
+            ItemSlotButton.onClick.AddListener(() => {
+                Debug.Log($"[SetupSlot] ★★★ ItemSlotButton 클릭됨: {item.itemName} ★★★");
+                Debug.Log($"[SetupSlot] 클릭 시 currentItem: {currentItem}");
+                Debug.Log($"[SetupSlot] 클릭 시 saleSystem: {saleSystem}");
+                saleSystem.OnSlotClicked(this);
+            });
+            ItemSlotButton.interactable = true;
+            Debug.Log($"[SetupSlot] ItemSlotButton 이벤트 설정 완료: {item.itemName}");
+        }
+        else
+        {
+            Debug.LogWarning($"[SetupSlot] ItemSlotButton이 null입니다! GameObject: {gameObject.name}");
+        }
+        
+        Debug.Log($"[SetupSlot] 슬롯 설정 완료: {item.itemName}");
     }
     
     public void OnSlotButtonClicked()
