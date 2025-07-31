@@ -62,7 +62,8 @@ public class StoreNPC : MonoBehaviour
 
     public void OnBuyClicked()
     {
-        buySystem.OpenCartWithInventorySnacks(); // 인벤토리 기반 장바구니 UI 열기
+        // cartSnacks에 저장된 주운 아이템으로 장바구니 UI 열기
+        buySystem.OpenCart();
         HideButtons();
     }
 
@@ -83,5 +84,7 @@ public class StoreNPC : MonoBehaviour
             sellButton.gameObject.SetActive(false); 
         }
     }
+
+    
 }
 

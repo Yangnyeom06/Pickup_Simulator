@@ -110,24 +110,20 @@ public class InventoryManager : MonoBehaviour
         return false;
     }
 
-    
-    public bool AddSnack(SnackData snackData)
+    public void AddSnack(SnackData snack)
     {
-        for (int i = 0; i < slotList.Count; i++)
+        // slotList의 빈 슬롯에 snack을 넣는 로직을 구현해야 함
+        // 예시:
+        foreach (var slot in slotList)
         {
-            if (slotList[i].currentSnack == null) // 빈 슬롯 발견
+            if (slot.currentSnack == null)
             {
-                if (slotList[i].currentSnack == snackData)
-                {
-                    snackData.slotNum = i;
-                    slotList[i].SetSnack(snackData);
-                    savedSnacks.Add(new SnackInstanceData(snackData.itemID, snackData.snackName, snackData.icon, snackData.description, snackData.itemStat, snackData.slotNum));
-                }
-                return true; // 아이템 추가 성공
+                slot.SetSnack(snack); // SetSnack은 슬롯에 스낵을 할당하는 메서드여야 함
+                Debug.Log($"{snack.snackName}이(가) 인벤토리에 추가되었습니다.");
+                return;
             }
         }
         Debug.Log("인벤토리가 가득 찼습니다!");
-        return false; // 실패
     }
 
     public List<SnackData> GetPickedUpSnacks()

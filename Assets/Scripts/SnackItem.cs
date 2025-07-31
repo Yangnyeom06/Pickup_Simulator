@@ -24,34 +24,27 @@ public class SnackItem : MonoBehaviour
             snackItemData = GetComponent<SnackData>(); // 또는 직접 생성하거나 리소스에서 로드
     }
 
-    private void Update()
+    // Update에서 입력 처리 제거 - 중앙에서 관리하도록 변경
+    // private void Update()
+    // {
+    //     // 입력 처리는 플레이어나 중앙 매니저에서 처리
+    // }
+
+    // 외부에서 호출할 수 있는 줍기 메서드
+    public void PickupSnack()
     {
-        if (Input.GetKeyDown(KeyCode.E))
+        if (snackItemData != null)
         {
-            RaycastHit hit;
-            if (Physics.Raycast(mRayCamera.transform.position, mRayCamera.transform.forward, out hit, rayDistance))
+            if (buySystem != null)
             {
-                var snack = hit.transform.GetComponent<SnackItem>();
-                if (snack != null && snack.snackItemData != null)
-                {
-                    InventoryManager.Instance.AddSnack(snack.snackItemData);
-
-                    // ✅ 장바구니에 바로 추가
-                    if (snack.buySystem != null)
-                    {
-                        snack.buySystem.AddToSnackCart(snack.snackItemData);
-                    }
-                    else
-                    {
-                        Debug.LogWarning("BuySystem이 연결되지 않았습니다!");
-                    }
-
-                    Destroy(hit.transform.gameObject); // 아이템 제거
-                    Debug.Log($"{snack.snackItemData.snackName}을(를) 주웠습니다!");
-                }
-
+                buySystem.AddToSnackCart(snackItemData);
+                Debug.Log($"{snackItemData.snackName}을(를) 주웠습니다!");
+                Destroy(gameObject);
+            }
+            else
+            {
+                Debug.LogWarning("BuySystem이 연결되지 않았습니다!");
             }
         }
-
     }
 }

@@ -9,23 +9,25 @@ public class CartItemSlot : MonoBehaviour
     private SnackData snackData;
     private BuySystem buySystem;
 
-    public void ItemSetup(ShopItemData data, int quantity, BuySystem system)
+    public void ItemSetup(ShopItemData itemData, int quantity, BuySystem system)
     {
         if (itemNameText == null) Debug.LogError("itemNameText is null");
 
-        itemData = data;
+        itemData = itemData;
+        snackData = null;
         buySystem = system;
-        itemNameText.text = data.itemName;
+
+        itemNameText.text = $"{itemData.itemName}";
     }
 
-    public void SnackSetup(SnackData data, int quantity, BuySystem system)
+    public void SnackSetup(SnackData snackData, int quantity, BuySystem system)
     {
         if (itemNameText == null) Debug.LogError("itemNameText is null");
 
+        snackData = snackData;
+        itemData = null;    
+        buySystem = system; 
 
-        snackData = data;
-        itemData = null;
-        buySystem = system;
-
+        itemNameText.text = $"{snackData.snackName}";
     }
 }

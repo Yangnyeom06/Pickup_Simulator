@@ -61,6 +61,10 @@ public class PlayerController : MonoBehaviour {
 
     private Rigidbody myRigid;
 
+    // 아이템 상호작용 관련
+    [Header("아이템 상호작용")]
+    [SerializeField] private float interactionDistance = 100f;
+
 
     // Use this for initialization
     void Start()
@@ -89,6 +93,7 @@ public class PlayerController : MonoBehaviour {
         TryJump();
         TryRun();
         TryCrouch();
+        TryInteractWithItem(); // 아이템 상호작용 추가
         Move();
 
         if (Cursor.lockState == CursorLockMode.None) return;
@@ -265,6 +270,34 @@ public class PlayerController : MonoBehaviour {
         currentCameraRotationX = Mathf.Clamp(currentCameraRotationX, -cameraRotationLimit, cameraRotationLimit);
 
         theCamera.transform.localEulerAngles = new Vector3(currentCameraRotationX, 0f, 0f);
+    }
+
+    // 아이템 상호작용 시도
+    private void TryInteractWithItem()
+    {
+        if (Input.GetKeyDown(KeyCode.E))
+        {
+            InteractWithItem();
+        }
+    }
+
+    // 아이템 상호작용 실행
+    private void InteractWithItem()
+    {
+        RaycastHit hit;
+        if (Physics.Raycast(theCamera.transform.position, theCamera.transform.forward, out hit, interactionDistance))
+        {
+            // 스낵 아이템 확인
+            SnackItem snackItem = hit.transform.GetComponent<SnackItem>();
+            if (snackItem != null)
+            {
+                snackItem.PickupSnack();
+                return;
+            }
+
+            // 다른 아이템들도 여기서 처리 가능
+            // 예: ItemPickUp, ShopItem 등
+        }
     }
 
 }
