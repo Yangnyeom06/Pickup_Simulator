@@ -30,6 +30,7 @@ public class ItemRaycast : MonoBehaviour
     private bool mIsPickupActive = false;  //아이템 습득이 가능한가?
 
     private Item mCurrentItem; //활성화시 현재 등록된 아이템
+    private SnackItem mCurrentSnackItem; //활성화시 현재 등록된 스낵아이템
 
     private Transform mPlayerTransform;
     private GameObject mLargeItemObject;
@@ -66,27 +67,38 @@ public class ItemRaycast : MonoBehaviour
     {
         if (Input.GetKeyDown(KeyCode.E))
         {
-            if (mCurrentItem.itemData.itemType == ItemType.Large && hand == false)
+            // 스낵 아이템 처리
+            if (mCurrentSnackItem != null)
             {
-                TryPickUpLarge();
+                mCurrentSnackItem.PickupSnack();
                 ItemInfoDisappear();
+                return;
             }
-            else
+            
+            // 일반 아이템 처리
+            if (mCurrentItem != null)
             {
-                //현재 인벤토리 아이템 가져오기
-                int count = 0;
-
-                for (; count < mInventory.slotList.Count; ++count)
-                {                    //현재 아이템 칸이 null이라면 주울 수 있는 상태
-                    if (mInventory.slotList[count].currentItem == null) { break; }
+                if (mCurrentItem.itemData.itemType == ItemType.Large && hand == false)
+                {
+                    TryPickUpLarge();
+                    ItemInfoDisappear();
                 }
-                //모든 칸이 null이 아니고, 중첩이 불가능하면 주울 수 없음
-                if (count == mInventory.slotList.Count) { return; }
-                //아이템 줍는 효과음 재생
-                TryPickUp();
-                ItemInfoDisappear();
-            }
+                else
+                {
+                    //현재 인벤토리 아이템 가져오기
+                    int count = 0;
 
+                    for (; count < mInventory.slotList.Count; ++count)
+                    {                    //현재 아이템 칸이 null이라면 주울 수 있는 상태
+                        if (mInventory.slotList[count].currentItem == null) { break; }
+                    }
+                    //모든 칸이 null이 아니고, 중첩이 불가능하면 주울 수 없음
+                    if (count == mInventory.slotList.Count) { return; }
+                    //아이템 줍는 효과음 재생
+                    TryPickUp();
+                    ItemInfoDisappear();
+                }
+            }
         }
     }
 
@@ -103,10 +115,37 @@ public class ItemRaycast : MonoBehaviour
             if (Physics.Raycast(mRayCamera.transform.position, mRayCamera.transform.forward, out mHit, mRayDistance))
             {
                 //Debug.Log("raycast 확인");
+                // 스낵 아이템 먼저 체크
+                SnackItem snackItem = mHit.transform.GetComponent<SnackItem>();
+                if (snackItem != null)
+                {
+                    if (mCurrentSnackItem == snackItem)
+                    {
+                        return;
+                    }
+                    
+                    // 기존 일반 아이템 초기화
+                    mCurrentItem = null;
+                    mCurrentSnackItem = snackItem;
+                    
+                    followMouseImage.SetActive(true);
+                    
+                    if (snackItem.snackItemData != null)
+                    {
+                        explainText.text = snackItem.snackItemData.snackName;
+                        explainText.text += $"\n가격: {snackItem.snackItemData.price}";
+                        explainText.text += $"\n설명: {snackItem.snackItemData.description}";
+                    }
+                    
+                    Debug.LogFormat("스낵 아이템: {0} 획득 가능", snackItem.snackItemData.snackName);
+                    
+                    mIsPickupActive = true;
+                    return;
+                }
+                
                 //레이캐스트 결과의 태그가 아이템이라면?
                 if (mHit.transform.tag == "Item")
                 {
-
                     //현재 레이캐스트된 아이템
                     Item rayCastedItem = mHit.transform.GetComponent<Item>();
 
@@ -114,7 +153,9 @@ public class ItemRaycast : MonoBehaviour
                     {
                         return;
                     }
-                    //아이템 얻어오기 및 정보 호출
+                    
+                    // 기존 스낵 아이템 초기화
+                    mCurrentSnackItem = null;
                     mCurrentItem = mHit.transform.GetComponent<Item>();
                     // mItemRaycastInfoText.EnableText(mHit.transform.position + Vector3.up * rayCastedItem.IndicatorHeight, mCurrentItem.Item); (이 글에서는 설명 X)
 
@@ -174,6 +215,9 @@ public class ItemRaycast : MonoBehaviour
 
         //현재 아이템은 null
         mCurrentItem = null;
+        mCurrentSnackItem = null;
+        
+        followMouseImage.SetActive(false);
     }
 
     /// <summary>

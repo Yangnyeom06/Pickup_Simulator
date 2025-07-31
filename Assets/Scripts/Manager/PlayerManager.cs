@@ -87,6 +87,35 @@ public class PlayerManager : MonoBehaviour
     }
     #endregion
 
+    #region StaminaManagement
+    /// <summary>
+    /// 스낵 아이템을 사용하여 스태미나를 증가시킵니다
+    /// </summary>
+    /// <param name="amount">증가시킬 스태미나 양</param>
+    /// <returns>실제로 증가한 스태미나 양</returns>
+    public float RestoreStamina(float amount)
+    {
+        if (amount <= 0) return 0;
+
+        float previousStamina = staminaLevel.current;
+        float newStamina = Mathf.Min(staminaLevel.current + amount, staminaLevel.max);
+        staminaLevel.current = newStamina;
+
+        float actualIncrease = newStamina - previousStamina;
+        Debug.Log($"스태미나 회복: +{actualIncrease} (현재: {newStamina}/{staminaLevel.max})");
+        
+        return actualIncrease;
+    }
+
+    /// <summary>
+    /// 현재 스태미나가 최대치인지 확인
+    /// </summary>
+    /// <returns>스태미나가 최대치면 true</returns>
+    public bool IsStaminaFull()
+    {
+        return staminaLevel.current >= staminaLevel.max;
+    }
+    #endregion
 
     public void ResetPlayerData()
     {

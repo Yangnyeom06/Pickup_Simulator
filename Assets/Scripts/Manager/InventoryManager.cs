@@ -128,7 +128,8 @@ public class InventoryManager : MonoBehaviour
                 continue;
             }
 
-            if (slot.currentSnack == null)
+            // 완전히 빈 슬롯을 찾아야 함 (currentItem, currentShopItem, currentSnack 모두 null)
+            if (slot.currentItem == null && slot.currentShopItem == null && slot.currentSnack == null)
             {
                 slot.SetSnack(snack); // SetSnack은 슬롯에 스낵을 할당하는 메서드여야 함
                 Debug.Log($"{snack.snackName}이(가) 인벤토리에 추가되었습니다.");

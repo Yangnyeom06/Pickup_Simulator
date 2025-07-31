@@ -93,7 +93,7 @@ public class PlayerController : MonoBehaviour {
         TryJump();
         TryRun();
         TryCrouch();
-        TryInteractWithItem(); // 아이템 상호작용 추가
+        // TryInteractWithItem(); // ItemRaycast.cs에서 통합 처리
         Move();
 
         if (Cursor.lockState == CursorLockMode.None) return;
@@ -295,8 +295,38 @@ public class PlayerController : MonoBehaviour {
                 return;
             }
 
-            // 다른 아이템들도 여기서 처리 가능
-            // 예: ItemPickUp, ShopItem 등
+            // 일반 아이템 확인
+            Item generalItem = hit.transform.GetComponent<Item>();
+            if (generalItem != null)
+            {
+                // InventoryManager에 아이템 추가 시도
+                if (InventoryManager.Instance.AddItem(generalItem.itemData, generalItem))
+                {
+                    Debug.Log($"{generalItem.itemData.itemName}을(를) 주웠습니다!");
+                    Destroy(generalItem.gameObject);
+                }
+                else
+                {
+                    Debug.Log("인벤토리가 가득 찼습니다!");
+                }
+                return;
+            }
+
+            // ItemPickUp 컴포넌트가 있는 아이템 확인
+            ItemPickUp itemPickup = hit.transform.GetComponent<ItemPickUp>();
+            if (itemPickup != null && itemPickup.Item != null)
+            {
+                if (InventoryManager.Instance.AddItem(itemPickup.Item.itemData, itemPickup.Item))
+                {
+                    Debug.Log($"{itemPickup.Item.itemData.itemName}을(를) 주웠습니다!");
+                    Destroy(itemPickup.gameObject);
+                }
+                else
+                {
+                    Debug.Log("인벤토리가 가득 찼습니다!");
+                }
+                return;
+            }
         }
     }
 
