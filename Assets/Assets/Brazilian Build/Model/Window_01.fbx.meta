@@ -1,0 +1,154 @@
+fileFormatVersion: 2
+guid: 2e7ffe3e3266bad4aa989c93222ca3eb
+ModelImporter:
+  serializedVersion: 21300
+  internalIDToNameTable:
+  - first:
+      74: 3838152104735352790
+    second: Win_Sqr_Right|Cube.002|Cube|CubeAction|Cube|CubeAction
+  - first:
+      74: 7947481303074407704
+    second: Win_Sqr_Right|Cube|Cube|Cube|Cube|CubeAction|Cube|CubeAction|Cube|Cube|Cube|C
+  - first:
+      74: -1980058595469898135
+    second: Glass_Left|Cube.002|Cube|CubeAction|Cube|CubeAction
+  - first:
+      74: 3438654270463187670
+    second: Glass_Left|Cube|Cube|Cube|Cube|CubeAction|Cube|CubeAction|Cube|Cube|Cube|C
+  - first:
+      74: -741438772357871764
+    second: Glass_Right|Cube.002|Cube|CubeAction|Cube|CubeAction
+  - first:
+      74: 6961169155748733589
+    second: Glass_Right|Cube|Cube|Cube|Cube|CubeAction|Cube|CubeAction|Cube|Cube|Cube|C
+  - first:
+      74: 4268238643265677410
+    second: Win_Sqr_Left|Cube.002|Cube|CubeAction|Cube|CubeAction
+  - first:
+      74: -726409146182615304
+    second: Win_Sqr_Left|Cube|Cube|Cube|Cube|CubeAction|Cube|CubeAction|Cube|Cube|Cube|C
+  - first:
+      74: -8729217855545278875
+    second: Win_Top|Cube.002|Cube|CubeAction|Cube|CubeAction
+  - first:
+      74: 4605829323073155125
+    second: Win_Top|Cube|Cube|Cube|Cube|CubeAction|Cube|CubeAction|Cube|Cube|Cube|C
+  externalObjects:
+  - first:
+      type: UnityEngine:Material
+      assembly: UnityEngine.CoreModule
+      name: Material.002
+    second: {fileID: 2100000, guid: 7a4b5485eb22de84ea3e90f043818aec, type: 2}
+  - first:
+      type: UnityEngine:Material
+      assembly: UnityEngine.CoreModule
+      name: Material5
+    second: {fileID: 2100000, guid: a6e872bed075a084391864e769349eda, type: 2}
+  materials:
+    materialImportMode: 2
+    materialName: 0
+    materialSearch: 1
+    materialLocation: 1
+  animations:
+    legacyGenerateAnimations: 4
+    bakeSimulation: 0
+    resampleCurves: 1
+    optimizeGameObjects: 0
+    removeConstantScaleCurves: 1
+    motionNodeName: 
+    rigImportErrors: 
+    rigImportWarnings: 
+    animationImportErrors: 
+    animationImportWarnings: 
+    animationRetargetingWarnings: 
+    animationDoRetargetingWarnings: 0
+    importAnimatedCustomProperties: 0
+    importConstraints: 0
+    animationCompression: 1
+    animationRotationError: 0.5
+    animationPositionError: 0.5
+    animationScaleError: 0.5
+    animationWrapMode: 0
+    extraExposedTransformPaths: []
+    extraUserProperties:
+    - '#BAKERY{"meshName":["Win_01_Top_Glass","Window_01","Win_01_Sqr_Glass_Right","Win_01_Sqr_Left","Win_01_Sqr_Glass_Left","Win_01_Glass_Right","Win_01_Sqr_Right","Win_01_Top","Win_01_Glass_Left"],"padding":[216,95,208,229,208,208,229,201,208],"unwrapper":[0,0,0,0,0,0,0,0,0]}'
+    clipAnimations: []
+    isReadable: 0
+  meshes:
+    lODScreenPercentages: []
+    globalScale: 1
+    meshCompression: 0
+    addColliders: 0
+    useSRGBMaterialColor: 1
+    sortHierarchyByName: 1
+    importVisibility: 0
+    importBlendShapes: 0
+    importCameras: 0
+    importLights: 0
+    nodeNameCollisionStrategy: 1
+    fileIdsGeneration: 2
+    swapUVChannels: 0
+    generateSecondaryUV: 1
+    useFileUnits: 1
+    keepQuads: 0
+    weldVertices: 1
+    bakeAxisConversion: 0
+    preserveHierarchy: 0
+    skinWeightsMode: 0
+    maxBonesPerVertex: 4
+    minBoneWeight: 0.001
+    optimizeBones: 1
+    meshOptimizationFlags: -1
+    indexFormat: 1
+    secondaryUVAngleDistortion: 8
+    secondaryUVAreaDistortion: 15
+    secondaryUVHardAngle: 88
+    secondaryUVMarginMethod: 1
+    secondaryUVMinLightmapResolution: 30
+    secondaryUVMinObjectScale: 1
+    secondaryUVPackMargin: 4
+    useFileScale: 1
+  tangentSpace:
+    normalSmoothAngle: 5
+    normalImportMode: 0
+    tangentImportMode: 3
+    normalCalculationMode: 1
+    legacyComputeAllNormalsFromSmoothingGroupsWhenMeshHasBlendShapes: 1
+    blendShapeNormalImportMode: 1
+    normalSmoothingSource: 0
+  referencedClips: []
+  importAnimation: 0
+  humanDescription:
+    serializedVersion: 3
+    human: []
+    skeleton: []
+    armTwist: 0.5
+    foreArmTwist: 0.5
+    upperLegTwist: 0.5
+    legTwist: 0.5
+    armStretch: 0.05
+    legStretch: 0.05
+    feetSpacing: 0
+    globalScale: 1
+    rootMotionBoneName: 
+    hasTranslationDoF: 0
+    hasExtraRoot: 0
+    skeletonHasParents: 1
+  lastHumanDescriptionAvatarSource: {instanceID: 0}
+  autoGenerateAvatarMappingIfUnspecified: 1
+  animationType: 2
+  humanoidOversampling: 1
+  avatarSetup: 0
+  addHumanoidExtraRootOnlyWhenUsingAvatar: 1
+  remapMaterialsIfMaterialImportModeIsNone: 1
+  additionalBone: 0
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 
+AssetOrigin:
+  serializedVersion: 1
+  productId: 236038
+  packageName: Brazilian Favela Modular Pack
+  packageVersion: 2.1
+  assetPath: Assets/Brazilian Build/Model/Window_01.fbx
+  uploadId: 674523
