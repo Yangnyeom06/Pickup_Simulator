@@ -47,6 +47,7 @@ public class ItemSpawner : MonoBehaviour
                 if (item != null)
                 {
                     item.SetItemData(itemDataClone); // 복사된 ItemData 설정
+                    item.AssignUniqueId(); // 고유 Id 부여
                 }
             }
         }

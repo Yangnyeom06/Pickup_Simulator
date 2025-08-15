@@ -1,9 +1,11 @@
+using System.Data.Common;
 using Unity.VisualScripting;
 using UnityEngine;
-
+using System;
 
 public class Item : MonoBehaviour
 {
+    public string uniqueID;
     public ItemData itemData; // 아이템 데이터 참조
     InventoryManager inventoryManager;
 /*
@@ -28,13 +30,8 @@ public class Item : MonoBehaviour
         itemData = data;
     }
 
-    public void GotItem()
+    public void AssignUniqueId()
     {
-        inventoryManager.AddItem(itemData);
-    }
-
-    public void DeleteItem()
-    {
-        Destroy(gameObject);
+        uniqueID = Guid.NewGuid().ToString();
     }
 }

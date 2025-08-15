@@ -3,6 +3,7 @@ using UnityEngine;
 [System.Serializable]
 public class ItemInstanceData
 {
+    public string uniqueID; // 고유 ID
     public string itemID;       // SO의 식별자 (예: 이름 또는 GUID).
     public string itemName; // 이름
     public Sprite icon; // 아이템 아이콘 (인벤토리에 들어올때 아이콘)
@@ -14,8 +15,9 @@ public class ItemInstanceData
     public int slotNum;
 
 
-    public ItemInstanceData(string itemID, string itemName, Sprite icon, string description, ItemType itemType, float dirty, int value, int slotNum)
+    public ItemInstanceData(string uniqueID, string itemID, string itemName, Sprite icon, string description, ItemType itemType, float dirty, int value, int slotNum)
     {
+        this.uniqueID = uniqueID;
         this.itemID = itemID;
         this.itemName = itemName;
         this.icon = icon;

@@ -552,7 +552,8 @@ MonoBehaviour:
   m_isRightToLeft: 0
   m_fontAsset: {fileID: 11400000, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
   m_sharedMaterial: {fileID: 2180264, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
-  m_fontSharedMaterials: []
+  m_fontSharedMaterials:
+  - {fileID: 2180264, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
   m_fontMaterial: {fileID: 0}
   m_fontMaterials: []
   m_fontColor32:
@@ -793,8 +794,21 @@ MonoBehaviour:
     inventoryData:
       savedSlotCounts: 0
       savedItems: []
-  playerStats: {fileID: 0}
+    gameData:
+      timerTime: 0
+      year: 0
+      month: 0
+      day: 0
+      timeOfDay: 0
+      pickUpItemCounts: 0
+      sellItemCounts: 0
+      todayGetMoney: 0
+      todaySpendMoney: 0
+    uiObjects: []
+  player: {fileID: 0}
   inventory: {fileID: 0}
+  asdf: {fileID: 0}
+  slotId: 0
 --- !u!4 &1078019072
 Transform:
   m_ObjectHideFlags: 0

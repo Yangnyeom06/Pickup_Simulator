@@ -45,13 +45,14 @@ public class PlayerController : MonoBehaviour {
 
     // 민감도
     [SerializeField]
-    private float lookSensitivity;
+    private float lookSensitivity = 2f;
 
 
     // 카메라 한계
     [SerializeField]
     private float cameraRotationLimit;
     private float currentCameraRotationX = 0;
+    private const string PREF_KEY_SENS = "LookSensitivity";
 
 
     //필요한 컴포넌트
@@ -61,8 +62,9 @@ public class PlayerController : MonoBehaviour {
     private Rigidbody myRigid;
 
 
-	// Use this for initialization
-	void Start () {
+    // Use this for initialization
+    void Start()
+    {
         boxCollider = GetComponent<BoxCollider>();
         myRigid = GetComponent<Rigidbody>();
         applySpeed = walkSpeed;
@@ -70,28 +72,45 @@ public class PlayerController : MonoBehaviour {
         // 초기화.
         originPosY = theCamera.transform.localPosition.y;
         applyCrouchPosY = originPosY;
+        
+         if (PlayerPrefs.HasKey(PREF_KEY_SENS))
+            lookSensitivity = PlayerPrefs.GetFloat(PREF_KEY_SENS);
+
     }
-	
 
 
 
-	// Update is called once per frame
-	void Update () {
+
+    // Update is called once per frame
+    void Update()
+    {
 
         IsGround();
         TryJump();
         TryRun();
         TryCrouch();
         Move();
-        
+
         if (Cursor.lockState == CursorLockMode.None) return;
 
         CameraRotation();
         CharacterRotation();
-
-        Interact();
+        
+    
 
 	}
+
+    public float LookSensitivity
+    {
+        get => lookSensitivity;
+        set
+        {
+            lookSensitivity = Mathf.Clamp(value, 0.1f, 20f);
+            PlayerPrefs.SetFloat(PREF_KEY_SENS, lookSensitivity); // 씬 간 공유
+        }
+    }
+
+
 
     // 앉기 시도
     private void TryCrouch()
@@ -247,32 +266,5 @@ public class PlayerController : MonoBehaviour {
 
         theCamera.transform.localEulerAngles = new Vector3(currentCameraRotationX, 0f, 0f);
     }
-
-    private void Interact()
-    {
-        if (Input.GetKeyDown(KeyCode.E))
-        {
-            Ray ray = theCamera.ScreenPointToRay(new Vector3(Screen.width / 2, Screen.height / 2));
-            if (Physics.Raycast(ray, out RaycastHit hit, 3f))
-            {
-                // 양쪽 문
-                DoorInteract doubleDoor = hit.collider.GetComponent<DoorInteract>();
-                if (doubleDoor != null)
-                {
-                    doubleDoor.Interact();
-                    return;
-                }
-
-                // 한쪽 문
-                SingleDoorInteract singleDoor = hit.collider.GetComponent<SingleDoorInteract>();
-                if (singleDoor != null)
-                {
-                    singleDoor.Interact();
-                    return;
-                }
-            }
-        }
-    }
-
 
 }
