@@ -53,13 +53,9 @@ public class SnackItem : MonoBehaviour
             snackItemData = GetComponent<SnackData>(); // 또는 직접 생성하거나 리소스에서 로드
     }
 
-    // Update에서 입력 처리 제거 - 중앙에서 관리하도록 변경
-    // private void Update()
-    // {
-    //     // 입력 처리는 플레이어나 중앙 매니저에서 처리
-    // }
 
-    // 외부에서 호출할 수 있는 줍기 메서드
+
+    // 외부에서 호출할 수 있는 줍기 메서드 (하위 호환성을 위해 유지)
     public void PickupSnack()
     {
         if (snackItemData != null)
@@ -68,12 +64,16 @@ public class SnackItem : MonoBehaviour
             {
                 buySystem.AddToSnackCart(snackItemData);
                 Debug.Log($"{snackItemData.snackName}을(를) 주웠습니다!");
-                Destroy(gameObject);
+                // 반복 구매 가능하도록 오브젝트는 삭제하지 않음
             }
             else
             {
                 Debug.LogWarning("BuySystem이 연결되지 않았습니다!");
             }
+        }
+        else
+        {
+            Debug.LogWarning("SnackItemData가 설정되지 않았습니다!");
         }
     }
 }

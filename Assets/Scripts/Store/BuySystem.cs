@@ -51,28 +51,27 @@ public class BuySystem : MonoBehaviour, IPointerClickHandler
 
     public void AddToSnackCart(SnackData snackData)
     {
+        Debug.Log($"AddToSnackCart 호출됨: {snackData?.snackName ?? "null"}");
+        
         if (snackData == null)
         {
-            Debug.LogError($"CartSnack is null");
+            Debug.LogWarning("AddToSnackCart: snackData가 null입니다!");
             return;
         }
         
-        Debug.Log($"AddToSnackCart 시작 - 스낵: {snackData.snackName} (ID: {snackData.itemID})");
-        Debug.Log($"현재 cartSnacks.ContainsKey 결과: {cartSnacks.ContainsKey(snackData)}");
-        
         if (cartSnacks.ContainsKey(snackData))
         {
+            int beforeCount = cartSnacks[snackData];
             cartSnacks[snackData] ++;
-            Debug.Log($"기존 스낵 수량 증가: {snackData.snackName} -> {cartSnacks[snackData]}");
+            Debug.Log($"{snackData.snackName} 수량 증가: {beforeCount} → {cartSnacks[snackData]}");
         }
         else
         {
             cartSnacks.Add(snackData, 1);
-            Debug.Log($"새 스낵 추가: {snackData.snackName} -> 1");
+            Debug.Log($"{snackData.snackName} 새로 추가: 1개");
         }
 
         needsUIRefresh = true; // UI 갱신 필요 표시
-        Debug.Log($"AddToSnackCart 완료 - 총 cartSnacks 개수: {cartSnacks.Count}");
         
         // CartUI가 열려있을 때만 즉시 갱신
         if (cartDialog != null && cartDialog.activeSelf)
@@ -112,11 +111,9 @@ public class BuySystem : MonoBehaviour, IPointerClickHandler
     {
         if (cartDialog == null)
         {
-            Debug.LogError("cartDialog is not assigned!");
             return;
         }
         
-        Debug.Log("CartUI 열기");
         cartDialog.SetActive(true);
         needsUIRefresh = true; // CartUI를 열 때 갱신 필요
         UpdateCartUI();
@@ -127,13 +124,11 @@ public class BuySystem : MonoBehaviour, IPointerClickHandler
         // 안전성 검사 추가
         if (InventoryManager.Instance == null)
         {
-            Debug.LogError("InventoryManager.Instance is null!");
             return;
         }
 
         if (cartDialog == null)
         {
-            Debug.LogError("cartDialog is not assigned! Please assign the cart dialog GameObject in the inspector.");
             return;
         }
 
@@ -171,14 +166,6 @@ public class BuySystem : MonoBehaviour, IPointerClickHandler
 
     public void UpdateCartUI()
     {
-        Debug.Log($"UpdateCartUI - cartSnacks 개수: {cartSnacks.Count}, needsUIRefresh: {needsUIRefresh}");
-        
-        // cartSnacks 내용 상세 로그
-        foreach (var snack in cartSnacks)
-        {
-            Debug.Log($"Cart에 있는 스낵: {snack.Key.snackName} (ID: {snack.Key.itemID}) x{snack.Value}");
-        }
-
         // 장바구니가 비어있는지 확인
         bool isEmpty = (cartItems.Count == 0 && cartSnacks.Count == 0);
         
@@ -188,7 +175,12 @@ public class BuySystem : MonoBehaviour, IPointerClickHandler
         // UI 갱신이 필요할 때만 슬롯 재생성
         if (needsUIRefresh)
         {
+            Debug.Log("UI 갱신 시작 - 기존 슬롯 삭제 중...");
+            
             // 기존 슬롯 모두 삭제
+            int childCount = cartContentParent.childCount;
+            Debug.Log($"삭제할 자식 오브젝트 수: {childCount}");
+            
             foreach (Transform child in cartContentParent)
             {
                 Destroy(child.gameObject);
@@ -196,16 +188,23 @@ public class BuySystem : MonoBehaviour, IPointerClickHandler
 
             if (!isEmpty)
             {
+                Debug.Log($"스낵 슬롯 생성 시작 - 총 {cartSnacks.Count}개");
+                
                 // 스낵 슬롯 생성
                 foreach (var snack in cartSnacks)
                 {
+                    Debug.Log($"스낵 슬롯 생성: {snack.Key.snackName} x{snack.Value}");
+                    
                     GameObject slotObj = Instantiate(cartItemSlot, cartContentParent);
                     CartItemSlot slot = slotObj.GetComponent<CartItemSlot>();
 
                     if (slot != null)
                     {
                         slot.SnackSetup(snack.Key, snack.Value, this);
-                        Debug.Log($"스낵 슬롯 생성: {snack.Key.snackName} (ID: {snack.Key.itemID}) x{snack.Value}");
+                    }
+                    else
+                    {
+                        Debug.LogError("CartItemSlot 컴포넌트를 찾을 수 없습니다!");
                     }
                 }
 
@@ -214,7 +213,10 @@ public class BuySystem : MonoBehaviour, IPointerClickHandler
                 {
                     GameObject slotObj = Instantiate(cartItemSlot, cartContentParent);
                     CartItemSlot slot = slotObj.GetComponent<CartItemSlot>();
-                    slot.ItemSetup(item.Key, item.Value, this);
+                    if (slot != null)
+                    {
+                        slot.ItemSetup(item.Key, item.Value, this);
+                    }
                 }
             }
             
@@ -223,7 +225,6 @@ public class BuySystem : MonoBehaviour, IPointerClickHandler
 
         // 총 가격 계산 및 표시 (매번 업데이트)
         int totalPrice = CalculateTotalPrice();
-        totalPriceText.text = $"Total Price: {totalPrice} G";
 
         // 구매 버튼 활성화 조건 (매번 업데이트)
         int playerMoney = playerData.money;
@@ -231,8 +232,6 @@ public class BuySystem : MonoBehaviour, IPointerClickHandler
 
         // 플레이어 소지금액 표시 (매번 업데이트)
         playerMoneyText.text = $"Money: {playerMoney} G";
-
-        Debug.Log($"Cart 상태 - 스낵: {cartSnacks.Count}, 아이템: {cartItems.Count}, 총 가격: {totalPrice}, 비어있음: {isEmpty}");
     }
 
     // 구매 버튼 클릭 시 호출될 메서드
@@ -333,16 +332,21 @@ public class BuySystem : MonoBehaviour, IPointerClickHandler
     // 장바구니에서 스낵 삭제
     public void DeleteSnackFromCart(SnackData snackData)
     {
+        Debug.Log($"DeleteSnackFromCart 호출됨: {snackData?.snackName ?? "null"}");
+        
         if (snackData == null)
         {
-            Debug.LogWarning("삭제하려는 SnackData가 null입니다!");
+            Debug.LogWarning("DeleteSnackFromCart: snackData가 null입니다!");
             return;
         }
 
         if (cartSnacks.ContainsKey(snackData))
         {
+            int beforeCount = cartSnacks[snackData];
             cartSnacks[snackData]--;
-            Debug.Log($"{snackData.snackName} 수량 감소: {cartSnacks[snackData]}");
+            int afterCount = cartSnacks[snackData];
+            
+            Debug.Log($"{snackData.snackName} 수량 변경: {beforeCount} → {afterCount}");
 
             // 수량이 0이 되면 완전히 제거
             if (cartSnacks[snackData] <= 0)

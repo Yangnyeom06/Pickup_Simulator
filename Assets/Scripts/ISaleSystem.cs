@@ -1,3 +1,4 @@
+// 판매 시스템에서 사용되는 공통 인터페이스
 public interface ISaleSystem
 {
     // int selectedQuantity { get; set; }

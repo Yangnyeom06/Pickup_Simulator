@@ -50,7 +50,6 @@ public class SaleSystem : MonoBehaviour, ISaleSystem
         if (sellUI != null && sellUI.activeSelf)
         {
             RefreshSellSlots();
-            Debug.Log("[SaleSystem] 아이템 습득 감지 - 판매 슬롯 갱신됨");
         }
     }
 
@@ -64,14 +63,6 @@ public class SaleSystem : MonoBehaviour, ISaleSystem
         ResetSaleState();
 
         // 슬롯 리스트 갱신
-        RefreshSellSlots();
-    }
-
-    public void ShowSellUI()
-    {
-        sellUI.SetActive(true);
-        sellButton.gameObject.SetActive(false);
-        ResetSaleState();
         RefreshSellSlots();
     }
 
@@ -105,7 +96,7 @@ public class SaleSystem : MonoBehaviour, ISaleSystem
         }
     }
 
-    // (3) 슬롯 클릭 → 다이얼로그 띄우기 + 판매 확정 버튼 활성
+    // (3) 슬롯 클릭 → 판매 확정 버튼 활성
     public void OnSlotClicked(InventorySlotData slot)
     {
         if (slot == null || slot.currentItem == null) return;
@@ -158,8 +149,6 @@ public class SaleSystem : MonoBehaviour, ISaleSystem
     // (5) 판매 확정 버튼 클릭
     public void ConfirmSell()
     {
-        Debug.Log("selectedSlot 상태: " + selectedSlot);
-        Debug.Log("currentItem 상태: " + (selectedSlot != null ? selectedSlot.currentItem : "null"));
         if (selectedSlot == null || selectedSlot.currentItem == null) return;
 
         // 1) 판매 정보 미리 저장
@@ -185,18 +174,12 @@ public class SaleSystem : MonoBehaviour, ISaleSystem
                     originalSlot.countText.text = originalSlot.currentItemCount.ToString();
                 }
                 
-                Debug.Log($"아이템 1개 판매: {itemData.itemName} - 남은 개수: {originalSlot.currentItemCount}");
             }
             else
             {
                 // 1개만 있으면 슬롯 내용 완전 제거
                 inventoryManager.ClearSlotContents(originalSlot);
-                Debug.Log($"마지막 아이템 판매: {itemData.itemName} - 슬롯 비워짐");
             }
-        }
-        else
-        {
-            Debug.LogWarning("originalInventorySlot이 null입니다!");
         }
 
         // 4) SellUI 슬롯 새로고침 (SellUI는 열린 상태 유지)
@@ -206,7 +189,7 @@ public class SaleSystem : MonoBehaviour, ISaleSystem
         selectedSlot = null;
         sellConfirmButton.interactable = false;
 
-        Debug.Log($"판매 완료: +{gain}G - SellUI는 계속 열려있음");
+        Debug.Log($"판매 완료: +{gain}G");
         
         // 6) 플레이어 돈 UI 업데이트
         if (playerMoneyText != null)
@@ -228,6 +211,11 @@ public class SaleSystem : MonoBehaviour, ISaleSystem
         sellConfirmButton.interactable = false;
     }
 
+
+    public void ShowSellUI()
+    {
+        OnSellButtonClicked();
+    }
 
     public void CancelSell() 
     {

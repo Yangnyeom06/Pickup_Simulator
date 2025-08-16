@@ -43,15 +43,9 @@ public class UsedCarNPC : MonoBehaviour, ISaleSystem
         {
             sellConfirmButton.onClick.RemoveAllListeners();
             sellConfirmButton.onClick.AddListener(() => {
-                Debug.Log("[UsedCarNPC] 판매 확정 버튼이 클릭되었습니다!");
                 ConfirmSell();
             });
             sellConfirmButton.interactable = false; // 시작시에는 비활성화
-            Debug.Log("[UsedCarNPC] 판매 확정 버튼 이벤트 설정 완료!");
-        }
-        else
-        {
-            Debug.LogError("[UsedCarNPC] sellConfirmButton이 null입니다! Inspector에서 할당하세요!");
         }
         
         // SellUI 초기 비활성화
@@ -98,7 +92,6 @@ public class UsedCarNPC : MonoBehaviour, ISaleSystem
             itemRaycast = FindFirstObjectByType<ItemRaycast>();
             if (itemRaycast == null)
             {
-                Debug.LogWarning("[UsedCarNPC] ItemRaycast를 찾을 수 없습니다!");
                 return;
             }
         }
@@ -110,33 +103,16 @@ public class UsedCarNPC : MonoBehaviour, ISaleSystem
             
             if (CanSell(item))
             {
-                Debug.Log($"[UsedCarNPC] 슬롯 생성 시작: {item.itemName}");
                 var go = Instantiate(slotPrefab, slotParent);
                 var ui = go.GetComponent<InventorySlotData>();
                 
                 if (ui == null)
                 {
-                    Debug.LogError("[UsedCarNPC] 생성된 슬롯에 InventorySlotData 컴포넌트가 없습니다!");
                     return;
                 }
     
                 ui.SetupSlot(item, 1, this); // 들고 있는 Large 아이템 1개
                 ui.originalInventorySlot = null; // 인벤토리 슬롯이 아니므로 null
-                
-                Debug.Log($"[UsedCarNPC] 들고 있는 Large 아이템 '{item.itemName}' 판매 슬롯에 표시됨");
-                Debug.Log($"[UsedCarNPC] 생성된 슬롯 GameObject: {go.name}");
-            }
-        }
-        else
-        {
-            // 판매 후 UI 갱신 시에는 정상적으로 아이템이 없는 상태
-            if (itemRaycast != null)
-            {
-                Debug.Log("[UsedCarNPC] 판매 슬롯 갱신: 현재 들고 있는 Large 아이템이 없음 (정상)");
-            }
-            else
-            {
-                Debug.LogWarning("[UsedCarNPC] itemRaycast가 null입니다!");
             }
         }
     }
@@ -144,34 +120,24 @@ public class UsedCarNPC : MonoBehaviour, ISaleSystem
     // (3) 슬롯 클릭 → 다이얼로그 띄우기 + 판매 확정 버튼 활성
     public void OnSlotClicked(InventorySlotData slot)
     {
-        Debug.Log($"[UsedCarNPC] OnSlotClicked() 호출됨! slot: {slot}");
         
         if (slot == null)
         {
-            Debug.LogError("[UsedCarNPC] 클릭된 슬롯이 null입니다!");
             return;
         }
         
-        Debug.Log($"[UsedCarNPC] slot.currentItem: {slot.currentItem}");
-        Debug.Log($"[UsedCarNPC] slot.currentItem이 null인가? {slot.currentItem == null}");
         
         if (slot.currentItem == null)
         {
-            Debug.LogError("[UsedCarNPC] 클릭된 슬롯의 currentItem이 null입니다!");
-            Debug.LogError($"[UsedCarNPC] 슬롯 상태 - currentShopItem: {slot.currentShopItem}, currentSnack: {slot.currentSnack}");
             return;
         }
 
         // 대형 아이템 여부 재확인
         if (slot.currentItem.itemType != ItemType.Large)
         {
-            Debug.LogWarning($"[UsedCarNPC] 대형 아이템만 판매할 수 있습니다. 현재 아이템 타입: {slot.currentItem.itemType}");
             return;
         }
-
-        Debug.Log($"[UsedCarNPC] selectedSlot 설정 전 - 현재 selectedSlot: {selectedSlot}");
         selectedSlot = slot;
-        Debug.Log($"[UsedCarNPC] 선택된 슬롯: {slot.currentItem.itemName}");
 
         // 기존 다이얼로그 제거
         // if (quantityDialog != null)
@@ -192,7 +158,6 @@ public class UsedCarNPC : MonoBehaviour, ISaleSystem
 
         // 판매 확정 버튼 활성화 등…
         sellConfirmButton.interactable = true;
-        Debug.Log($"[UsedCarNPC] 판매 확정 버튼 활성화됨! 버튼 연결 상태: {sellConfirmButton != null}");
 
     }
 
@@ -216,23 +181,16 @@ public class UsedCarNPC : MonoBehaviour, ISaleSystem
     // 판매 버튼 클릭 시 호출
     public void ConfirmSell()
     {
-        Debug.Log("[UsedCarNPC] ConfirmSell() 메서드 호출됨!");
-        Debug.Log("[UsedCarNPC] selectedSlot 상태: " + selectedSlot);
-        Debug.Log("[UsedCarNPC] currentItem 상태: " + (selectedSlot != null ? selectedSlot.currentItem : "null"));
         
         if (selectedSlot == null)
         {
-            Debug.LogError("[UsedCarNPC] selectedSlot이 null입니다! 슬롯을 선택하지 않았거나 OnSlotClicked가 호출되지 않았습니다.");
             return;
         }
         
         if (selectedSlot.currentItem == null)
         {
-            Debug.LogError("[UsedCarNPC] selectedSlot.currentItem이 null입니다! 슬롯에 아이템이 없습니다.");
             return;
         }
-        
-        Debug.Log("[UsedCarNPC] 조건 검사 통과! 판매 진행합니다...");
 
         // 1) 판매 정보 미리 저장
         var itemData  = selectedSlot.currentItem;

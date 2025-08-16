@@ -16,6 +16,7 @@ public class InventoryManager : MonoBehaviour
     [SerializeField] public List<InventorySlotData> slotList = new();
     public List<ItemInstanceData> savedItems = new();
     public List<SnackInstanceData> savedSnacks = new();
+    public List<ShopItemInstanceData> savedShopItems = new();
 
 
     private void Awake()
@@ -274,6 +275,8 @@ public class InventoryManager : MonoBehaviour
     public void ResetSlots()
     {
         savedItems = new List<ItemInstanceData>();
+        savedSnacks = new List<SnackInstanceData>();
+        savedShopItems = new List<ShopItemInstanceData>();
 
         foreach (Transform child in contentParent)
         {

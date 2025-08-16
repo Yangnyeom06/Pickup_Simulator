@@ -31,6 +31,7 @@ public class ItemRaycast : MonoBehaviour
 
     private Item mCurrentItem; //활성화시 현재 등록된 아이템
     private SnackItem mCurrentSnackItem; //활성화시 현재 등록된 스낵아이템
+    private ShopItem mCurrentShopItem; //활성화시 현재 등록된 상점아이템
 
     private Transform mPlayerTransform;
     private GameObject mLargeItemObject;
@@ -123,6 +124,14 @@ public class ItemRaycast : MonoBehaviour
                 return;
             }
             
+            // 상점 아이템 처리
+            if (mCurrentShopItem != null)
+            {
+                mCurrentShopItem.PickupItem();
+                ItemInfoDisappear();
+                return;
+            }
+            
             // 일반 아이템 처리
             if (mCurrentItem != null)
             {
@@ -189,8 +198,9 @@ public class ItemRaycast : MonoBehaviour
                         return;
                     }
                     
-                    // 기존 일반 아이템 초기화
+                    // 기존 아이템들 초기화
                     mCurrentItem = null;
+                    mCurrentShopItem = null;
                     mCurrentSnackItem = snackItem;
                     
                     followMouseImage.SetActive(true);
@@ -203,6 +213,35 @@ public class ItemRaycast : MonoBehaviour
                     }
                     
                     Debug.LogFormat("스낵 아이템: {0} 획득 가능", snackItem.snackItemData.snackName);
+                    
+                    mIsPickupActive = true;
+                    return;
+                }
+                
+                // 상점 아이템 체크
+                ShopItem shopItem = mHit.transform.GetComponent<ShopItem>();
+                if (shopItem != null)
+                {
+                    if (mCurrentShopItem == shopItem)
+                    {
+                        return;
+                    }
+                    
+                    // 기존 아이템들 초기화
+                    mCurrentItem = null;
+                    mCurrentSnackItem = null;
+                    mCurrentShopItem = shopItem;
+                    
+                    followMouseImage.SetActive(true);
+                    
+                    if (shopItem.shopItemData != null)
+                    {
+                        explainText.text = shopItem.shopItemData.itemName;
+                        explainText.text += $"\n가격: {shopItem.shopItemData.price}";
+                        explainText.text += $"\n설명: {shopItem.shopItemData.description}";
+                    }
+                    
+                    Debug.LogFormat("상점 아이템: {0} 구매 가능", shopItem.shopItemData.itemName);
                     
                     mIsPickupActive = true;
                     return;
@@ -226,8 +265,9 @@ public class ItemRaycast : MonoBehaviour
                         return;
                     }
                     
-                    // 기존 스낵 아이템 초기화
+                    // 기존 스낵, 상점 아이템 초기화
                     mCurrentSnackItem = null;
+                    mCurrentShopItem = null;
                     mCurrentItem = mHit.transform.GetComponent<Item>();
                     // mItemRaycastInfoText.EnableText(mHit.transform.position + Vector3.up * rayCastedItem.IndicatorHeight, mCurrentItem.Item); (이 글에서는 설명 X)
 
@@ -286,6 +326,7 @@ public class ItemRaycast : MonoBehaviour
         //현재 아이템은 null
         mCurrentItem = null;
         mCurrentSnackItem = null;
+        mCurrentShopItem = null;
         
         followMouseImage.SetActive(false);
     }
