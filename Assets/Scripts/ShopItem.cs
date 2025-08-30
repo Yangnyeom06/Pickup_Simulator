@@ -14,6 +14,7 @@ public class ShopItem : MonoBehaviour
 
     public ShopItemData shopItemData;
     public BuySystem buySystem;
+    private bool isProcessing = false; // 중복 호출 방지 플래그
 
     private void Awake()
     {
@@ -56,12 +57,19 @@ public class ShopItem : MonoBehaviour
     // 외부에서 호출할 수 있는 구매 메서드 (ItemRaycast 호환성)
     public void PickupItem()
     {
+        // 중복 호출 방지
+        if (isProcessing)
+        {
+            return;
+        }
+        
+        isProcessing = true;
+        
         if (shopItemData != null)
         {
             if (buySystem != null)
             {
                 buySystem.AddToShopItemCart(shopItemData);
-                Debug.Log($"{shopItemData.itemName}이(가) 장바구니에 추가되었습니다!");
             }
             else
             {
@@ -72,5 +80,14 @@ public class ShopItem : MonoBehaviour
         {
             Debug.LogWarning("ShopItemData가 설정되지 않았습니다!");
         }
+        
+        // 처리 완료 후 플래그 해제 (약간의 지연을 두어 중복 클릭 방지)
+        StartCoroutine(ResetProcessingFlag());
+    }
+    
+    private System.Collections.IEnumerator ResetProcessingFlag()
+    {
+        yield return new UnityEngine.WaitForSeconds(0.1f); // 0.1초 대기
+        isProcessing = false;
     }
 }

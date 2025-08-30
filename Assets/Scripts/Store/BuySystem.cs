@@ -10,6 +10,7 @@ using TMPro;           // TMP_Text를 위한 네임스페이스
 public class BuySystem : MonoBehaviour, IPointerClickHandler
 {
     public static BuySystem Instance { get; private set; }
+    private bool isPurchasing = false; // 구매 처리 중복 방지 플래그
 
     private void Awake()
     {
@@ -51,24 +52,23 @@ public class BuySystem : MonoBehaviour, IPointerClickHandler
 
     public void AddToSnackCart(SnackData snackData)
     {
-        Debug.Log($"AddToSnackCart 호출됨: {snackData?.snackName ?? "null"}");
-        
         if (snackData == null)
         {
             Debug.LogWarning("AddToSnackCart: snackData가 null입니다!");
             return;
         }
         
+        Debug.Log($"AddToSnackCart 호출됨: {snackData.snackName}");
+        
         if (cartSnacks.ContainsKey(snackData))
         {
-            int beforeCount = cartSnacks[snackData];
             cartSnacks[snackData] ++;
-            Debug.Log($"{snackData.snackName} 수량 증가: {beforeCount} → {cartSnacks[snackData]}");
+            Debug.Log($"✅ {snackData.snackName} 수량 증가: {cartSnacks[snackData]}");
         }
         else
         {
             cartSnacks.Add(snackData, 1);
-            Debug.Log($"{snackData.snackName} 새로 추가: 1개");
+            Debug.Log($"✅ {snackData.snackName} 새로 추가됨");
         }
 
         needsUIRefresh = true; // UI 갱신 필요 표시
@@ -236,7 +236,15 @@ public class BuySystem : MonoBehaviour, IPointerClickHandler
 
     // 구매 버튼 클릭 시 호출될 메서드
     public void OnPurchaseButtonClicked()
-    {  
+    {
+        // 중복 호출 방지
+        if (isPurchasing)
+        {
+            return;
+        }
+        
+        isPurchasing = true;
+        
         // 총 가격 계산 메소드 호출
         int totalPrice = CalculateTotalPrice();
         int playerMoney = playerData.money;
@@ -285,19 +293,22 @@ public class BuySystem : MonoBehaviour, IPointerClickHandler
             foreach (var snack in cartSnacks)
             {
                 int remaining = snack.Value;
+                Debug.Log($"구매 확정: {snack.Key.snackName} {remaining}개 처리 시작");
                 
-                // 남은 수량만큼 인벤토리에 추가 시도
-                for (int i = 0; i < remaining; i++)
+                // ⚠️ 문제 해결: 각 스낵당 1개씩만 인벤토리에 추가
+                if (remaining > 0)
                 {
+                    Debug.Log($"인벤토리에 {snack.Key.snackName} 1개 추가 시도");
                     bool added = InventoryManager.Instance.AddSnack(snack.Key);
                     
                     if (added)
                     {
-                        remaining--;
+                        remaining = remaining - 1; // 1개만 감소
+                        Debug.Log($"{snack.Key.snackName} 추가 성공, 남은 수량: {remaining}");
                     }
                     else
                     {
-                        break; // 인벤토리가 가득 차면 더 이상 시도하지 않음
+                        Debug.LogWarning($"{snack.Key.snackName} 추가 실패, 인벤토리 가득참");
                     }
                 }
                 
@@ -314,53 +325,32 @@ public class BuySystem : MonoBehaviour, IPointerClickHandler
             needsUIRefresh = true; // 구매 후 UI 갱신 필요
             UpdateCartUI();
 
-            if (cartItems.Count == 0 && cartSnacks.Count == 0)
-            {
-                Debug.Log("구매 완료! 모든 아이템이 인벤토리에 추가되었습니다.");
-            }
-            else
-            {
-                Debug.Log("인벤토리가 가득차서 일부 아이템은 장바구니에 남아있습니다.");
-            }
         }
-        else
-        {
-            Debug.Log("돈이 부족합니다");
-        }
+        
+        // 구매 처리 완료 후 플래그 해제
+        isPurchasing = false;
     }
 
     // 장바구니에서 스낵 삭제
     public void DeleteSnackFromCart(SnackData snackData)
     {
-        Debug.Log($"DeleteSnackFromCart 호출됨: {snackData?.snackName ?? "null"}");
-        
         if (snackData == null)
         {
-            Debug.LogWarning("DeleteSnackFromCart: snackData가 null입니다!");
             return;
         }
 
         if (cartSnacks.ContainsKey(snackData))
         {
-            int beforeCount = cartSnacks[snackData];
             cartSnacks[snackData]--;
-            int afterCount = cartSnacks[snackData];
-            
-            Debug.Log($"{snackData.snackName} 수량 변경: {beforeCount} → {afterCount}");
 
             // 수량이 0이 되면 완전히 제거
             if (cartSnacks[snackData] <= 0)
             {
                 cartSnacks.Remove(snackData);
-                Debug.Log($"{snackData.snackName}이(가) 장바구니에서 완전히 제거되었습니다.");
             }
 
             needsUIRefresh = true; // UI 갱신 필요
             UpdateCartUI();
-        }
-        else
-        {
-            Debug.LogWarning($"{snackData.snackName}이(가) 장바구니에 없습니다!");
         }
     }
 
@@ -369,28 +359,21 @@ public class BuySystem : MonoBehaviour, IPointerClickHandler
     {
         if (shopItemData == null)
         {
-            Debug.LogWarning("삭제하려는 ShopItemData가 null입니다!");
             return;
         }
 
         if (cartItems.ContainsKey(shopItemData))
         {
             cartItems[shopItemData]--;
-            Debug.Log($"{shopItemData.itemName} 수량 감소: {cartItems[shopItemData]}");
 
             // 수량이 0이 되면 완전히 제거
             if (cartItems[shopItemData] <= 0)
             {
                 cartItems.Remove(shopItemData);
-                Debug.Log($"{shopItemData.itemName}이(가) 장바구니에서 완전히 제거되었습니다.");
             }
 
             needsUIRefresh = true; // UI 갱신 필요
             UpdateCartUI();
-        }
-        else
-        {
-            Debug.LogWarning($"{shopItemData.itemName}이(가) 장바구니에 없습니다!");
         }
     }
 

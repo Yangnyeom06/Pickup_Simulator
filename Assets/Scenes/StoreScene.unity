@@ -4521,7 +4521,7 @@ MonoBehaviour:
   mRayCamera: {fileID: 1680475512}
   rayDistance: 100
   snackItemData: {fileID: 11400000, guid: 8fd6525da14d08743b0cd540ff548e53, type: 2}
-  buySystem: {fileID: 0}
+  buySystem: {fileID: 1999892785}
 --- !u!65 &299589338
 BoxCollider:
   m_ObjectHideFlags: 0
@@ -9034,7 +9034,7 @@ MonoBehaviour:
   mRayCamera: {fileID: 1680475512}
   rayDistance: 100
   snackItemData: {fileID: 11400000, guid: f39b83aebec7e3444b0b9a0938851c8a, type: 2}
-  buySystem: {fileID: 0}
+  buySystem: {fileID: 1999892785}
 --- !u!65 &615930698
 BoxCollider:
   m_ObjectHideFlags: 0
@@ -18076,6 +18076,7 @@ MonoBehaviour:
   - {fileID: 1408070402}
   savedItems: []
   savedSnacks: []
+  savedShopItems: []
 --- !u!4 &1154057378
 Transform:
   m_ObjectHideFlags: 0
@@ -26138,7 +26139,7 @@ MonoBehaviour:
   mRayCamera: {fileID: 1680475512}
   rayDistance: 100
   snackItemData: {fileID: 11400000, guid: eba79a36622cd7a4cb03433683344982, type: 2}
-  buySystem: {fileID: 0}
+  buySystem: {fileID: 1999892785}
 --- !u!65 &1720805835
 BoxCollider:
   m_ObjectHideFlags: 0
@@ -26844,7 +26845,7 @@ MonoBehaviour:
   mRayCamera: {fileID: 1680475512}
   rayDistance: 100
   snackItemData: {fileID: 11400000, guid: 2ae54be3b91cc5343aae00c70d2dcaea, type: 2}
-  buySystem: {fileID: 0}
+  buySystem: {fileID: 1999892785}
 --- !u!65 &1751864254
 BoxCollider:
   m_ObjectHideFlags: 0

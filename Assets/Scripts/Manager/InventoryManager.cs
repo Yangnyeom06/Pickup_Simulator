@@ -17,6 +17,7 @@ public class InventoryManager : MonoBehaviour
     public List<ItemInstanceData> savedItems = new();
     public List<SnackInstanceData> savedSnacks = new();
     public List<ShopItemInstanceData> savedShopItems = new();
+    private bool isAddingSnack = false; // 스낵 추가 중복 방지 플래그
 
 
     private void Awake()
@@ -146,31 +147,41 @@ public class InventoryManager : MonoBehaviour
 
     public bool AddSnack(SnackData snack)
     {
+        Debug.Log($"⚠️ AddSnack 중복 호출 감지: {snack?.snackName ?? "null"}");
+        Debug.Log($"호출 스택: {System.Environment.StackTrace}");
+        
+        // 중복 호출 방지
+        if (isAddingSnack)
+        {
+            Debug.LogWarning("⚠️ 중복 호출 차단됨!");
+            return false;
+        }
+        
+        isAddingSnack = true;
+        
         if (snack == null)
         {
-            Debug.LogError("AddSnack: snack이 null입니다!");
+            isAddingSnack = false;
             return false;
         }
 
         // slotList의 빈 슬롯에 snack을 넣는 로직을 구현해야 함
-        // 예시:
         foreach (var slot in slotList)
         {
             if (slot == null)
             {
-                Debug.LogError("slotList에 null이 들어있습니다!");
                 continue;
             }
 
             // 완전히 빈 슬롯을 찾아야 함 (currentItem, currentShopItem, currentSnack 모두 null)
             if (slot.currentItem == null && slot.currentShopItem == null && slot.currentSnack == null)
             {
-                slot.SetSnack(snack); // SetSnack은 슬롯에 스낵을 할당하는 메서드여야 함
-                Debug.Log($"{snack.snackName}이(가) 인벤토리에 추가되었습니다.");
+                slot.SetSnack(snack);
+                isAddingSnack = false;
                 return true;
             }
         }
-        Debug.Log("인벤토리가 가득 찼습니다!");
+        isAddingSnack = false;
         return false;
     }
 

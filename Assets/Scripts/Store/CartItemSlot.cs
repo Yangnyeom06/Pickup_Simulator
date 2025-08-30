@@ -69,12 +69,9 @@ public class CartItemSlot : MonoBehaviour
     // 삭제 버튼 클릭 시 호출
     public void OnDeleteButtonClicked()
     {
-        Debug.Log($"OnDeleteButtonClicked 호출됨! isProcessing: {isProcessing}");
-        
         // 중복 호출 방지
         if (isProcessing)
         {
-            Debug.LogWarning("이미 처리 중입니다. 중복 호출 무시.");
             return;
         }
         
@@ -82,7 +79,6 @@ public class CartItemSlot : MonoBehaviour
         
         if (buySystem == null)
         {
-            Debug.LogError("buySystem이 null입니다!");
             isProcessing = false;
             return;
         }
@@ -90,18 +86,12 @@ public class CartItemSlot : MonoBehaviour
         // 스낵 아이템 삭제
         if (snackData != null)
         {
-            Debug.Log($"스낵 삭제 요청: {snackData.snackName}");
             buySystem.DeleteSnackFromCart(snackData);
         }
         // 일반 아이템 삭제
         else if (itemData != null)
         {
-            Debug.Log($"일반 아이템 삭제 요청: {itemData.itemName}");
             buySystem.DeleteShopItemFromCart(itemData);
-        }
-        else
-        {
-            Debug.LogWarning("삭제할 아이템 데이터가 없습니다!");
         }
         
         // 처리 완료 후 플래그 해제 (약간의 지연을 두어 중복 클릭 방지)
@@ -112,6 +102,5 @@ public class CartItemSlot : MonoBehaviour
     {
         yield return new UnityEngine.WaitForSeconds(0.1f); // 0.1초 대기
         isProcessing = false;
-        Debug.Log("처리 플래그 해제됨");
     }
 }

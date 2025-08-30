@@ -14,6 +14,8 @@ public class SnackItem : MonoBehaviour
 
     public SnackData snackItemData;
     public BuySystem buySystem;
+    private bool isProcessing = false; // 중복 호출 방지 플래그
+    private static bool globalProcessing = false; // 전역 중복 방지 플래그
 
     private void Awake()
     {
@@ -58,12 +60,24 @@ public class SnackItem : MonoBehaviour
     // 외부에서 호출할 수 있는 줍기 메서드 (하위 호환성을 위해 유지)
     public void PickupSnack()
     {
+        // 전역 및 로컬 중복 호출 방지
+        if (isProcessing || globalProcessing)
+        {
+            Debug.Log($"PickupSnack 중복 호출 방지됨: isProcessing={isProcessing}, globalProcessing={globalProcessing}");
+            return;
+        }
+        
+        isProcessing = true;
+        globalProcessing = true;
+        
+        Debug.Log($"PickupSnack 시작: {snackItemData?.snackName ?? "null"}");
+        
         if (snackItemData != null)
         {
             if (buySystem != null)
             {
                 buySystem.AddToSnackCart(snackItemData);
-                Debug.Log($"{snackItemData.snackName}을(를) 주웠습니다!");
+                Debug.Log($"장바구니에 {snackItemData.snackName} 추가 완료");
                 // 반복 구매 가능하도록 오브젝트는 삭제하지 않음
             }
             else
@@ -75,5 +89,16 @@ public class SnackItem : MonoBehaviour
         {
             Debug.LogWarning("SnackItemData가 설정되지 않았습니다!");
         }
+        
+        // 처리 완료 후 플래그 해제 (약간의 지연을 두어 중복 클릭 방지)
+        StartCoroutine(ResetProcessingFlag());
+    }
+    
+    private System.Collections.IEnumerator ResetProcessingFlag()
+    {
+        yield return new UnityEngine.WaitForSeconds(0.5f); // 0.5초 대기로 증가
+        isProcessing = false;
+        globalProcessing = false; // 전역 플래그도 해제
+        Debug.Log("PickupSnack 처리 플래그 해제됨");
     }
 }
