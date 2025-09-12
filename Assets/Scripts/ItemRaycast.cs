@@ -43,7 +43,6 @@ public class ItemRaycast : MonoBehaviour
     [Header("레이캐스트를 쏠 카메라")]
     [SerializeField] public Camera mRayCamera; //레이를 쏠 카메라 (메인카메라)
 
-    [SerializeField] private InventoryManager mInventory; //인벤토리 메인
 
     // Large 아이템 상태를 외부에서 접근할 수 있도록 하는 프로퍼티들
     public bool IsHoldingLargeItem => hand;
@@ -86,17 +85,6 @@ public class ItemRaycast : MonoBehaviour
             Debug.LogError("ItemRaycast: mRayCamera가 할당되지 않았습니다!");
         }
         
-        if (mInventory == null)
-        {
-            Debug.LogError("ItemRaycast: mInventory가 할당되지 않았습니다!");
-            // 자동으로 찾아보기
-            mInventory = FindFirstObjectByType<InventoryManager>();
-            if (mInventory != null)
-            {
-                Debug.Log("ItemRaycast: InventoryManager를 자동으로 찾았습니다.");
-            }
-        }
-        
         Debug.Log($"ItemRaycast 초기화 완료 - 레이캐스트 거리: {mRayDistance}");
     }
     
@@ -116,6 +104,14 @@ public class ItemRaycast : MonoBehaviour
     {
         if (Input.GetKeyDown(KeyCode.E))
         {
+            Physics.Raycast(mRayCamera.transform.position, mRayCamera.transform.forward, out mHit, mRayDistance);
+
+            if (mHit.transform.tag == "note")
+            {
+                DayManager.Instance.Open();
+            }
+
+
             // 스낵 아이템 처리
             if (mCurrentSnackItem != null)
             {
@@ -148,18 +144,18 @@ public class ItemRaycast : MonoBehaviour
                     Debug.Log("일반 아이템 줍기 로직 실행");
                     //현재 인벤토리 아이템 가져오기
                     int count = 0;
-                    Debug.Log($"인벤토리 슬롯 검사 시작 - 총 슬롯 수: {mInventory.slotList.Count}");
+                    Debug.Log($"인벤토리 슬롯 검사 시작 - 총 슬롯 수: {InventoryManager.Instance.slotList.Count}");
 
-                    for (; count < mInventory.slotList.Count; ++count)
+                    for (; count < InventoryManager.Instance.slotList.Count; ++count)
                     {                    //현재 아이템 칸이 null이라면 주울 수 있는 상태
-                        bool isNull = (mInventory.slotList[count].currentItem == null);
+                        bool isNull = (InventoryManager.Instance.slotList[count].currentItem == null);
                         Debug.Log($"슬롯 {count}: currentItem이 null인가? {isNull}");
                         if (isNull) { break; }
                     }
-                    Debug.Log($"슬롯 검사 완료 - count: {count}, slotList.Count: {mInventory.slotList.Count}");
+                    Debug.Log($"슬롯 검사 완료 - count: {count}, slotList.Count: {InventoryManager.Instance.slotList.Count}");
                     
                     //모든 칸이 null이 아니고, 중첩이 불가능하면 주울 수 없음
-                    if (count == mInventory.slotList.Count) { 
+                    if (count == InventoryManager.Instance.slotList.Count) { 
                         Debug.Log("인벤토리가 가득함 - 줍기 실패");
                         return; 
                     }
@@ -183,7 +179,6 @@ public class ItemRaycast : MonoBehaviour
     private void CheckItem()
 
     {
-
         {
             if (Physics.Raycast(mRayCamera.transform.position, mRayCamera.transform.forward, out mHit, mRayDistance))
             {
@@ -296,6 +291,7 @@ public class ItemRaycast : MonoBehaviour
 
                     return;
                 }
+
                 //레이캐스트 닿았을 때, 아이템이 아닌경우에는 비활성화
                 else
                 {
@@ -304,7 +300,7 @@ public class ItemRaycast : MonoBehaviour
 
                 if (mHit.transform.tag == "note")
                 {
-                    DayManager.Instance.Open();
+                    mIsPickupActive = true;
                 }
 
             }
@@ -350,19 +346,7 @@ public class ItemRaycast : MonoBehaviour
                 ItemInfoDisappear();
                 return;
             }
-            
-            if (mInventory == null)
-            {
-                Debug.LogError("TryPickUp: mInventory가 null입니다! Inspector에서 할당하세요.");
-                // 다시 한번 찾아보기
-                mInventory = FindFirstObjectByType<InventoryManager>();
-                if (mInventory == null)
-                {
-                    Debug.LogError("InventoryManager를 찾을 수 없습니다!");
-                    return;
-                }
-            }
-            
+
             if (mCurrentItem.itemData == null)
             {
                 Debug.LogError($"TryPickUp: {mCurrentItem.name}의 itemData가 null입니다!");
@@ -373,7 +357,7 @@ public class ItemRaycast : MonoBehaviour
             Debug.Log($"아이템 '{mCurrentItem.itemData.itemName}' 줍기 시도 중...");
             
             // 인벤토리에 아이템 추가 시도
-            bool success = mInventory.AddItem(mCurrentItem.itemData, mCurrentItem);
+            bool success = InventoryManager.Instance.AddItem(mCurrentItem.itemData, mCurrentItem);
             
             if (success)
             {

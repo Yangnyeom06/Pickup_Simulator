@@ -9,7 +9,7 @@ public class CartItemSlot : MonoBehaviour
     public Button deleteButton;      // 삭제 버튼
     
     private ShopItemData itemData;
-    private SnackData snackData;
+    private SnackItemData SnackItemData;
     private BuySystem buySystem;
     private bool isProcessing = false; // 중복 호출 방지 플래그
 
@@ -39,7 +39,7 @@ public class CartItemSlot : MonoBehaviour
         if (itemNameText == null) Debug.LogError("itemNameText is null");
 
         this.itemData = data;
-        this.snackData = null;
+        this.SnackItemData = null;
         this.buySystem = system;
 
         itemNameText.text = $"{data.itemName}";
@@ -50,11 +50,11 @@ public class CartItemSlot : MonoBehaviour
         SetupDeleteButton();
     }
 
-    public void SnackSetup(SnackData data, int quantity, BuySystem system)
+    public void SnackSetup(SnackItemData data, int quantity, BuySystem system)
     {
         if (itemNameText == null) Debug.LogError("itemNameText is null");
 
-        this.snackData = data;
+        this.SnackItemData = data;
         this.itemData = null;    
         this.buySystem = system; 
 
@@ -84,9 +84,9 @@ public class CartItemSlot : MonoBehaviour
         }
 
         // 스낵 아이템 삭제
-        if (snackData != null)
+        if (SnackItemData != null)
         {
-            buySystem.DeleteSnackFromCart(snackData);
+            buySystem.DeleteSnackFromCart(SnackItemData);
         }
         // 일반 아이템 삭제
         else if (itemData != null)

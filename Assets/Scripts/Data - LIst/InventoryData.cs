@@ -8,18 +8,24 @@ using System.IO;
 public class InventoryData
 {
     public int savedSlotCounts;
-    public List<ItemInstanceData> savedItems = new();
+    public List<ItemInstanceData> savedPickUpItems = new();
+    public List<ShopItemInstanceData> savedShopItems = new();
+    public List<SnackItemInstanceData> savedSnackItems = new();
 
-    public InventoryData(List<ItemInstanceData> items, int slotCount)
+    public InventoryData(List<ItemInstanceData> pickupitems, List<ShopItemInstanceData> shopitems, List<SnackItemInstanceData> snackitems, int slotCount)
     {
-        savedItems = items;
+        savedPickUpItems = pickupitems;
+        savedShopItems = shopitems;
+        savedSnackItems = snackitems;
         savedSlotCounts = slotCount;
     }
 
     public static InventoryData FromData(InventoryManager inventory)
     {
         return new InventoryData(
-            inventory.savedItems,
+            inventory.savedPickUpItems,
+            inventory.savedShopItems,
+            inventory.savedSnackItems,
             inventory.inventorySlotCount.Value
         );
     }
@@ -27,14 +33,22 @@ public class InventoryData
     public void ApplyToInventory(InventoryManager inventory)
     {
         // 저장된 아이템 리스트 복사
-        inventory.savedItems = new List<ItemInstanceData>(savedItems);
+        inventory.savedPickUpItems = new List<ItemInstanceData>(savedPickUpItems);
+        inventory.savedShopItems = new List<ShopItemInstanceData>(savedShopItems);
+        inventory.savedSnackItems = new List<SnackItemInstanceData>(savedSnackItems);
 
         inventory.inventorySlotCount.SetValueWithoutNotify(savedSlotCounts);
         
-        foreach (Transform child in inventory.contentParent)
+        foreach (Transform child in inventory.contentInven1Parent)
         {
             UnityEngine.Object.Destroy(child.gameObject);
         }
+
+        foreach (Transform child in inventory.contentInven2Parent)
+        {
+            UnityEngine.Object.Destroy(child.gameObject);
+        }
+
         inventory.slotList.Clear();
 
         inventory.UpdateSlots(savedSlotCounts);

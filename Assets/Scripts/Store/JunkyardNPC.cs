@@ -159,7 +159,7 @@ public class JunkyardNPC : MonoBehaviour, ISaleSystem
         if (slot.currentItem == null)
         {
             Debug.LogError("[JunkyardNPC] 클릭된 슬롯의 currentItem이 null입니다!");
-            Debug.LogError($"[JunkyardNPC] 슬롯 상태 - currentShopItem: {slot.currentShopItem}, currentSnack: {slot.currentSnack}");
+            Debug.LogError($"[JunkyardNPC] 슬롯 상태 - currentShopItem: {slot.currentShopItem}, currentSnackItem: {slot.currentSnackItem}");
             return;
         }
 

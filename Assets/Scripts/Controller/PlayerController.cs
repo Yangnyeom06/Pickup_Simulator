@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using UnityEngine;
 
 public class PlayerController : MonoBehaviour {
-    public PlayerManager player;
     // 스피드 조정 변수
     [SerializeField]
     private float walkSpeed;
@@ -17,7 +16,7 @@ public class PlayerController : MonoBehaviour {
     private float baseSpeed;
     private float applySpeed
     {
-        get { return baseSpeed * player.speedLevel.current; }
+        get { return baseSpeed * PlayerManager.Instance.speedLevel.current; }
         set { baseSpeed = value; }
     }
 
@@ -194,7 +193,7 @@ public class PlayerController : MonoBehaviour {
     // 달리기 시도
     private void TryRun()
     {
-        if (Input.GetKey(KeyCode.LeftShift) && (player.staminaLevel.current > 0))
+        if (Input.GetKey(KeyCode.LeftShift) && (PlayerManager.Instance.staminaLevel.current > 0))
         {
             Running();
         }
@@ -213,7 +212,7 @@ public class PlayerController : MonoBehaviour {
 
         isRun = true;
         applySpeed = runSpeed;
-        player.StartStaminaLoss();
+        PlayerManager.Instance.StartStaminaLoss();
         Debug.Log("달리는 중");
     }
 
@@ -225,7 +224,7 @@ public class PlayerController : MonoBehaviour {
 
         isRun = false;
         applySpeed = walkSpeed;
-        player.StopStaminaLoss();
+        PlayerManager.Instance.StopStaminaLoss();
         Debug.Log("안달리는 중");
     }
 

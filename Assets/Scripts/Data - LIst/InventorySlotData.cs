@@ -10,7 +10,7 @@ public class InventorySlotData : MonoBehaviour
 
     public ItemData currentItem;
     public ShopItemData currentShopItem;
-    public SnackData currentSnack;
+    public SnackItemData currentSnackItem;
     public int currentItemCount = 1; // 슬롯에 들어있는 아이템 수량
 
     private ISaleSystem saleSystem;
@@ -33,6 +33,8 @@ public class InventorySlotData : MonoBehaviour
         ItemSlotButton.onClick.RemoveAllListeners();
         ItemSlotButton.onClick.AddListener(OnSlotButtonClicked);
     }
+    
+    
 
     public void SetItem(ItemData itemData)
     {
@@ -43,25 +45,26 @@ public class InventorySlotData : MonoBehaviour
             ItemSlotImage.sprite = itemData.icon;
             ItemSlotImage.enabled = true;
 
-            if (countText != null) {
+            if (countText != null)
+            {
                 countText.text = currentItemCount.ToString();
             }
         }
-        else if(ItemSlotImage != null)
+        else if (ItemSlotImage != null)
         {
             ItemSlotImage.sprite = null;
             ItemSlotImage.enabled = false;
         }
     }
 
-    public void SetSnack(SnackData snackData)
+    public void SetSnackItem(SnackItemData SnackItemData)
     {
-        currentSnack = snackData;
+        currentSnackItem = SnackItemData;
         currentItemCount = 1;
         
-        if (snackData != null && ItemSlotImage != null)
+        if (SnackItemData != null && ItemSlotImage != null)
         {
-            ItemSlotImage.sprite = snackData.icon;
+            ItemSlotImage.sprite = SnackItemData.icon;
             ItemSlotImage.enabled = true;
             
             if (countText != null)
@@ -112,7 +115,7 @@ public class InventorySlotData : MonoBehaviour
     {
         currentItem = null;
         currentShopItem = null;
-        currentSnack = null;
+        currentSnackItem = null;
         currentItemCount = 0;
         ItemSlotImage.sprite = null;
         ItemSlotImage.enabled = false;
@@ -211,13 +214,13 @@ public class InventorySlotData : MonoBehaviour
                       $"설명: {currentShopItem.description}\n" +
                       $"가격: {currentShopItem.price}");
         }
-        else if (currentSnack != null)
+        else if (currentSnackItem != null)
         {
             Debug.Log($"[스낵 아이템]\n" +
-                      $"이름: {currentSnack.snackName}\n" +
-                      $"설명: {currentSnack.description}\n" +
-                      $"가격: {currentSnack.price}\n" +
-                      $"스탯 증가: {currentSnack.itemStat}");
+                      $"이름: {currentSnackItem.snackName}\n" +
+                      $"설명: {currentSnackItem.description}\n" +
+                      $"가격: {currentSnackItem.price}\n" +
+                      $"스탯 증가: {currentSnackItem.itemStat}");
         }
         else
         {
@@ -308,12 +311,12 @@ public class InventorySlotData : MonoBehaviour
         
         Debug.Log($"[SetupSlot] 슬롯 설정 완료: {item.itemName}");
     }
-    
+
     public void OnSlotButtonClicked()
     {
         // 어떤 아이템이 있는지 확인하고 로그 출력
         string itemName = "빈 슬롯";
-        
+
         if (currentItem != null)
         {
             itemName = currentItem.itemName;
@@ -322,10 +325,10 @@ public class InventorySlotData : MonoBehaviour
         {
             itemName = currentShopItem.itemName;
         }
-        else if (currentSnack != null)
+        else if (currentSnackItem != null)
         {
-            itemName = currentSnack.snackName;
-            
+            itemName = currentSnackItem.snackName;
+
             // 판매 시스템이 활성화된 경우 판매 모드, 그렇지 않으면 사용 모드
             if (IsSellModeActive())
             {
@@ -341,14 +344,35 @@ public class InventorySlotData : MonoBehaviour
                 }
             }
         }
-        
+
         Debug.Log($"[InventorySlotData] 슬롯 클릭: {itemName}");
-        
+
         // SellUI가 활성화된 상태라면 판매 모드로 간주
         saleSystem?.OnSlotClicked(this);
 
         // 그렇지 않으면 기존 정보 출력
         OnInfoButtonClicked();
+        
+     if (currentItem != null && !string.IsNullOrEmpty(currentItem.itemID))
+    {
+        if (currentItem.itemID == InventoryManager.Instance?.wetWipeItemId)
+        {
+            InventoryManager.Instance.TryEnterCleanMode(this);
+            InventoryManager.Instance.inventory[0].SetActive(true);
+            InventoryManager.Instance.inventory[1].SetActive(false);
+
+            return; // 물티슈 클릭 시 여기서 종료 (안전)
+        }
+    }
+
+    // 2) 청소 모드가 활성화되어 있고, 이 슬롯이 타겟이면 적용
+    if (InventoryManager.Instance != null && InventoryManager.Instance.isCleanMode)
+    {
+        InventoryManager.Instance.ApplyWetWipeTo(this);
+        return; // 청소 완료 후 종료
+    }
+
+
     }
 
     /// <summary>
@@ -357,7 +381,7 @@ public class InventorySlotData : MonoBehaviour
     /// <returns>스낵을 성공적으로 사용했으면 true</returns>
     private bool TryUseSnack()
     {
-        if (currentSnack == null)
+        if (currentSnackItem == null)
         {
             Debug.LogWarning("스낵 데이터가 없습니다!");
             return false;
@@ -381,12 +405,12 @@ public class InventorySlotData : MonoBehaviour
         {
             if (playerManager.IsStaminaFull())
             {
-                Debug.Log($"{currentSnack.snackName}: 스태미나가 이미 최대치입니다!");
+                Debug.Log($"{currentSnackItem.snackName}: 스태미나가 이미 최대치입니다!");
                 return false;
             }
 
             // 스태미나 증가
-            float staminaIncrease = currentSnack.itemStat;
+            float staminaIncrease = currentSnackItem.itemStat;
             actualIncrease = playerManager.RestoreStamina(staminaIncrease);
         }
         catch (System.Exception e)
@@ -397,7 +421,7 @@ public class InventorySlotData : MonoBehaviour
 
         if (actualIncrease > 0)
         {
-            Debug.Log($"{currentSnack.snackName} 사용! 스태미나 +{actualIncrease}");
+            Debug.Log($"{currentSnackItem.snackName} 사용! 스태미나 +{actualIncrease}");
             
             // 아이템 수량 감소
             currentItemCount--;
@@ -405,7 +429,7 @@ public class InventorySlotData : MonoBehaviour
             if (currentItemCount <= 0)
             {
                 // 아이템을 모두 사용했으면 슬롯 비우기
-                string snackName = currentSnack.snackName; // ClearSlot 전에 이름 저장
+                string snackName = currentSnackItem.snackName; // ClearSlot 전에 이름 저장
                 ClearSlot();
                 Debug.Log($"{snackName}을(를) 모두 사용했습니다."); // snackName 변수 사용
             }
@@ -422,7 +446,7 @@ public class InventorySlotData : MonoBehaviour
         }
         else
         {
-            Debug.Log($"{currentSnack.snackName}: 스태미나 증가 실패");
+            Debug.Log($"{currentSnackItem.snackName}: 스태미나 증가 실패");
             return false;
         }
     }

@@ -27,7 +27,7 @@ public class BuySystem : MonoBehaviour, IPointerClickHandler
 
     // 장바구니에 있는 아이템이 담긴 딕셔너리
     private Dictionary<ShopItemData, int> cartItems = new Dictionary<ShopItemData, int>();
-    private Dictionary<SnackData, int> cartSnacks = new Dictionary<SnackData, int>();
+    private Dictionary<SnackItemData, int> cartSnacks = new Dictionary<SnackItemData, int>();
     
     // UI 갱신 플래그
     private bool needsUIRefresh = true;
@@ -50,25 +50,25 @@ public class BuySystem : MonoBehaviour, IPointerClickHandler
         UpdateCartUI();
     }
 
-    public void AddToSnackCart(SnackData snackData)
+    public void AddToSnackCart(SnackItemData SnackItemData)
     {
-        if (snackData == null)
+        if (SnackItemData == null)
         {
-            Debug.LogWarning("AddToSnackCart: snackData가 null입니다!");
+            Debug.LogWarning("AddToSnackCart: SnackItemData가 null입니다!");
             return;
         }
         
-        Debug.Log($"AddToSnackCart 호출됨: {snackData.snackName}");
+        Debug.Log($"AddToSnackCart 호출됨: {SnackItemData.snackName}");
         
-        if (cartSnacks.ContainsKey(snackData))
+        if (cartSnacks.ContainsKey(SnackItemData))
         {
-            cartSnacks[snackData] ++;
-            Debug.Log($"✅ {snackData.snackName} 수량 증가: {cartSnacks[snackData]}");
+            cartSnacks[SnackItemData] ++;
+            Debug.Log($"✅ {SnackItemData.snackName} 수량 증가: {cartSnacks[SnackItemData]}");
         }
         else
         {
-            cartSnacks.Add(snackData, 1);
-            Debug.Log($"✅ {snackData.snackName} 새로 추가됨");
+            cartSnacks.Add(SnackItemData, 1);
+            Debug.Log($"✅ {SnackItemData.snackName} 새로 추가됨");
         }
 
         needsUIRefresh = true; // UI 갱신 필요 표시
@@ -134,10 +134,10 @@ public class BuySystem : MonoBehaviour, IPointerClickHandler
 
         cartSnacks.Clear(); // 기존 장바구니 초기화
 
-        List<SnackData> snacks = InventoryManager.Instance.GetPickedUpSnacks();
+        List<SnackItemData> snacks = InventoryManager.Instance.GetPickedUpSnacks();
         if (snacks != null)
         {
-            foreach (SnackData snack in snacks)
+            foreach (SnackItemData snack in snacks)
             {
                 if (snack != null)
                 {
@@ -257,7 +257,7 @@ public class BuySystem : MonoBehaviour, IPointerClickHandler
 
             // 남은 아이템을 저장할 딕셔너리
             Dictionary<ShopItemData, int> remainingItems = new Dictionary<ShopItemData, int>();
-            Dictionary<SnackData, int> remainingSnacks = new Dictionary<SnackData, int>();
+            Dictionary<SnackItemData, int> remainingSnacks = new Dictionary<SnackItemData, int>();
             
             // 일반 아이템들을 인벤토리에 추가
             foreach (var item in cartItems) // 장바구니에 있는 아이템과 수량을 저장하는 딕셔너리
@@ -332,21 +332,21 @@ public class BuySystem : MonoBehaviour, IPointerClickHandler
     }
 
     // 장바구니에서 스낵 삭제
-    public void DeleteSnackFromCart(SnackData snackData)
+    public void DeleteSnackFromCart(SnackItemData SnackItemData)
     {
-        if (snackData == null)
+        if (SnackItemData == null)
         {
             return;
         }
 
-        if (cartSnacks.ContainsKey(snackData))
+        if (cartSnacks.ContainsKey(SnackItemData))
         {
-            cartSnacks[snackData]--;
+            cartSnacks[SnackItemData]--;
 
             // 수량이 0이 되면 완전히 제거
-            if (cartSnacks[snackData] <= 0)
+            if (cartSnacks[SnackItemData] <= 0)
             {
-                cartSnacks.Remove(snackData);
+                cartSnacks.Remove(SnackItemData);
             }
 
             needsUIRefresh = true; // UI 갱신 필요

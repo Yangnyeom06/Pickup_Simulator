@@ -12,7 +12,7 @@ public class SnackItem : MonoBehaviour
     /// </summary>
     private RaycastHit mHit;
 
-    public SnackData snackItemData;
+    public SnackItemData snackItemData;
     public BuySystem buySystem;
     private bool isProcessing = false; // 중복 호출 방지 플래그
     private static bool globalProcessing = false; // 전역 중복 방지 플래그
@@ -52,7 +52,7 @@ public class SnackItem : MonoBehaviour
         }
 
         if (snackItemData == null)
-            snackItemData = GetComponent<SnackData>(); // 또는 직접 생성하거나 리소스에서 로드
+            snackItemData = GetComponent<SnackItemData>(); // 또는 직접 생성하거나 리소스에서 로드
     }
 
 

@@ -4,7 +4,7 @@ using UnityEngine;
 
 public class Snack : MonoBehaviour
 {
-    public SnackData snackData; // 아이템 데이터 참조
+    public SnackItemData SnackItemData; // 아이템 데이터 참조
     InventoryManager inventoryManager;
 /*
     void Start()
@@ -23,14 +23,14 @@ public class Snack : MonoBehaviour
         }
     }
 */
-    public void SetSnackData(SnackData data)
+    public void SetSnackItemData(SnackItemData data)
     {
-        snackData = data;
+        SnackItemData = data;
     }
 
     public void GotSnackItem()
     {
-        inventoryManager.AddSnack(snackData);
+        inventoryManager.AddSnack(SnackItemData);
     }
 
     public void DeleteSnackItem()

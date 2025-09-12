@@ -3,7 +3,7 @@ using UnityEngine;
 [CreateAssetMenu(fileName = "ShopItem", menuName = "Store/Shop Item")]
 public class ShopItemData : ScriptableObject
 {
-    public string itemID;               // 고유 식별자 (SnackData와 일관성)
+    public string itemID;               // 고유 식별자 (SnackItemData와 일관성)
     public string itemName;             // 상점에 표시될 이름
     public Sprite icon;                 // 이미지
     public int price;                   // 가격

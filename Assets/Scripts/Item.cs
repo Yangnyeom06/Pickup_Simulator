@@ -7,7 +7,6 @@ public class Item : MonoBehaviour
 {
     public string uniqueID;
     public ItemData itemData; // 아이템 데이터 참조
-    InventoryManager inventoryManager;
 /*
     void Start()
     {

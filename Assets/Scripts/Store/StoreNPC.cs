@@ -21,7 +21,7 @@ public class StoreNPC : MonoBehaviour
     public SaleSystem saleSystem;
 
     private ShopItemData shopItem;
-    private SnackData snackItem;
+    private SnackItemData snackItem;
     private ItemData itemData;
     private Item currentItem;
 
