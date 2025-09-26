@@ -1,9 +1,18 @@
 using UnityEngine;
+using System.Collections.Generic;
 
 public class ItemSpawner : MonoBehaviour
 {
     private Item[] itemPool; // 이 지역에 맞는 아이템 풀
     [SerializeField] private int spawnCount = 5; // 아이템을 얼마나 스폰할지
+
+    // 희귀도 확률
+    public Dictionary<ItemRarity, float> rarityProbabilities = new Dictionary<ItemRarity, float>
+    {
+        { ItemRarity.Common, 0.7f },
+        { ItemRarity.Rare, 0.25f },
+        { ItemRarity.Unique, 0.05f }
+    };
 
     private void OnDrawGizmos() // 테스트 용
     {
@@ -33,7 +42,28 @@ public class ItemSpawner : MonoBehaviour
         for (int i = 0; i < spawnCount; i++)
         {
             Vector3 randomPos = GetRandomPositionInArea(); // 랜덤 위치 계산
-            Item randomItem = itemPool[Random.Range(0, itemPool.Length)];
+            
+            // 희귀도 뽑기
+            ItemRarity selectedRarity = GetRandomRarity();
+
+            // 해당 희귀도의 아이템만 추리기
+            List<Item> filteredItems = new List<Item>();
+            foreach (var item in itemPool)
+            {
+                if (item.itemData.itemRarity == selectedRarity)
+                {
+                    filteredItems.Add(item);
+                }
+            }
+
+            if (filteredItems.Count == 0)
+            {
+                Debug.LogWarning($"[ItemSpawner] {gameObject.name}: {selectedRarity} 등급 아이템이 풀에 없습니다.");
+                continue;
+            }
+
+            // 추린 리스트에서 랜덤 뽑기
+            Item randomItem = filteredItems[Random.Range(0, filteredItems.Count)];
 
             if (randomItem != null)
             {
@@ -53,6 +83,21 @@ public class ItemSpawner : MonoBehaviour
             }
         }
     }
+    
+    private ItemRarity GetRandomRarity()
+    {
+        float roll = Random.value; // 0 ~ 1 사이 값
+        float cumulative = 0f;
+
+        foreach (var kvp in rarityProbabilities)
+        {
+            cumulative += kvp.Value;
+            if (roll <= cumulative)
+                return kvp.Key;
+        }
+
+        return ItemRarity.Common; // fallback
+    }
 
     private Vector3 GetRandomPositionInArea()
     {
@@ -61,7 +106,7 @@ public class ItemSpawner : MonoBehaviour
 
         float randomX = Random.Range(center.x - areaSize.x / 2f, center.x + areaSize.x / 2f);
         float randomZ = Random.Range(center.z - areaSize.z / 2f, center.z + areaSize.z / 2f);
-        
+
         float randomY = center.y;
 
         return new Vector3(randomX, randomY, randomZ); // 3D 위치 반환

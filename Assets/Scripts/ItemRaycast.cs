@@ -38,7 +38,7 @@ public class ItemRaycast : MonoBehaviour
     [SerializeField] private Transform mHoldPoint;
 
 
-    private bool hand;
+    [SerializeField] private bool hand;
 
     [Header("레이캐스트를 쏠 카메라")]
     [SerializeField] public Camera mRayCamera; //레이를 쏠 카메라 (메인카메라)
@@ -48,7 +48,7 @@ public class ItemRaycast : MonoBehaviour
     public bool IsHoldingLargeItem => hand;
     public GameObject CurrentLargeItem => mLargeItemObject;
     public Item CurrentLargeItemData => mLargeItemObject?.GetComponent<Item>();
-    
+
     /// <summary>
     /// 현재 들고 있는 Large 아이템을 판매로 인해 제거합니다
     /// </summary>
@@ -59,11 +59,11 @@ public class ItemRaycast : MonoBehaviour
             string itemName = mLargeItemObject.name;
             Debug.Log($"[SellCurrentLargeItem] Large 아이템 판매로 인한 제거: {itemName}");
             Debug.Log($"[SellCurrentLargeItem] 제거 전 상태 - hand: {hand}, mLargeItemObject: {mLargeItemObject != null}");
-            
+
             Destroy(mLargeItemObject);
             mLargeItemObject = null;
             hand = false;
-            
+
             Debug.Log($"[SellCurrentLargeItem] 제거 후 상태 - hand: {hand}, mLargeItemObject: {mLargeItemObject != null}");
             Debug.Log($"[SellCurrentLargeItem] IsHoldingLargeItem: {IsHoldingLargeItem}");
         }
@@ -74,20 +74,20 @@ public class ItemRaycast : MonoBehaviour
     }
     // [SerializeField] private ItemActionManager mItemActionCustomFunc; //아이템 상호작용 커스텀 함수 매니저 (이 글에서는 설명 X)
     // [SerializeField] private ItemRaycastInfoText mItemRaycastInfoText; //아이템 상호작용 가능시 보여질 텍스트 매니저 (이 글에서는 설명 X)
-    
+
     private void Start()
     {
         mPlayerTransform = this.transform;
-        
+
         // 필수 컴포넌트들이 할당되었는지 확인
         if (mRayCamera == null)
         {
             Debug.LogError("ItemRaycast: mRayCamera가 할당되지 않았습니다!");
         }
-        
+
         Debug.Log($"ItemRaycast 초기화 완료 - 레이캐스트 거리: {mRayDistance}");
     }
-    
+
 
     private void Update()
     {
@@ -111,7 +111,6 @@ public class ItemRaycast : MonoBehaviour
                 DayManager.Instance.Open();
             }
 
-
             // 스낵 아이템 처리
             if (mCurrentSnackItem != null)
             {
@@ -119,7 +118,7 @@ public class ItemRaycast : MonoBehaviour
                 ItemInfoDisappear();
                 return;
             }
-            
+
             // 상점 아이템 처리
             if (mCurrentShopItem != null)
             {
@@ -127,19 +126,19 @@ public class ItemRaycast : MonoBehaviour
                 ItemInfoDisappear();
                 return;
             }
-            
+
             // 일반 아이템 처리
             if (mCurrentItem != null)
             {
                 Debug.Log($"아이템 줍기 시도: {mCurrentItem.itemData.itemName}, ItemType: {mCurrentItem.itemData.itemType}, hand: {hand}");
-                
+
                 if (mCurrentItem.itemData.itemType == ItemType.Large && hand == false)
                 {
                     Debug.Log("Large 아이템 줍기 로직 실행");
                     TryPickUpLarge();
                     ItemInfoDisappear();
                 }
-                else
+                else if (mCurrentItem.itemData.itemType != ItemType.Large)
                 {
                     Debug.Log("일반 아이템 줍기 로직 실행");
                     //현재 인벤토리 아이템 가져오기
@@ -153,11 +152,12 @@ public class ItemRaycast : MonoBehaviour
                         if (isNull) { break; }
                     }
                     Debug.Log($"슬롯 검사 완료 - count: {count}, slotList.Count: {InventoryManager.Instance.slotList.Count}");
-                    
+
                     //모든 칸이 null이 아니고, 중첩이 불가능하면 주울 수 없음
-                    if (count == InventoryManager.Instance.slotList.Count) { 
+                    if (count == InventoryManager.Instance.slotList.Count)
+                    {
                         Debug.Log("인벤토리가 가득함 - 줍기 실패");
-                        return; 
+                        return;
                     }
                     else
                     {
@@ -177,7 +177,6 @@ public class ItemRaycast : MonoBehaviour
     ///
 
     private void CheckItem()
-
     {
         {
             if (Physics.Raycast(mRayCamera.transform.position, mRayCamera.transform.forward, out mHit, mRayDistance))
@@ -271,11 +270,11 @@ public class ItemRaycast : MonoBehaviour
 
                     if (mCurrentItem != null && mCurrentItem.itemData != null)
                     {
-                        explainText.text = mCurrentItem.itemData.itemName;
-                        explainText.text += mCurrentItem.itemData.itemRarity.ToString();
-                        explainText.text += mCurrentItem.itemData.itemType.ToString();
-                        explainText.text += mCurrentItem.itemData.value.ToString();
-                        explainText.text += mCurrentItem.itemData.dirty.ToString();
+                        explainText.text = mCurrentItem.itemData.itemName + "\n";
+                        explainText.text += mCurrentItem.itemData.itemRarity.ToString() + "\n";
+                        explainText.text += mCurrentItem.itemData.itemType.ToString() + "\n";
+                        explainText.text += mCurrentItem.itemData.value.ToString() + "\n";
+                        explainText.text += mCurrentItem.itemData.dirty.ToString() + "\n";
                         explainText.text += mCurrentItem.itemData.description;
 
                         Debug.LogFormat("아이템: {0} 획득 가능", mCurrentItem.itemData.itemName);
@@ -329,7 +328,7 @@ public class ItemRaycast : MonoBehaviour
         mCurrentItem = null;
         mCurrentSnackItem = null;
         mCurrentShopItem = null;
-        
+
         followMouseImage.SetActive(false);
     }
 
@@ -353,12 +352,12 @@ public class ItemRaycast : MonoBehaviour
                 ItemInfoDisappear();
                 return;
             }
-            
+
             Debug.Log($"아이템 '{mCurrentItem.itemData.itemName}' 줍기 시도 중...");
-            
+
             // 인벤토리에 아이템 추가 시도
             bool success = InventoryManager.Instance.AddItem(mCurrentItem.itemData, mCurrentItem);
-            
+
             if (success)
             {
                 Debug.Log($"✅ '{mCurrentItem.itemData.itemName}' 성공적으로 주웠습니다!");
@@ -384,7 +383,7 @@ public class ItemRaycast : MonoBehaviour
             mLargeItemObject = mCurrentItem.gameObject;
 
             Collider itemCollider = mLargeItemObject.GetComponent<Collider>();
-            
+
             if (itemCollider != null)
                 itemCollider.enabled = false;
 
@@ -413,7 +412,7 @@ public class ItemRaycast : MonoBehaviour
             Vector3 dropPosition = mPlayerTransform.position + mPlayerTransform.forward * 1.5f;
             mLargeItemObject.transform.position = dropPosition;
             mLargeItemObject.transform.rotation = Quaternion.Euler(0, 0, 0);
-            
+
             Collider itemCollider = mLargeItemObject.GetComponent<Collider>();
 
             if (itemCollider != null)
@@ -430,5 +429,10 @@ public class ItemRaycast : MonoBehaviour
             mLargeItemObject = null;
             hand = false;
         }
+    }
+
+    public void ItemOutLiner()
+    {
+        
     }
 }

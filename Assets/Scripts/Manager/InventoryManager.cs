@@ -122,7 +122,7 @@ public class InventoryManager : MonoBehaviour
             {
                 itemData.slotNum = i; // 슬롯 인덱스를 그대로 사용
                 slotList[i].SetItem(itemData);
-                savedPickUpItems.Add(new ItemInstanceData(item.uniqueID, itemData.itemID, itemData.itemName, itemData.icon, itemData.description, itemData.itemType, itemData.dirty, itemData.value, itemData.slotNum));
+                savedPickUpItems.Add(new ItemInstanceData(item.uniqueID, itemData.itemID, itemData.itemName, itemData.icon, itemData.description, itemData.itemType, itemData.dirty, itemData.value, itemData.slotNum, new Vector3 (0,0,0), new Quaternion (0,0,0,0)));
                 DayManager.Instance.pickUpItemCounts += 1;
                 Debug.Log($"'{itemData.itemName}' 새로운 슬롯에 추가됨!");
                 return true; // 아이템 추가 성공

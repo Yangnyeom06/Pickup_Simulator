@@ -15,6 +15,7 @@ MonoBehaviour:
   itemID: 5
   itemName: Middle School Item1
   icon: {fileID: 21300000, guid: f8e9e96ae66fea64d9d893dee86c1bc3, type: 3}
+  price: 0
   description: 
   itemType: 1
   itemRarity: 0
@@ -22,4 +23,6 @@ MonoBehaviour:
   minValue: 0
   maxValue: 0
   value: 0
+  maxStackSize: 99
   slotNum: 0
+  prefab: {fileID: 1359502239170301762, guid: a78a531ad29b29a4e82646771b538b88, type: 3}

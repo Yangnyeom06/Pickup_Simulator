@@ -15,6 +15,7 @@ MonoBehaviour:
   itemID: 11
   itemName: Mountain Item3
   icon: {fileID: 748639603, guid: 2c96ac4c9f33d924080aabf3f45d8ec7, type: 3}
+  price: 0
   description: 
   itemType: 0
   itemRarity: 0
@@ -22,4 +23,6 @@ MonoBehaviour:
   minValue: 0
   maxValue: 0
   value: 0
+  maxStackSize: 99
   slotNum: 0
+  prefab: {fileID: 8957772239380138904, guid: 6181190984284df4b9a7af4783526d36, type: 3}

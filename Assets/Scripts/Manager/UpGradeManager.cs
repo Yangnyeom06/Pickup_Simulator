@@ -15,6 +15,10 @@ public class UpGradeManager : MonoBehaviour
     public List<UpgradeBarMove> MapUpgradeCells;
 
 
+    [Header("MiniMap Camera")]
+    [SerializeField] private Camera miniMapCamera;
+
+
     public void HealthUpGrade(int level) // 체력 업그레이드
     {
         if (PlayerManager.Instance.healthLevel.Value < PlayerManager.Instance.healthLevel.maxLevel)
@@ -66,10 +70,29 @@ public class UpGradeManager : MonoBehaviour
         if (PlayerManager.Instance.mapLevel.Value < PlayerManager.Instance.mapLevel.maxLevel)
         {
             PlayerManager.Instance.mapLevel.Value += level;
-            
+
             TriggerCellMovement(MapUpgradeCells, PlayerManager.Instance.mapLevel.Value);
+            
+            UpdateMiniMapMask(PlayerManager.Instance.mapLevel.Value);
         }
     }
+
+    private void UpdateMiniMapMask(int mapLevel)
+    {
+        int originalMask = miniMapCamera.cullingMask;
+
+        int itemMask = 0;
+
+        if (mapLevel >= 1)
+            itemMask |= LayerMask.GetMask("CommonItem");
+        if (mapLevel >= 2)
+            itemMask |= LayerMask.GetMask("RareItem");
+        if (mapLevel >= 3)
+            itemMask |= LayerMask.GetMask("UniqueItem");
+
+        miniMapCamera.cullingMask = originalMask | itemMask;
+    }
+
 
     private void TriggerCellMovement(List<UpgradeBarMove> upgradeCells, int currentCellCount)
     {

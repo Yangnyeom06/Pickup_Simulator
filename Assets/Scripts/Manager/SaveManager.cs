@@ -38,6 +38,8 @@ public class SaveManager : MonoBehaviour
         currentSaveData.playerData = PlayerData.FromData(PlayerManager.Instance);
         currentSaveData.inventoryData = InventoryData.FromData(InventoryManager.Instance);
         currentSaveData.gameData = GameDate.FromData(DayManager.Instance);
+        currentSaveData.collectedItemsData = new List<ItemInstanceData>(ItemRepository.Instance.collectedItemDatas);
+
 
         // 오브젝트와 UI 저장
         currentSaveData.uiObjects.Clear();
@@ -75,6 +77,12 @@ public class SaveManager : MonoBehaviour
                 uiData.Apply();
 
             Debug.Log($"로드 완료 (슬롯 {slotId})");
+            
+            if (ItemRepository.Instance != null)
+            {
+                ItemRepository.Instance.collectedItemDatas = new List<ItemInstanceData>(currentSaveData.collectedItemsData);
+                ItemRepository.Instance.SpawnLoadedItems();
+            }
         }
         else
         {
@@ -106,6 +114,7 @@ public class SaveManager : MonoBehaviour
         PlayerManager.Instance.ResetPlayerData();
         InventoryManager.Instance.ResetSlots();
         DayManager.Instance.ResetDayData();
+        ItemRepository.Instance.ResetCollectedItems();
 
         DeleteSaveFile(slotId);
         SaveGame(slotId);

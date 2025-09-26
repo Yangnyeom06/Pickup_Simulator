@@ -15,6 +15,7 @@ MonoBehaviour:
   itemID: 4
   itemName: element Item4
   icon: {fileID: 21300000, guid: 77805c1094cb5c94ea2946fe059dee5e, type: 3}
+  price: 0
   description: 
   itemType: 1
   itemRarity: 0
@@ -22,4 +23,6 @@ MonoBehaviour:
   minValue: 123
   maxValue: 234
   value: 123
+  maxStackSize: 99
   slotNum: 0
+  prefab: {fileID: 6721734810519537716, guid: ad8719f86c3362d42a6f6f54974eeb10, type: 3}

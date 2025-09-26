@@ -14,8 +14,11 @@ public class ItemInstanceData
     public int value;
     public int slotNum;
 
+    public Vector3 position;
+    public Quaternion rotation;
 
-    public ItemInstanceData(string uniqueID, string itemID, string itemName, Sprite icon, string description, ItemType itemType, float dirty, int value, int slotNum)
+
+    public ItemInstanceData(string uniqueID, string itemID, string itemName, Sprite icon, string description, ItemType itemType, float dirty, int value, int slotNum, Vector3 position, Quaternion rotation)
     {
         this.uniqueID = uniqueID;
         this.itemID = itemID;
@@ -26,5 +29,7 @@ public class ItemInstanceData
         this.dirty = dirty;
         this.value = value;
         this.slotNum = slotNum;
+        this.position = position;
+        this.rotation = rotation;
     }
 }

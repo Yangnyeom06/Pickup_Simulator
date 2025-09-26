@@ -9,4 +9,5 @@ public class SaveData
     public InventoryData inventoryData;
     public GameDate gameData;
     public List<UISaveData> uiObjects = new();
+    public List<ItemInstanceData> collectedItemsData = new();
 }

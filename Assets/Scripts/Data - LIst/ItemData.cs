@@ -32,4 +32,5 @@ public class ItemData : ScriptableObject
     public int value; // 기본 가치 (스폰될 때 최소 가치와 최대 가치 사이의 값으로 변경)
     public int maxStackSize = 99; // 최대 스택 크기 (기본값: 99개)
     public int slotNum;
+    public GameObject prefab;
 }

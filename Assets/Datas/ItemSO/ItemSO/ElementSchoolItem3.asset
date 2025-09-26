@@ -15,6 +15,7 @@ MonoBehaviour:
   itemID: 3
   itemName: element Item3
   icon: {fileID: 10911, guid: 0000000000000000f000000000000000, type: 0}
+  price: 0
   description: aasdf
   itemType: 1
   itemRarity: 0
@@ -22,4 +23,6 @@ MonoBehaviour:
   minValue: 1234
   maxValue: 1234
   value: 0
+  maxStackSize: 99
   slotNum: 0
+  prefab: {fileID: 7567414506816831824, guid: 2bab56c3fcb7ac4469dd7552fe3f0028, type: 3}

@@ -20,6 +20,8 @@ public class StoreNPC : MonoBehaviour
     public BuySystem buySystem;
     public SaleSystem saleSystem;
 
+    private DialogueTrigger dialogueTrigger;
+
     private ShopItemData shopItem;
     private SnackItemData snackItem;
     private ItemData itemData;
@@ -29,6 +31,7 @@ public class StoreNPC : MonoBehaviour
     {
         buyButton.gameObject.SetActive(false);
         sellButton.gameObject.SetActive(false);
+        dialogueTrigger = GetComponent<DialogueTrigger>();
     }
 
     void Update()
@@ -40,6 +43,7 @@ public class StoreNPC : MonoBehaviour
             {
                 if (hit.transform.gameObject == this.gameObject)
                 {
+                    dialogueTrigger.TriggerSerialDialogue();
                     ShowButtons();
                 }
             }
