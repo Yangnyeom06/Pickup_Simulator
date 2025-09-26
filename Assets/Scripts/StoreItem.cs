@@ -1,6 +1,6 @@
 using UnityEngine;
 
-public class ShopItem : MonoBehaviour
+public class StoreItem : MonoBehaviour
 {
 
     [Header("레이캐스트를 쏠 카메라")]
@@ -15,6 +15,7 @@ public class ShopItem : MonoBehaviour
     public ShopItemData shopItemData;
     public BuySystem buySystem;
     private bool isProcessing = false; // 중복 호출 방지 플래그
+    private static bool globalProcessing = false; // 전역 중복 방지 플래그
 
     private void Awake()
     {
@@ -25,7 +26,7 @@ public class ShopItem : MonoBehaviour
             if (BuySystem.Instance != null)
             {
                 buySystem = BuySystem.Instance;
-                Debug.Log($"ShopItem: BuySystem 싱글톤을 사용합니다: {buySystem.gameObject.name}");
+                Debug.Log($"StoreItem: BuySystem 싱글톤을 사용합니다: {buySystem.gameObject.name}");
             }
             else
             {
@@ -40,12 +41,12 @@ public class ShopItem : MonoBehaviour
                 
                 if (buySystem == null)
                 {
-                    Debug.LogError("ShopItem: BuySystem을 찾을 수 없습니다! 씬에 BuySystem이 있는지 확인하세요.");
+                    Debug.LogError("StoreItem: BuySystem을 찾을 수 없습니다! 씬에 BuySystem이 있는지 확인하세요.");
                     Debug.LogError("해결방법: 1) BuySystem GameObject가 활성화되어 있는지 확인 2) Inspector에서 직접 할당");
                 }
                 else
                 {
-                    Debug.Log($"ShopItem: BuySystem을 자동으로 찾았습니다: {buySystem.gameObject.name}");
+                    Debug.Log($"StoreItem: BuySystem을 자동으로 찾았습니다: {buySystem.gameObject.name}");
                 }
             }
         }
@@ -54,22 +55,30 @@ public class ShopItem : MonoBehaviour
             shopItemData = GetComponent<ShopItemData>(); // 또는 직접 생성하거나 리소스에서 로드
     }
 
+
+
     // 외부에서 호출할 수 있는 구매 메서드 (ItemRaycast 호환성)
     public void PickupItem()
     {
-        // 중복 호출 방지
-        if (isProcessing)
+        // 전역 및 로컬 중복 호출 방지
+        if (isProcessing || globalProcessing)
         {
+            Debug.Log($"PickupItem 중복 호출 방지됨: isProcessing={isProcessing}, globalProcessing={globalProcessing}");
             return;
         }
         
         isProcessing = true;
+        globalProcessing = true;
+        
+        Debug.Log($"PickupItem 시작: {shopItemData?.itemName ?? "null"}");
         
         if (shopItemData != null)
         {
             if (buySystem != null)
             {
                 buySystem.AddToShopItemCart(shopItemData);
+                Debug.Log($"장바구니에 {shopItemData.itemName} 추가 완료");
+                // 반복 구매 가능하도록 오브젝트는 삭제하지 않음
             }
             else
             {
@@ -87,7 +96,9 @@ public class ShopItem : MonoBehaviour
     
     private System.Collections.IEnumerator ResetProcessingFlag()
     {
-        yield return new UnityEngine.WaitForSeconds(0.1f); // 0.1초 대기
+        yield return new UnityEngine.WaitForSeconds(0.5f); // 0.5초 대기로 증가
         isProcessing = false;
+        globalProcessing = false; // 전역 플래그도 해제
+        Debug.Log("PickupItem 처리 플래그 해제됨");
     }
 }

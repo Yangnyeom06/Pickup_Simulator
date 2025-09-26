@@ -33,6 +33,9 @@ public class JunkyardNPC : MonoBehaviour, ISaleSystem
     private InventorySlotData selectedSlot;
     // public int selectedQuantity { get; set; } = 0;
     // private QuantityDialog    quantityDialog;
+    
+    // 중복 판매 방지 플래그
+    private bool isSelling = false;
 
     [SerializeField] private TMP_Text playerMoneyText;
 
@@ -81,6 +84,7 @@ public class JunkyardNPC : MonoBehaviour, ISaleSystem
         sellUI.SetActive(true);
         ResetSaleState();
         RefreshSellSlots();
+        UpdatePlayerMoneyUI(); // UI가 열릴 때 현재 돈 표시
     }
 
 
@@ -124,8 +128,25 @@ public class JunkyardNPC : MonoBehaviour, ISaleSystem
                 ui.SetupSlot(item, 1, this); // 들고 있는 Large 아이템 1개
                 ui.originalInventorySlot = null; // 인벤토리 슬롯이 아니므로 null
                 
-                Debug.Log($"[JunkyardNPC] 들고 있는 Large 아이템 '{item.itemName}' 판매 슬롯에 표시될");
-                Debug.Log($"[JunkyardNPC] 생성된 슬롯 GameObject: {go.name}");
+                // 이미지가 제대로 설정되었는지 확인
+                if (ui.inventoryimage != null)
+                {
+                    Debug.Log($"[JunkyardNPC] 이미지 설정 확인 - sprite: {ui.inventoryimage.sprite}, enabled: {ui.inventoryimage.enabled}");
+                    
+                    // 이미지가 설정되지 않았다면 수동으로 설정
+                    if (ui.inventoryimage.sprite == null && item.icon != null)
+                    {
+                        Debug.LogWarning($"[JunkyardNPC] 이미지가 설정되지 않아 수동으로 설정합니다: {item.itemName}");
+                        ui.inventoryimage.sprite = item.icon;
+                        ui.inventoryimage.enabled = true;
+                    }
+                }
+                else
+                {
+                    Debug.LogError($"[JunkyardNPC] inventoryimage가 null입니다! GameObject: {go.name}");
+                }
+                
+                Debug.Log($"[JunkyardNPC] 슬롯 생성 완료: {item.itemName}");
             }
         }
         else
@@ -215,6 +236,15 @@ public class JunkyardNPC : MonoBehaviour, ISaleSystem
     // 판매 버튼 클릭 시 호출
     public void ConfirmSell()
     {
+        // 중복 호출 방지
+        if (isSelling)
+        {
+            Debug.Log("[JunkyardNPC] 이미 판매 처리 중입니다. 중복 호출 방지!");
+            return;
+        }
+        
+        isSelling = true;
+        
         Debug.Log("[JunkyardNPC] ConfirmSell() 메서드 호출됨!");
         Debug.Log("[JunkyardNPC] selectedSlot 상태: " + selectedSlot);
         Debug.Log("[JunkyardNPC] currentItem 상태: " + (selectedSlot != null ? selectedSlot.currentItem : "null"));
@@ -222,12 +252,14 @@ public class JunkyardNPC : MonoBehaviour, ISaleSystem
         if (selectedSlot == null)
         {
             Debug.LogError("[JunkyardNPC] selectedSlot이 null입니다! 슬롯을 선택하지 않았거나 OnSlotClicked가 호출되지 않았습니다.");
+            isSelling = false; // 플래그 리셋
             return;
         }
         
         if (selectedSlot.currentItem == null)
         {
             Debug.LogError("[JunkyardNPC] selectedSlot.currentItem이 null입니다! 슬롯에 아이템이 없습니다.");
+            isSelling = false; // 플래그 리셋
             return;
         }
         
@@ -235,7 +267,18 @@ public class JunkyardNPC : MonoBehaviour, ISaleSystem
 
         // 1) 판매 정보 미리 저장
         var itemData  = selectedSlot.currentItem;
-        int gain      = itemData.price;
+        
+        // 더러움 상태에 따른 가격 조정 (고물상에서는 기본 가격 기준)
+        int gain = itemData.GetAdjustedSalePrice(); // 더러움 페널티 적용된 가격
+        
+        // 더러움 상태 및 가격 정보 로그
+        int basePrice = itemData.price; // price 기준으로 변경
+        int penalty = itemData.GetDirtyPenalty();
+        Debug.Log($"고물상 판매: {itemData.itemName}");
+        Debug.Log($"  - 더러움 상태: {itemData.GetDirtyStateString()} (dirty: {itemData.dirty:F2})");
+        Debug.Log($"  - 기본 가격: {basePrice}G");
+        Debug.Log($"  - 더러움 페널티: -{penalty}G");
+        Debug.Log($"  - 최종 판매가: {gain}G");
 
         // 2) 돈 입금
         moneyManager.AddMoney(gain);
@@ -259,7 +302,7 @@ public class JunkyardNPC : MonoBehaviour, ISaleSystem
             Debug.Log($"[JunkyardNPC] Large 아이템 제거 완료 - 현재 상태: {itemRaycast.IsHoldingLargeItem}");
         }
         
-        Debug.Log($"쓰레기장 판매 완료: {itemData.itemName}");
+        Debug.Log($"쓰레기장 판매: {itemData.itemName}");
 
         // 4) 판매 완료 후 UI 처리
         StartCoroutine(HandlePostSaleUI(gain, itemRemoved));
@@ -281,11 +324,15 @@ public class JunkyardNPC : MonoBehaviour, ISaleSystem
 
         sellUI.SetActive(false);
 
+        int playerMoney = moneyManager.player != null ? moneyManager.player.money : playerData.money;
         Debug.Log($"판매 완료: +{gain}G");
         if (playerMoneyText != null)
         {
-            playerMoneyText.text = $"Money: {playerData.money} G";
+            playerMoneyText.text = $"{playerMoney} G";
         }
+        
+        // 판매 완료 후 플래그 리셋
+        isSelling = false;
     }
 
     // /// <summary>
@@ -326,5 +373,14 @@ public class JunkyardNPC : MonoBehaviour, ISaleSystem
     {
         sellUI.SetActive(false);
         ResetSaleState();
+    }
+
+    private void UpdatePlayerMoneyUI()
+    {
+        int playerMoney = moneyManager.player != null ? moneyManager.player.money : playerData.money;
+        if (playerMoneyText != null)
+        {
+            playerMoneyText.text = $"Money: {playerMoney} G";
+        }
     }
 }

@@ -18,6 +18,10 @@ public class InventoryManager : MonoBehaviour
     public List<SnackInstanceData> savedSnacks = new();
     public List<ShopItemInstanceData> savedShopItems = new();
     private bool isAddingSnack = false; // 스낵 추가 중복 방지 플래그
+    
+    [Header("Money Display")]
+    [SerializeField] private TMP_Text playerMoneyText; // 플레이어 돈 표시 텍스트
+    [SerializeField] private MoneyManager moneyManager; // MoneyManager 참조
 
 
     private void Awake()
@@ -38,6 +42,15 @@ public class InventoryManager : MonoBehaviour
         {
             Debug.Log("슬롯이 비어있어서 초기화합니다.");
             InitializeSlots();
+        }
+    }
+    
+    private void Update()
+    {
+        // 인벤토리가 열려있을 때만 돈 표시 업데이트
+        if (inventory.activeSelf)
+        {
+            UpdateMoneyDisplay();
         }
     }
 
@@ -66,8 +79,29 @@ public class InventoryManager : MonoBehaviour
         for (int i = 0; i < newCount; i++)
         {
             GameObject slot = Instantiate(slotPrefab, contentParent);
-            InventorySlotData slotData = slot.GetComponentInChildren<InventorySlotData>();
+            InventorySlotData slotData = slot.GetComponent<InventorySlotData>();
+            
+            // 슬롯 데이터를 찾지 못한 경우 자식에서 찾기
+            if (slotData == null)
+            {
+                slotData = slot.GetComponentInChildren<InventorySlotData>();
+            }
+            
+            if (slotData == null)
+            {
+                Debug.LogError($"슬롯 프리팹에 InventorySlotData 컴포넌트가 없습니다! Prefab: {slotPrefab?.name}");
+                Destroy(slot);
+                continue;
+            }
+            
+            // UI 컴포넌트가 제대로 연결되었는지 확인
+            if (slotData.inventoryimage == null)
+            {
+                Debug.LogError($"슬롯의 inventoryimage가 null입니다! GameObject: {slot.name}");
+            }
+            
             slotList.Add(slotData);
+            Debug.Log($"인벤토리 슬롯 {i} 생성 완료 - GameObject: {slot.name}");
         }
     }
 
@@ -77,8 +111,29 @@ public class InventoryManager : MonoBehaviour
         for (int i = 0; i < inventorySlotCount.upgradeCount; i++)
         {
             GameObject slot = Instantiate(slotPrefab, contentParent);
-            InventorySlotData slotData = slot.GetComponentInChildren<InventorySlotData>();
+            InventorySlotData slotData = slot.GetComponent<InventorySlotData>();
+            
+            // 슬롯 데이터를 찾지 못한 경우 자식에서 찾기
+            if (slotData == null)
+            {
+                slotData = slot.GetComponentInChildren<InventorySlotData>();
+            }
+            
+            if (slotData == null)
+            {
+                Debug.LogError($"업그레이드 슬롯 프리팹에 InventorySlotData 컴포넌트가 없습니다! Prefab: {slotPrefab?.name}");
+                Destroy(slot);
+                continue;
+            }
+            
+            // UI 컴포넌트가 제대로 연결되었는지 확인
+            if (slotData.inventoryimage == null)
+            {
+                Debug.LogError($"업그레이드 슬롯의 inventoryimage가 null입니다! GameObject: {slot.name}");
+            }
+            
             slotList.Add(slotData);
+            Debug.Log($"업그레이드 슬롯 {i} 생성 완료 - GameObject: {slot.name}");
         }
     }
 
@@ -96,7 +151,8 @@ public class InventoryManager : MonoBehaviour
         // 스택킹 없이 항상 새로운 빈 슬롯에 개별적으로 저장
         for (int i = 0; i < slotList.Count; i++)
         {
-            if (slotList[i].currentItem == null) // 빈 슬롯 발견
+            // 완전히 빈 슬롯만 사용 (모든 아이템 타입이 null이어야 함)
+            if (slotList[i].currentItem == null && slotList[i].currentShopItem == null && slotList[i].currentSnack == null)
             {
                 itemData.slotNum = i; // 슬롯 인덱스를 그대로 사용
                 slotList[i].SetItem(itemData);
@@ -105,9 +161,14 @@ public class InventoryManager : MonoBehaviour
                 Debug.Log($"'{itemData.itemName}' 새로운 슬롯에 추가됨!");
                 return true; // 아이템 추가 성공
             }
-            else if (slotList[i].currentItem != null)
+            else
             {
-                Debug.Log($"  슬롯 {i}: '{slotList[i].currentItem.itemName}' (사용 중)");
+                // 슬롯이 사용 중인 경우 어떤 아이템이 있는지 로그 출력
+                string occupiedBy = "";
+                if (slotList[i].currentItem != null) occupiedBy += $"일반아이템:{slotList[i].currentItem.itemName} ";
+                if (slotList[i].currentShopItem != null) occupiedBy += $"상점아이템:{slotList[i].currentShopItem.itemName} ";
+                if (slotList[i].currentSnack != null) occupiedBy += $"간식:{slotList[i].currentSnack.snackName} ";
+                Debug.Log($"  슬롯 {i}: {occupiedBy}(사용 중)");
             }
         }
 
@@ -133,7 +194,8 @@ public class InventoryManager : MonoBehaviour
                 continue;
             }
 
-            if (slot.currentItem == null && slot.currentShopItem == null)
+            // 완전히 빈 슬롯만 사용 (모든 아이템 타입이 null이어야 함)
+            if (slot.currentItem == null && slot.currentShopItem == null && slot.currentSnack == null)
             {
                 slot.SetShopItem(shopItemData);
                 Debug.Log($"{shopItemData.itemName}이(가) 인벤토리에 추가되었습니다.");
@@ -229,8 +291,20 @@ public class InventoryManager : MonoBehaviour
             ItemData applyItem = ItemDatabase.Instance.GetItemDataById(sItem.itemID);
             if (slotList[int.Parse(sItem.slotNum.ToString())].currentItem == null && applyItem != null)
             {
-                ItemData clone = Instantiate(applyItem);
-                clone.value = sItem.value;
+                // ScriptableObject 안전 복제
+                ItemData clone = ScriptableObject.CreateInstance<ItemData>();
+                clone.itemID = applyItem.itemID;
+                clone.itemName = applyItem.itemName;
+                clone.icon = applyItem.icon;
+                clone.description = applyItem.description;
+                clone.itemType = applyItem.itemType;
+                clone.itemRarity = applyItem.itemRarity;
+                clone.dirty = applyItem.dirty;
+                clone.price = applyItem.price;
+                clone.maxStackSize = applyItem.maxStackSize;
+                clone.value = sItem.value; // 저장된 값 적용
+                clone.slotNum = applyItem.slotNum;
+                
                 slotList[int.Parse(sItem.slotNum.ToString())].SetItem(clone);
             }
             else
@@ -276,11 +350,27 @@ public class InventoryManager : MonoBehaviour
     public void Open() // UpGradeUI 열기
     {
         inventory.SetActive(true);
+        UpdateMoneyDisplay(); // 인벤토리 열 때 돈 표시 업데이트
     }
 
     public void Exit() // UpGradeUI 닫기
     {
         inventory.SetActive(false);
+    }
+    
+    // 플레이어 돈 표시 업데이트
+    private void UpdateMoneyDisplay()
+    {
+        if (playerMoneyText != null && moneyManager != null && moneyManager.player != null)
+        {
+            playerMoneyText.text = $"Money: {moneyManager.player.money} G";
+        }
+    }
+    
+    // 외부에서 돈 표시를 업데이트할 수 있도록 public 메서드 제공
+    public void RefreshMoneyDisplay()
+    {
+        UpdateMoneyDisplay();
     }
 
     public void ResetSlots()
@@ -291,7 +381,14 @@ public class InventoryManager : MonoBehaviour
 
         foreach (Transform child in contentParent)
         {
-            Destroy(child.gameObject);
+            if (Application.isEditor && !Application.isPlaying)
+            {
+                DestroyImmediate(child.gameObject);
+            }
+            else
+            {
+                Destroy(child.gameObject);
+            }
         }
         slotList.Clear();
 

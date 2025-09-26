@@ -115,6 +115,34 @@ public class PlayerManager : MonoBehaviour
     {
         return staminaLevel.current >= staminaLevel.max;
     }
+    
+    /// <summary>
+    /// 스낵 아이템을 사용하여 체력을 증가시킵니다
+    /// </summary>
+    /// <param name="amount">증가시킬 체력 양</param>
+    /// <returns>실제로 증가한 체력 양</returns>
+    public float RestoreHealth(float amount)
+    {
+        if (amount <= 0) return 0;
+
+        float previousHealth = healthLevel.current;
+        float newHealth = Mathf.Min(healthLevel.current + amount, healthLevel.max);
+        healthLevel.current = newHealth;
+
+        float actualIncrease = newHealth - previousHealth;
+        Debug.Log($"체력 회복: +{actualIncrease} (현재: {newHealth}/{healthLevel.max})");
+        
+        return actualIncrease;
+    }
+
+    /// <summary>
+    /// 현재 체력이 최대치인지 확인
+    /// </summary>
+    /// <returns>체력이 최대치면 true</returns>
+    public bool IsHealthFull()
+    {
+        return healthLevel.current >= healthLevel.max;
+    }
     #endregion
 
     public void ResetPlayerData()

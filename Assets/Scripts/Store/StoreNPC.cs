@@ -20,6 +20,9 @@ public class StoreNPC : MonoBehaviour
     public BuySystem buySystem;
     public SaleSystem saleSystem;
 
+    [Header("상점에서 판매할 아이템들")]
+    public ShopItemData[] storeItems; // Inspector에서 할당할 상점 아이템들
+
     private ShopItemData shopItem;
     private SnackData snackItem;
     private ItemData itemData;
@@ -62,8 +65,8 @@ public class StoreNPC : MonoBehaviour
 
     public void OnBuyClicked()
     {
-        // cartSnacks에 저장된 주운 아이템으로 장바구니 UI 열기
-        buySystem.OpenCart();
+        // 상점 아이템들과 인벤토리 스낵들을 모두 장바구니에 추가하여 UI 열기
+        buySystem.OpenCartWithStoreItems(storeItems);
         HideButtons();
     }
 

@@ -4,7 +4,8 @@ using TMPro;
 
 public class InventorySlotData : MonoBehaviour
 {
-    [SerializeField] public Image ItemSlotImage;
+    [SerializeField] public Image inventoryimageBG;  // 인벤토리 슬롯 배경 이미지
+    [SerializeField] public Image inventoryimage;    // 실제 아이템 이미지
     [SerializeField] private Button ItemSlotButton;
     [SerializeField] public TMP_Text countText;
 
@@ -12,10 +13,17 @@ public class InventorySlotData : MonoBehaviour
     public ShopItemData currentShopItem;
     public SnackData currentSnack;
     public int currentItemCount = 1; // 슬롯에 들어있는 아이템 수량
+    
+    [Header("유통기한 관련 (간식용)")]
+    public int snackPurchaseDay = -1; // 간식 구매일 (-1은 미설정)
+    public int snackShelfLifeDays = 5; // 간식 유통기한
 
+    [System.NonSerialized]
     private ISaleSystem saleSystem;
+    [System.NonSerialized]
     private PlayerManager playerManager;
 
+    [System.NonSerialized]
     public InventorySlotData originalInventorySlot;
     // private JunkyardNPC junkyardNPC;
 
@@ -30,27 +38,65 @@ public class InventorySlotData : MonoBehaviour
             Debug.LogError("InventorySlotData: PlayerManager를 찾을 수 없습니다! 씬에 PlayerManager가 있는지 확인하세요.");
         }
         
-        ItemSlotButton.onClick.RemoveAllListeners();
-        ItemSlotButton.onClick.AddListener(OnSlotButtonClicked);
+        // 초기 상태: 아이템 이미지 숨기기
+        if (inventoryimage != null)
+        {
+            inventoryimage.enabled = false;
+            inventoryimage.sprite = null;
+        }
+        
+        if (ItemSlotButton != null)
+        {
+            ItemSlotButton.onClick.RemoveAllListeners();
+            ItemSlotButton.onClick.AddListener(OnSlotButtonClicked);
+        }
     }
 
     public void SetItem(ItemData itemData)
     {
         currentItem = itemData;
         currentItemCount = 1;
-        if (itemData != null && ItemSlotImage != null)
+        
+        if (itemData != null && inventoryimage != null)
         {
-            ItemSlotImage.sprite = itemData.icon;
-            ItemSlotImage.enabled = true;
+            // 아이템 아이콘이 null인지 확인
+            if (itemData.icon == null)
+            {
+                Debug.LogError($"아이템 '{itemData.itemName}'의 아이콘이 null입니다! ItemID: {itemData.itemID}");
+            }
+            
+            // 아이템이 있으면 이미지 표시
+            inventoryimage.sprite = itemData.icon;
+            inventoryimage.enabled = true;
+            
+            Debug.Log($"아이템 설정 완료: {itemData.itemName} - 아이콘: {(itemData.icon != null ? "있음" : "없음")}");
 
             if (countText != null) {
                 countText.text = currentItemCount.ToString();
             }
         }
-        else if(ItemSlotImage != null)
+        else
         {
-            ItemSlotImage.sprite = null;
-            ItemSlotImage.enabled = false;
+            // 아이템이 없으면 이미지 숨기기
+            if (inventoryimage != null)
+            {
+                inventoryimage.sprite = null;
+                inventoryimage.enabled = false;
+            }
+            
+            if (countText != null)
+            {
+                countText.text = "";
+            }
+            
+            if (itemData == null)
+            {
+                Debug.Log("아이템 데이터가 null이므로 슬롯을 비웁니다.");
+            }
+            else if (inventoryimage == null)
+            {
+                Debug.LogError("inventoryimage가 null입니다! 슬롯 프리팹에서 Image 컴포넌트를 확인하세요.");
+            }
         }
     }
 
@@ -59,24 +105,71 @@ public class InventorySlotData : MonoBehaviour
         currentSnack = snackData;
         currentItemCount = 1;
         
-        if (snackData != null && ItemSlotImage != null)
+        // 구매일과 유통기한 설정 (현재 날짜로 설정)
+        if (snackData != null)
         {
-            ItemSlotImage.sprite = snackData.icon;
-            ItemSlotImage.enabled = true;
+            var dayManager = DayManager.Instance;
+            if (dayManager != null)
+            {
+                snackPurchaseDay = dayManager.CalculateTotalDays();
+                snackShelfLifeDays = snackData.shelfLifeDays;
+                
+                Debug.Log($"간식 설정: {snackData.snackName}, 구매일: {snackPurchaseDay}, 유통기한: {snackShelfLifeDays}일");
+            }
+            else
+            {
+                // DayManager가 없으면 기본값 사용
+                snackPurchaseDay = -1;
+                snackShelfLifeDays = 5;
+                Debug.LogWarning("DayManager를 찾을 수 없어서 간식 구매일을 설정할 수 없습니다.");
+            }
+        }
+        else
+        {
+            snackPurchaseDay = -1;
+            snackShelfLifeDays = 5;
+        }
+        
+        if (snackData != null && inventoryimage != null)
+        {
+            // 스낵 아이콘이 null인지 확인
+            if (snackData.icon == null)
+            {
+                Debug.LogError($"스낵 '{snackData.snackName}'의 아이콘이 null입니다! ItemID: {snackData.itemID}");
+            }
+            
+            // 스낵이 있으면 이미지 표시
+            inventoryimage.sprite = snackData.icon;
+            inventoryimage.enabled = true;
+            
+            Debug.Log($"스낵 설정 완료: {snackData.snackName} - 아이콘: {(snackData.icon != null ? "있음" : "없음")}");
             
             if (countText != null)
             {
                 countText.text = currentItemCount.ToString();
             }
         }
-        else if(ItemSlotImage != null)
+        else
         {
-            ItemSlotImage.sprite = null;
-            ItemSlotImage.enabled = false;
+            // 스낵이 없으면 이미지 숨기기
+            if (inventoryimage != null)
+            {
+                inventoryimage.sprite = null;
+                inventoryimage.enabled = false;
+            }
             
             if (countText != null)
             {
                 countText.text = "";
+            }
+            
+            if (snackData == null)
+            {
+                Debug.Log("스낵 데이터가 null이므로 슬롯을 비웁니다.");
+            }
+            else if (inventoryimage == null)
+            {
+                Debug.LogError("inventoryimage가 null입니다! 슬롯 프리팹에서 Image 컴포넌트를 확인하세요.");
             }
         }
     }
@@ -86,24 +179,46 @@ public class InventorySlotData : MonoBehaviour
         currentShopItem = shopItemData;
         currentItemCount = 1;
 
-        if (shopItemData != null && ItemSlotImage != null)
+        if (shopItemData != null && inventoryimage != null)
         {
-            ItemSlotImage.sprite = shopItemData.icon;
-            ItemSlotImage.enabled = true;
+            // 상점 아이템 아이콘이 null인지 확인
+            if (shopItemData.icon == null)
+            {
+                Debug.LogError($"상점 아이템 '{shopItemData.itemName}'의 아이콘이 null입니다! ItemID: {shopItemData.itemID}");
+            }
+            
+            // 상점 아이템이 있으면 이미지 표시
+            inventoryimage.sprite = shopItemData.icon;
+            inventoryimage.enabled = true;
+            
+            Debug.Log($"상점 아이템 설정 완료: {shopItemData.itemName} - 아이콘: {(shopItemData.icon != null ? "있음" : "없음")}");
             
             if (countText != null)
             {
                 countText.text = currentItemCount.ToString();
             }
         }
-        else if (ItemSlotImage != null)
+        else
         {
-            ItemSlotImage.sprite = null;
-            ItemSlotImage.enabled = false;
+            // 상점 아이템이 없으면 이미지 숨기기
+            if (inventoryimage != null)
+            {
+                inventoryimage.sprite = null;
+                inventoryimage.enabled = false;
+            }
             
             if (countText != null)
             {
                 countText.text = "";
+            }
+            
+            if (shopItemData == null)
+            {
+                Debug.Log("상점 아이템 데이터가 null이므로 슬롯을 비웁니다.");
+            }
+            else if (inventoryimage == null)
+            {
+                Debug.LogError("inventoryimage가 null입니다! 슬롯 프리팹에서 Image 컴포넌트를 확인하세요.");
             }
         }
     }
@@ -114,37 +229,22 @@ public class InventorySlotData : MonoBehaviour
         currentShopItem = null;
         currentSnack = null;
         currentItemCount = 0;
-        ItemSlotImage.sprite = null;
-        ItemSlotImage.enabled = false;
+        
+        // 간식 유통기한 정보 초기화
+        snackPurchaseDay = -1;
+        snackShelfLifeDays = 5;
+        
+        // 아이템이 없으므로 이미지 숨기기
+        if (inventoryimage != null)
+        {
+            inventoryimage.sprite = null;
+            inventoryimage.enabled = false;
+        }
         
         if (countText != null)
         {
             countText.text = "";
         }
-    }
-
-    /// <summary>
-    /// 같은 아이템이 있는 슬롯에 아이템 개수를 증가시킵니다
-    /// </summary>
-    /// <param name="amount">증가시킬 개수</param>
-    /// <returns>실제로 추가된 개수</returns>
-    public int AddItemCount(int amount = 1)
-    {
-        if (currentItem == null) return 0;
-        
-        int maxStack = currentItem.maxStackSize;
-        int canAdd = maxStack - currentItemCount;
-        int actualAdded = Mathf.Min(amount, canAdd);
-        
-        currentItemCount += actualAdded;
-        
-        // UI 업데이트
-        if (countText != null)
-        {
-            countText.text = currentItemCount.ToString();
-        }
-        
-        return actualAdded;
     }
 
     /// <summary>
@@ -199,10 +299,20 @@ public class InventorySlotData : MonoBehaviour
     {
         if (currentItem != null)
         {
-            Debug.Log($"아이템 이름: {currentItem.itemName}\n" +
+            // 더러움 상태 및 가격 정보 계산
+            string dirtyStateInfo = $"더러움 상태: {currentItem.GetDirtyStateString()} ({currentItem.dirty:F2})";
+            int penalty = currentItem.GetDirtyPenalty();
+            int adjustedPrice = currentItem.GetAdjustedSalePrice();
+            string priceInfo = penalty > 0 ? 
+                $"기본 가격: {currentItem.price}G → 판매가: {adjustedPrice}G (-{penalty}G)" :
+                $"가격/판매가: {currentItem.price}G (페널티 없음)";
+            
+            Debug.Log($"=== 아이템 정보 ===\n" +
+                      $"이름: {currentItem.itemName}\n" +
                       $"희귀도: {currentItem.itemRarity}\n" +
                       $"설명: {currentItem.description}\n" +
-                      $"가치: {currentItem.value}");
+                      $"{dirtyStateInfo}\n" +
+                      $"{priceInfo}");
         }
         else if (currentShopItem != null)
         {
@@ -213,11 +323,54 @@ public class InventorySlotData : MonoBehaviour
         }
         else if (currentSnack != null)
         {
-            Debug.Log($"[스낵 아이템]\n" +
+            // 유통기한 정보 계산
+            string expirationInfo = "유통기한 정보 없음";
+            var dayManager = DayManager.Instance;
+            
+            if (dayManager != null && snackPurchaseDay >= 0)
+            {
+                int currentDay = dayManager.CalculateTotalDays();
+                int daysElapsed = currentDay - snackPurchaseDay;
+                int remainingDays = snackShelfLifeDays - daysElapsed;
+                
+                if (remainingDays <= 0)
+                {
+                    expirationInfo = $"⚠️ 유통기한 만료 (구매 후 {daysElapsed}일 경과)";
+                }
+                else if (remainingDays == 1)
+                {
+                    expirationInfo = $"⚠️ 유통기한 1일 남음 (구매일: {snackPurchaseDay}일차)";
+                }
+                else
+                {
+                    expirationInfo = $"유통기한 {remainingDays}일 남음 (구매일: {snackPurchaseDay}일차)";
+                }
+            }
+            
+            // 효과 타입에 따른 설명
+            string effectDescription;
+            switch (currentSnack.effectType)
+            {
+                case SnackEffectType.Health:
+                    effectDescription = $"체력 증가: {currentSnack.itemStat}";
+                    break;
+                case SnackEffectType.Stamina:
+                    effectDescription = $"스태미나 증가: {currentSnack.itemStat}";
+                    break;
+                case SnackEffectType.Both:
+                    effectDescription = $"체력 & 스태미나 증가: {currentSnack.itemStat}";
+                    break;
+                default:
+                    effectDescription = $"알 수 없는 효과: {currentSnack.itemStat}";
+                    break;
+            }
+            
+            Debug.Log($"=== 스낵 아이템 정보 ===\n" +
                       $"이름: {currentSnack.snackName}\n" +
                       $"설명: {currentSnack.description}\n" +
-                      $"가격: {currentSnack.price}\n" +
-                      $"스탯 증가: {currentSnack.itemStat}");
+                      $"가격: {currentSnack.price}G\n" +
+                      $"효과: {effectDescription}\n" +
+                      $"{expirationInfo}");
         }
         else
         {
@@ -281,8 +434,8 @@ public class InventorySlotData : MonoBehaviour
         }
 
         // 아이콘 & 수량 UI 갱신
-        ItemSlotImage.sprite = item.icon;
-        ItemSlotImage.enabled = true;
+        inventoryimage.sprite = item.icon;
+        inventoryimage.enabled = true;
         if (countText != null)
         {
             countText.text = currentItemCount.ToString();
@@ -362,6 +515,28 @@ public class InventorySlotData : MonoBehaviour
             Debug.LogWarning("스낵 데이터가 없습니다!");
             return false;
         }
+        
+        // 유통기한 체크
+        var dayManager = DayManager.Instance;
+        if (dayManager != null && snackPurchaseDay >= 0)
+        {
+            int currentDay = dayManager.CalculateTotalDays();
+            int daysElapsed = currentDay - snackPurchaseDay;
+            int remainingDays = snackShelfLifeDays - daysElapsed;
+            
+            if (daysElapsed >= snackShelfLifeDays)
+            {
+                Debug.LogWarning($"⚠️ {currentSnack.snackName}이(가) 유통기한이 지났습니다!");
+                Debug.LogWarning($"   구매일: {snackPurchaseDay}일차, 현재: {currentDay}일차");
+                Debug.LogWarning($"   경과: {daysElapsed}일, 유통기한: {snackShelfLifeDays}일");
+                Debug.LogWarning($"   이 간식은 사용할 수 없습니다.");
+                return false;
+            }
+            else if (remainingDays <= 1)
+            {
+                Debug.Log($"⚠️ {currentSnack.snackName}의 유통기한이 {remainingDays}일 남았습니다!");
+            }
+        }
 
         // playerManager가 null이면 다시 찾아보기
         if (playerManager == null)
@@ -374,20 +549,53 @@ public class InventorySlotData : MonoBehaviour
             }
         }
 
-        // 스태미나가 이미 최대치인지 확인
+        // 간식 효과 타입에 따른 처리
         float actualIncrease = 0f;
+        string effectName = "";
         
         try
         {
-            if (playerManager.IsStaminaFull())
+            switch (currentSnack.effectType)
             {
-                Debug.Log($"{currentSnack.snackName}: 스태미나가 이미 최대치입니다!");
-                return false;
+                case SnackEffectType.Stamina:
+                    if (playerManager.IsStaminaFull())
+                    {
+                        Debug.Log($"{currentSnack.snackName}: 스태미나가 이미 최대치입니다!");
+                        return false;
+                    }
+                    actualIncrease = playerManager.RestoreStamina(currentSnack.itemStat);
+                    effectName = "스태미나";
+                    break;
+                    
+                case SnackEffectType.Health:
+                    if (playerManager.IsHealthFull())
+                    {
+                        Debug.Log($"{currentSnack.snackName}: 체력이 이미 최대치입니다!");
+                        return false;
+                    }
+                    actualIncrease = playerManager.RestoreHealth(currentSnack.itemStat);
+                    effectName = "체력";
+                    break;
+                    
+                case SnackEffectType.Both:
+                    // 체력과 스태미나 모두 최대치인지 확인
+                    if (playerManager.IsHealthFull() && playerManager.IsStaminaFull())
+                    {
+                        Debug.Log($"{currentSnack.snackName}: 체력과 스태미나가 모두 최대치입니다!");
+                        return false;
+                    }
+                    
+                    // 체력과 스태미나 동시 회복
+                    float healthIncrease = playerManager.RestoreHealth(currentSnack.itemStat);
+                    float staminaIncrease = playerManager.RestoreStamina(currentSnack.itemStat);
+                    actualIncrease = healthIncrease + staminaIncrease; // 총 회복량
+                    effectName = $"체력 +{healthIncrease}, 스태미나 +{staminaIncrease}";
+                    break;
+                    
+                default:
+                    Debug.LogWarning($"{currentSnack.snackName}: 알 수 없는 효과 타입 {currentSnack.effectType}");
+                    return false;
             }
-
-            // 스태미나 증가
-            float staminaIncrease = currentSnack.itemStat;
-            actualIncrease = playerManager.RestoreStamina(staminaIncrease);
         }
         catch (System.Exception e)
         {
@@ -397,7 +605,7 @@ public class InventorySlotData : MonoBehaviour
 
         if (actualIncrease > 0)
         {
-            Debug.Log($"{currentSnack.snackName} 사용! 스태미나 +{actualIncrease}");
+            Debug.Log($"{currentSnack.snackName} 사용! {effectName} +{actualIncrease}");
             
             // 아이템 수량 감소
             currentItemCount--;
@@ -422,7 +630,7 @@ public class InventorySlotData : MonoBehaviour
         }
         else
         {
-            Debug.Log($"{currentSnack.snackName}: 스태미나 증가 실패");
+            Debug.Log($"{currentSnack.snackName}: {effectName} 증가 실패");
             return false;
         }
     }
