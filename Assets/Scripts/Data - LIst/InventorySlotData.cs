@@ -13,9 +13,18 @@ public class InventorySlotData : MonoBehaviour
     public SnackItemData currentSnackItem;
     public int currentItemCount = 1; // 슬롯에 들어있는 아이템 수량
 
+
+    [Header("유통기한 관련 (간식용)")]
+    public int snackPurchaseDay = -1; // 간식 구매일 (-1은 미설정)
+    public int snackShelfLifeDays = 5; // 간식 유통기한
+
+
+    [System.NonSerialized]
     private ISaleSystem saleSystem;
+    [System.NonSerialized]
     private PlayerManager playerManager;
 
+    [System.NonSerialized]
     public InventorySlotData originalInventorySlot;
     // private JunkyardNPC junkyardNPC;
 
@@ -198,6 +207,8 @@ public class InventorySlotData : MonoBehaviour
         return currentItemCount < currentItem.maxStackSize;
     }
 
+
+    // 디버그용
     public void OnInfoButtonClicked()
     {
         if (currentItem != null)
@@ -353,7 +364,7 @@ public class InventorySlotData : MonoBehaviour
         // 그렇지 않으면 기존 정보 출력
         OnInfoButtonClicked();
         
-     if (currentItem != null && !string.IsNullOrEmpty(currentItem.itemID))
+    if (currentItem != null && !string.IsNullOrEmpty(currentItem.itemID))
     {
         if (currentItem.itemID == InventoryManager.Instance?.wetWipeItemId)
         {
@@ -398,20 +409,53 @@ public class InventorySlotData : MonoBehaviour
             }
         }
 
-        // 스태미나가 이미 최대치인지 확인
+        // 간식 효과 타입에 따른 처리
         float actualIncrease = 0f;
+        string effectName = "";
         
         try
         {
-            if (playerManager.IsStaminaFull())
+            switch (currentSnackItem.effectType)
             {
-                Debug.Log($"{currentSnackItem.snackName}: 스태미나가 이미 최대치입니다!");
-                return false;
+                case SnackEffectType.Stamina:
+                    if (playerManager.IsStaminaFull())
+                    {
+                        Debug.Log($"{currentSnackItem.snackName}: 스태미나가 이미 최대치입니다!");
+                        return false;
+                    }
+                    actualIncrease = playerManager.RestoreStamina(currentSnackItem.itemStat);
+                    effectName = "스태미나";
+                    break;
+                    
+                case SnackEffectType.Health:
+                    if (playerManager.IsHealthFull())
+                    {
+                        Debug.Log($"{currentSnackItem.snackName}: 체력이 이미 최대치입니다!");
+                        return false;
+                    }
+                    actualIncrease = playerManager.RestoreHealth(currentSnackItem.itemStat);
+                    effectName = "체력";
+                    break;
+                    
+                case SnackEffectType.Both:
+                    // 체력과 스태미나 모두 최대치인지 확인
+                    if (playerManager.IsHealthFull() && playerManager.IsStaminaFull())
+                    {
+                        Debug.Log($"{currentSnackItem.snackName}: 체력과 스태미나가 모두 최대치입니다!");
+                        return false;
+                    }
+                    
+                    // 체력과 스태미나 동시 회복
+                    float healthIncrease = playerManager.RestoreHealth(currentSnackItem.itemStat);
+                    float staminaIncrease = playerManager.RestoreStamina(currentSnackItem.itemStat);
+                    actualIncrease = healthIncrease + staminaIncrease; // 총 회복량
+                    effectName = $"체력 +{healthIncrease}, 스태미나 +{staminaIncrease}";
+                    break;
+                    
+                default:
+                    Debug.LogWarning($"{currentSnackItem.snackName}: 알 수 없는 효과 타입 {currentSnackItem.effectType}");
+                    return false;
             }
-
-            // 스태미나 증가
-            float staminaIncrease = currentSnackItem.itemStat;
-            actualIncrease = playerManager.RestoreStamina(staminaIncrease);
         }
         catch (System.Exception e)
         {

@@ -10,7 +10,7 @@ public class SaleSystem : MonoBehaviour, ISaleSystem
     public PlayerData playerData;
     
     [Header("UI References")]
-    public Button     sellButton;               // NPC 클릭 후 Sell 버튼
+    public Button sellButton;               // NPC 클릭 후 Sell 버튼
     public GameObject sellUI;                   // Sell 모드 전체 패널
     public GameObject slotPrefab;               // 슬롯 프리팹 (InventorySlotData 컴포넌트 포함)
     public Transform  slotParent;               // 슬롯이 붙을 부모 (Layout Group 등)
@@ -69,6 +69,21 @@ public class SaleSystem : MonoBehaviour, ISaleSystem
     // (2) 인벤토리 데이터 → SellUI 슬롯으로 복제
     public void RefreshSellSlots()
     {
+
+        int playerMoney = PlayerManager.Instance.money;
+
+        if (playerMoneyText != null)
+        {
+            playerMoneyText.text = $"{playerMoney} G";
+        }
+        
+        // 필수 참조 체크
+        if (slotParent == null || inventoryManager == null || slotPrefab == null)
+        {
+            Debug.LogError($"[SaleSystem] 필수 참조가 null입니다! slotParent: {slotParent}, inventoryManager: {inventoryManager}, slotPrefab: {slotPrefab}");
+            return;
+        }
+        
         // 기존 슬롯 전부 삭제
         foreach (Transform child in slotParent)
         {
@@ -87,10 +102,19 @@ public class SaleSystem : MonoBehaviour, ISaleSystem
             for (int i = 0; i < data.currentItemCount; i++)
             {
                 var go = Instantiate(slotPrefab, slotParent);
-                var ui = go.GetComponent<InventorySlotData>();
+                var ui = go.GetComponentInChildren<InventorySlotData>();
+                
+                if (ui == null)
+                {
+                    Debug.LogError($"[SaleSystem] slotPrefab에 InventorySlotData 컴포넌트가 없습니다! Prefab: {slotPrefab?.name}");
+                    Destroy(go);
+                    continue;
+                }
     
                 ui.SetupSlot(item, 1, this); // 슬롯 하나에 아이템 1개
                 ui.originalInventorySlot = data;
+                
+                Debug.Log($"[SaleSystem] 슬롯 생성 완료: {item.itemName}");
             }
 
         }
@@ -153,7 +177,25 @@ public class SaleSystem : MonoBehaviour, ISaleSystem
 
         // 1) 판매 정보 미리 저장
         var itemData  = selectedSlot.currentItem;
-        int gain      = itemData.price;
+        
+        // 더러움 상태에 따른 가격 조정
+        int basePrice = itemData.price; // 기본 가격 사용 (price 기준)
+        int gain = (int)(itemData.price * itemData.dirty); // 더러움 페널티 적용된 가격
+        int penalty = basePrice - gain;
+
+        int playerMoney = PlayerManager.Instance.money;
+        
+        // 더러움 상태 및 가격 정보 로그
+        Debug.Log($"일반상점 판매: {itemData.itemName}");
+        // Debug.Log($"  - 더러움 상태: {itemData.GetDirtyStateString()} (dirty: {itemData.dirty:F2})");
+        Debug.Log($"  - 기본 가격: {basePrice}G");
+        Debug.Log($"  - 더러움 페널티: -{penalty}G");
+        Debug.Log($"  - 최종 판매가: {gain}G");
+
+        if (playerMoneyText != null)
+        {
+            playerMoneyText.text = $"{playerMoney} G";
+        }
 
         // 2) 돈 입금
         moneyManager.AddMoney(gain);
@@ -190,12 +232,6 @@ public class SaleSystem : MonoBehaviour, ISaleSystem
         sellConfirmButton.interactable = false;
 
         Debug.Log($"판매 완료: +{gain}G");
-        
-        // 6) 플레이어 돈 UI 업데이트
-        if (playerMoneyText != null)
-        {
-            playerMoneyText.text = $"Money: {playerData.money} G";
-        }
     }
 
     private void ResetSaleState()

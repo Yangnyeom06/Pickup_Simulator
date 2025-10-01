@@ -28,11 +28,17 @@ public class UsedCarNPC : MonoBehaviour, ISaleSystem
     
     [Header("Player References")]
     public ItemRaycast itemRaycast;
+    
+    [Header("Price Settings")]
+    [SerializeField] private float priceMultiplier = 1.5f; // 중고트럭에서 더 비싸게 팔 수 있는 배수
 
     // 현재 선택된 슬롯·수량
     private InventorySlotData selectedSlot;
     // public int selectedQuantity { get; set; } = 0;
     // private QuantityDialog    quantityDialog;
+    
+    // 중복 판매 방지 플래그
+    private bool isSelling = false;
 
     [SerializeField] private TMP_Text playerMoneyText;
 
@@ -75,11 +81,19 @@ public class UsedCarNPC : MonoBehaviour, ISaleSystem
         sellUI.SetActive(true);
         ResetSaleState();
         RefreshSellSlots();
+        UpdatePlayerMoneyUI(); // UI가 열릴 때 현재 돈 표시
     }
 
     /// (2) 현재 들고 있는 Large 아이템 → SellUI 슬롯으로 표시
     public void RefreshSellSlots()
     {
+        // 필수 참조 체크
+        if (slotParent == null || slotPrefab == null)
+        {
+            Debug.LogError($"[UsedCarNPC] 필수 참조가 null입니다! slotParent: {slotParent}, slotPrefab: {slotPrefab}");
+            return;
+        }
+        
         // 기존 슬롯 전부 삭제
         foreach (Transform child in slotParent)
         {
@@ -92,6 +106,7 @@ public class UsedCarNPC : MonoBehaviour, ISaleSystem
             itemRaycast = FindFirstObjectByType<ItemRaycast>();
             if (itemRaycast == null)
             {
+                Debug.LogWarning("[UsedCarNPC] ItemRaycast를 찾을 수 없습니다!");
                 return;
             }
         }
@@ -104,7 +119,7 @@ public class UsedCarNPC : MonoBehaviour, ISaleSystem
             if (CanSell(item))
             {
                 var go = Instantiate(slotPrefab, slotParent);
-                var ui = go.GetComponent<InventorySlotData>();
+                var ui = go.GetComponentInChildren<InventorySlotData>();
                 
                 if (ui == null)
                 {
@@ -113,6 +128,8 @@ public class UsedCarNPC : MonoBehaviour, ISaleSystem
     
                 ui.SetupSlot(item, 1, this); // 들고 있는 Large 아이템 1개
                 ui.originalInventorySlot = null; // 인벤토리 슬롯이 아니므로 null
+                
+                Debug.Log($"[UsedCarNPC] 슬롯 생성 완료: {item.itemName}");
             }
         }
     }
@@ -181,20 +198,44 @@ public class UsedCarNPC : MonoBehaviour, ISaleSystem
     // 판매 버튼 클릭 시 호출
     public void ConfirmSell()
     {
+        // 중복 호출 방지
+        if (isSelling)
+        {
+            Debug.Log("[UsedCarNPC] 이미 판매 처리 중입니다. 중복 호출 방지!");
+            return;
+        }
+        
+        isSelling = true;
         
         if (selectedSlot == null)
         {
+            isSelling = false; // 플래그 리셋
             return;
         }
         
         if (selectedSlot.currentItem == null)
         {
+            isSelling = false; // 플래그 리셋
             return;
         }
 
         // 1) 판매 정보 미리 저장
         var itemData  = selectedSlot.currentItem;
-        int gain      = itemData.value;
+        
+        // 더러움 상태에 따른 가격 조정
+        int cleanPrice = (int)(itemData.price * itemData.dirty); // 더러움 페널티 적용된 가격
+        int gain = Mathf.RoundToInt(cleanPrice * priceMultiplier); // 중고트럭 프리미엄 적용
+        
+        // 더러움 상태 및 가격 정보 로그
+        int basePrice = itemData.price; // price 기준으로 변경
+        // int penalty = itemData.GetDirtyPenalty();
+        Debug.Log($"중고차 판매: {itemData.itemName}");
+        // Debug.Log($"  - 더러움 상태: {itemData.GetDirtyStateString()} (dirty: {itemData.dirty:F2})");
+        Debug.Log($"  - 기본 가격: {basePrice}G");
+        // Debug.Log($"  - 더러움 페널티: -{penalty}G");
+        Debug.Log($"  - 페널티 적용 후: {cleanPrice}G");
+        Debug.Log($"  - 프리미엄 배수: {priceMultiplier}x");
+        Debug.Log($"  - 최종 판매가: {gain}G");
 
         // 2) 돈 입금
         moneyManager.AddMoney(gain);
@@ -218,7 +259,7 @@ public class UsedCarNPC : MonoBehaviour, ISaleSystem
             Debug.Log($"[UsedCarNPC] Large 아이템 제거 완료 - 현재 상태: {itemRaycast.IsHoldingLargeItem}");
         }
         
-        Debug.Log($"중고차 판매 완료: {itemData.itemName}");
+        Debug.Log($"중고차 판매: {itemData.itemName} (기본가격: {basePrice}G → 판매가격: {gain}G, 배수: {priceMultiplier}x)");
 
         // 4) 판매 완료 후 UI 처리
         StartCoroutine(HandlePostSaleUI(gain, itemRemoved));
@@ -241,11 +282,15 @@ public class UsedCarNPC : MonoBehaviour, ISaleSystem
 
         sellUI.SetActive(false);
 
+        int playerMoney = PlayerManager.Instance.money;
         Debug.Log($"판매 완료: +{gain}G");
         if (playerMoneyText != null)
         {
-            playerMoneyText.text = $"Money: {playerData.money} G";
+            playerMoneyText.text = $"Money: {playerMoney} G";
         }
+        
+        // 판매 완료 후 플래그 리셋
+        isSelling = false;
     }
 
 
@@ -267,5 +312,14 @@ public class UsedCarNPC : MonoBehaviour, ISaleSystem
     {
         sellUI.SetActive(false);
         ResetSaleState();
+    }
+
+    private void UpdatePlayerMoneyUI()
+    {
+        int playerMoney = PlayerManager.Instance.money;
+        if (playerMoneyText != null)
+        {
+            playerMoneyText.text = $"Money: {playerMoney} G";
+        }
     }
 }

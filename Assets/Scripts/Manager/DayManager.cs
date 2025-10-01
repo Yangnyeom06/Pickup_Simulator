@@ -35,6 +35,7 @@ public class DayManager : MonoBehaviour
     private bool isTimerRunning = true;
     public FadeInOut FadeInout;
 
+
     private void Awake()
     {
         if (Instance != null && Instance != this)
@@ -90,6 +91,11 @@ public class DayManager : MonoBehaviour
             }
         }
         today.text = $"{month}/{day}";
+
+    if (EventManager.Instance != null)
+    {
+        EventManager.Instance.TriggerEvent(year, month, day);
+    }
     }
 
     public void StartDay()
@@ -108,6 +114,77 @@ public class DayManager : MonoBehaviour
         angles.z = 0f;
         timer.transform.eulerAngles = angles;
         timerTime = 1000000f;
+    }
+
+    /// <summary>
+    /// 중고트럭 스폰 여부를 체크하고 결정
+    /// </summary>
+    private void CheckUsedCarTruckSpawn()
+    {
+        if (UsedCarSpawnManager.Instance != null)
+        {
+            // 현재 날짜 계산 (게임 시작일부터의 경과 일수)
+            int totalDays = CalculateTotalDays();
+            UsedCarSpawnManager.Instance.OnNewDayStarted(totalDays);
+        }
+        else
+        {
+            Debug.LogWarning("[DayManager] UsedCarSpawnManager가 할당되지 않았습니다!");
+        }
+    }
+    
+    /// <summary>
+    /// 게임 시작일부터의 총 경과 일수 계산
+    /// </summary>
+    /// <returns>총 경과 일수</returns>
+    public int CalculateTotalDays()
+    {
+        // 기준일: 2013년 3월 7일 (게임 시작일)
+        int baseYear = 2013;
+        int baseMonth = 3;
+        int baseDay = 7;
+        
+        int totalDays = 0;
+        
+        // 연도 차이 계산
+        for (int y = baseYear; y < year; y++)
+        {
+            totalDays += IsLeapYear(y) ? 366 : 365;
+        }
+        
+        // 월 차이 계산 (현재 연도 내에서)
+        for (int m = (year == baseYear ? baseMonth : 1); m < month; m++)
+        {
+            totalDays += daysInMonth[m - 1];
+            
+            // 윤년의 2월 처리
+            if (m == 2 && IsLeapYear(year))
+            {
+                totalDays += 1;
+            }
+        }
+        
+        // 일 차이 계산
+        if (year == baseYear && month == baseMonth)
+        {
+            totalDays += (day - baseDay);
+        }
+        else
+        {
+            totalDays += day - 1; // 현재 월의 1일부터 계산
+        }
+        
+        return totalDays;
+    }
+    
+    /// <summary>
+    /// 윤년 여부 확인
+    /// </summary>
+    /// <param name="year">확인할 연도</param>
+    /// <returns>윤년 여부</returns>
+    private bool IsLeapYear(int year)
+    {
+        return (year % 4 == 0 && year % 100 != 0) || (year % 400 == 0);
     }
 
     public void End()

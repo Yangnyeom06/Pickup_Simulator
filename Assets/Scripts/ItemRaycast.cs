@@ -385,7 +385,7 @@ public class ItemRaycast : MonoBehaviour
             Collider itemCollider = mLargeItemObject.GetComponent<Collider>();
 
             if (itemCollider != null)
-                itemCollider.enabled = false;
+                itemCollider.isTrigger = true;
 
             Rigidbody rb = mLargeItemObject.GetComponent<Rigidbody>();
 
@@ -416,7 +416,7 @@ public class ItemRaycast : MonoBehaviour
             Collider itemCollider = mLargeItemObject.GetComponent<Collider>();
 
             if (itemCollider != null)
-                itemCollider.enabled = true;
+                itemCollider.isTrigger = false;
 
             Rigidbody rb = mLargeItemObject.GetComponent<Rigidbody>();
 

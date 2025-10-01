@@ -70,6 +70,7 @@ public class ItemSpawner : MonoBehaviour
                 // ItemData를 Instantiate로 복제하여 새로운 값 설정 (값이 바뀔 때 원본에 영향을 안주기 위해서 복사본 사용)
                 ItemData itemDataClone = Instantiate(randomItem.itemData);
                 itemDataClone.value = Random.Range(itemDataClone.minValue, itemDataClone.maxValue + 1); // 랜덤 값 설정
+                itemDataClone.price = itemDataClone.value;
                 itemDataClone.dirty = Mathf.Round(Random.Range(0f, 1f) * 10f) / 10f; // 랜덤 값 설정
 
                 // 새로운 아이템 생성

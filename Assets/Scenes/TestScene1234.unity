@@ -5382,10 +5382,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: d8dace56a94174f4e97196096369d84f, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  mRayCamera: {fileID: 0}
+  mRayCamera: {fileID: 1680475512}
   rayDistance: 100
   shopItemData: {fileID: 11400000, guid: f42106581df8dc147b50480f1a62c575, type: 2}
-  buySystem: {fileID: 0}
+  buySystem: {fileID: 1187703633}
 --- !u!65 &392985206
 BoxCollider:
   m_ObjectHideFlags: 0
@@ -5811,7 +5811,7 @@ RectTransform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 423093039}
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: 0, y: 0, z: 50}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
@@ -8090,7 +8090,8 @@ MonoBehaviour:
   currentShopItem: {fileID: 0}
   currentSnackItem: {fileID: 0}
   currentItemCount: 1
-  originalInventorySlot: {fileID: 0}
+  snackPurchaseDay: -1
+  snackShelfLifeDays: 5
 --- !u!114 &573588564
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -9539,7 +9540,8 @@ MonoBehaviour:
   currentShopItem: {fileID: 0}
   currentSnackItem: {fileID: 0}
   currentItemCount: 1
-  originalInventorySlot: {fileID: 0}
+  snackPurchaseDay: -1
+  snackShelfLifeDays: 5
 --- !u!114 &684611250
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -9867,12 +9869,12 @@ MonoBehaviour:
     speed: 0
     money: 0
   sellUI: {fileID: 852232452}
-  slotPrefab: {fileID: 8628462866040172977, guid: 2f567f8a11968e643a7f2ec0cc6540f8, type: 3}
+  slotPrefab: {fileID: 5154870395727952965, guid: 54444e5254e2b244a92849c2a3953c78, type: 3}
   slotParent: {fileID: 1751992706}
   sellConfirmButton: {fileID: 1375729155}
   moneyManager: {fileID: 959090249}
   inventoryManager: {fileID: 1154057377}
-  itemRaycast: {fileID: 0}
+  itemRaycast: {fileID: 1367856123}
   playerMoneyText: {fileID: 1256390879}
 --- !u!114 &698435990
 MonoBehaviour:
@@ -11656,6 +11658,7 @@ MonoBehaviour:
   sellButton: {fileID: 701237076}
   buySystem: {fileID: 1187703633}
   saleSystem: {fileID: 701237075}
+  storeItems: []
 --- !u!114 &817116044
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -11903,12 +11906,13 @@ MonoBehaviour:
     speed: 0
     money: 0
   sellUI: {fileID: 852232452}
-  slotPrefab: {fileID: 8628462866040172977, guid: 2f567f8a11968e643a7f2ec0cc6540f8, type: 3}
+  slotPrefab: {fileID: 5154870395727952965, guid: 54444e5254e2b244a92849c2a3953c78, type: 3}
   slotParent: {fileID: 1751992706}
   sellConfirmButton: {fileID: 1375729155}
   moneyManager: {fileID: 959090249}
   inventoryManager: {fileID: 1154057377}
-  itemRaycast: {fileID: 0}
+  itemRaycast: {fileID: 1367856123}
+  priceMultiplier: 1.5
   playerMoneyText: {fileID: 1256390879}
 --- !u!114 &817708864
 MonoBehaviour:
@@ -12177,10 +12181,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: d8dace56a94174f4e97196096369d84f, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  mRayCamera: {fileID: 0}
+  mRayCamera: {fileID: 1680475512}
   rayDistance: 100
   shopItemData: {fileID: 11400000, guid: 190fe78e7552ba349b977866f34bce21, type: 2}
-  buySystem: {fileID: 0}
+  buySystem: {fileID: 1187703633}
 --- !u!65 &840435011
 BoxCollider:
   m_ObjectHideFlags: 0
@@ -14929,10 +14933,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: d8dace56a94174f4e97196096369d84f, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  mRayCamera: {fileID: 0}
+  mRayCamera: {fileID: 1680475512}
   rayDistance: 100
   shopItemData: {fileID: 11400000, guid: 353635d43bc1efb44aafb3036d2f6c42, type: 2}
-  buySystem: {fileID: 0}
+  buySystem: {fileID: 1187703633}
 --- !u!65 &1002878337
 BoxCollider:
   m_ObjectHideFlags: 0
@@ -16639,18 +16643,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: ac721c158995964489f9411db858f468, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  playerData:
-    healthLevel: 0
-    staminaLevel: 0
-    speedLevel: 0
-    inventoryLevel: 0
-    mapLevel: 0
-    health: 0
-    maxHealth: 0
-    stamina: 0
-    maxStamina: 0
-    speed: 0
-    money: 500
   moneyManager: {fileID: 959090249}
   cartDialog: {fileID: 153572263}
   cartContentParent: {fileID: 1416988614}
@@ -20501,7 +20493,8 @@ MonoBehaviour:
   currentShopItem: {fileID: 0}
   currentSnackItem: {fileID: 0}
   currentItemCount: 1
-  originalInventorySlot: {fileID: 0}
+  snackPurchaseDay: -1
+  snackShelfLifeDays: 5
 --- !u!114 &1392191293
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -22218,7 +22211,18 @@ MonoBehaviour:
   speedLevel: {fileID: 11400000, guid: 23378a218f1d5d046b941a9e8b3e4f5a, type: 2}
   inventoryLevel: {fileID: 11400000, guid: 877f44807ff42604d871441c7409c931, type: 2}
   mapLevel: {fileID: 11400000, guid: 0164ba73c4c72ff49971e0ddb22a14f4, type: 2}
-  money: 0
+  playerData:
+    healthLevel: 0
+    staminaLevel: 0
+    speedLevel: 0
+    inventoryLevel: 0
+    mapLevel: 0
+    health: 0
+    maxHealth: 0
+    stamina: 0
+    maxStamina: 0
+    speed: 0
+    money: 0
   HealthLossInterval: 1
   HealthLossSpeed: 1
   staminaLossInterval: 1
@@ -27298,10 +27302,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: d8dace56a94174f4e97196096369d84f, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  mRayCamera: {fileID: 0}
+  mRayCamera: {fileID: 1680475512}
   rayDistance: 100
   shopItemData: {fileID: 11400000, guid: 83548f3ff3a38e144887b2572055ceb0, type: 2}
-  buySystem: {fileID: 0}
+  buySystem: {fileID: 1187703633}
 --- !u!65 &1935640071
 BoxCollider:
   m_ObjectHideFlags: 0
@@ -27670,7 +27674,8 @@ MonoBehaviour:
   currentShopItem: {fileID: 0}
   currentSnackItem: {fileID: 0}
   currentItemCount: 1
-  originalInventorySlot: {fileID: 0}
+  snackPurchaseDay: -1
+  snackShelfLifeDays: 5
 --- !u!114 &1948767757
 MonoBehaviour:
   m_ObjectHideFlags: 0

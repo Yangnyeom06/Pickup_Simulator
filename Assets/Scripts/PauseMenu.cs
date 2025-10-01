@@ -5,12 +5,21 @@ using UnityEngine;
 public class PauseMenu : MonoBehaviour
 {
     [SerializeField] private GameObject go_BaseUI; // 일시 정지 UI 패널
+    private CursorControl cursorControl;
+
+    private bool isPause = false;
+
+    void Start()
+    {
+        cursorControl= GetComponent<CursorControl>();
+    }
 
     void Update()
-    {
+    {        
         if (Input.GetKeyDown(KeyCode.Escape))
         {
-            if (!GameManager.isPause)
+            isPause = !isPause;
+            if (isPause)
                 CallMenu();
             else
                 CloseMenu();
@@ -19,14 +28,16 @@ public class PauseMenu : MonoBehaviour
 
     private void CallMenu()
     {
-        GameManager.isPause = true;
+        isPause = true;
+        cursorControl.CursorVisible(true);
         go_BaseUI.SetActive(true);
         Time.timeScale = 0f; // 시간의 흐름 설정. 0배속. 즉 시간을 멈춤.
     }
 
-    private void CloseMenu()
+    public void CloseMenu()
     {
-        GameManager.isPause = false;
+        isPause = false;
+        cursorControl.CursorVisible(false);
         go_BaseUI.SetActive(false); 
         Time.timeScale = 1f; // 1배속 (정상 속도)
     }

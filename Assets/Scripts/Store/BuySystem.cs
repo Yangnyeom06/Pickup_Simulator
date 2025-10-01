@@ -21,7 +21,6 @@ public class BuySystem : MonoBehaviour, IPointerClickHandler
         }
         Instance = this;
     }
-    public PlayerData playerData;
     public MoneyManager moneyManager;
     public GameObject cartDialog; // 장바구니 UI 프리팹
 
@@ -50,25 +49,25 @@ public class BuySystem : MonoBehaviour, IPointerClickHandler
         UpdateCartUI();
     }
 
-    public void AddToSnackCart(SnackItemData SnackItemData)
+    public void AddToSnackCart(SnackItemData snackItmeData)
     {
-        if (SnackItemData == null)
+        if (snackItmeData == null)
         {
-            Debug.LogWarning("AddToSnackCart: SnackItemData가 null입니다!");
+            Debug.LogWarning("AddToSnackCart: snackItmeData가 null입니다!");
             return;
         }
         
-        Debug.Log($"AddToSnackCart 호출됨: {SnackItemData.snackName}");
+        Debug.Log($"AddToSnackCart 호출됨: {snackItmeData.snackName}");
         
-        if (cartSnacks.ContainsKey(SnackItemData))
+        if (cartSnacks.ContainsKey(snackItmeData))
         {
-            cartSnacks[SnackItemData] ++;
-            Debug.Log($"✅ {SnackItemData.snackName} 수량 증가: {cartSnacks[SnackItemData]}");
+            cartSnacks[snackItmeData] ++;
+            Debug.Log($"✅ {snackItmeData.snackName} 수량 증가: {cartSnacks[snackItmeData]}");
         }
         else
         {
-            cartSnacks.Add(SnackItemData, 1);
-            Debug.Log($"✅ {SnackItemData.snackName} 새로 추가됨");
+            cartSnacks.Add(snackItmeData, 1);
+            Debug.Log($"✅ {snackItmeData.snackName} 새로 추가됨");
         }
 
         needsUIRefresh = true; // UI 갱신 필요 표시
@@ -155,6 +154,51 @@ public class BuySystem : MonoBehaviour, IPointerClickHandler
         cartDialog.SetActive(true);
     }
 
+    // StoreNPC에서 상점 아이템들을 장바구니에 추가하는 메서드
+    public void OpenCartWithStoreItems(ShopItemData[] storeItems = null)
+    {
+        if (cartDialog == null)
+        {
+            return;
+        }
+
+        // 기존 장바구니 초기화하지 않고 유지
+        // cartItems.Clear(); // 기존 아이템 유지
+        // cartSnacks.Clear(); // 기존 스낵 유지
+
+        // 인벤토리 스낵들도 추가
+        if (InventoryManager.Instance != null)
+        {
+            List<SnackItemData> snacks = InventoryManager.Instance.GetPickedUpSnacks();
+            if (snacks != null)
+            {
+                foreach (SnackItemData snack in snacks)
+                {
+                    if (snack != null)
+                    {
+                        AddToSnackCart(snack);
+                    }
+                }
+            }
+        }
+
+        // 전달받은 상점 아이템들을 장바구니에 추가 (선택사항)
+        if (storeItems != null)
+        {
+            foreach (ShopItemData item in storeItems)
+            {
+                if (item != null)
+                {
+                    AddToShopItemCart(item);
+                }
+            }
+        }
+
+        needsUIRefresh = true; // UI 갱신 필요
+        UpdateCartUI();
+        cartDialog.SetActive(true);
+    }
+
     // 장바구니 UI 업데이트
     [SerializeField] private Transform cartContentParent; 
     [SerializeField] private GameObject cartItemSlot;
@@ -225,13 +269,22 @@ public class BuySystem : MonoBehaviour, IPointerClickHandler
 
         // 총 가격 계산 및 표시 (매번 업데이트)
         int totalPrice = CalculateTotalPrice();
+        
+        // 총 가격을 UI에 표시
+        if (totalPriceText != null)
+        {
+            totalPriceText.text = $"{totalPrice} G";
+        }
 
         // 구매 버튼 활성화 조건 (매번 업데이트)
-        int playerMoney = playerData.money;
+        int playerMoney = PlayerManager.Instance.money;
         purchaseButton.interactable = (!isEmpty && totalPrice <= playerMoney);
 
         // 플레이어 소지금액 표시 (매번 업데이트)
-        playerMoneyText.text = $"Money: {playerMoney} G";
+        if (playerMoneyText != null)
+        {
+            playerMoneyText.text = $"{playerMoney} G";
+        }
     }
 
     // 구매 버튼 클릭 시 호출될 메서드
@@ -247,15 +300,27 @@ public class BuySystem : MonoBehaviour, IPointerClickHandler
         
         // 총 가격 계산 메소드 호출
         int totalPrice = CalculateTotalPrice();
-        int playerMoney = playerData.money;
+        int playerMoney = PlayerManager.Instance.money;
+        
+        Debug.Log($"장바구니 총액: {totalPrice}G, 플레이어 보유: {playerMoney}G");
+        Debug.Log($"장바구니 아이템 수: {cartItems.Count}, 스낵 수: {cartSnacks.Count}");
+        
+        // 장바구니가 비어있는 경우
+        if (totalPrice <= 0)
+        {
+            Debug.LogWarning("장바구니가 비어있습니다!");
+            isPurchasing = false;
+            return;
+        }
         
         // 아이템의 총 가격이 플레이어의 소지금액보다 적을 때
         if (totalPrice <= playerMoney)
         {
-            // 돈 지불
+            // 먼저 장바구니 총 금액만큼 돈 지불
             moneyManager.SpendMoney(totalPrice);
-
-            // 남은 아이템을 저장할 딕셔너리
+            Debug.Log($"구매 확정: 장바구니 총액 {totalPrice}G 지불됨");
+            
+            // 남은 아이템을 저장할 딕셔너리 (인벤토리가 가득 찬 경우에만 사용)
             Dictionary<ShopItemData, int> remainingItems = new Dictionary<ShopItemData, int>();
             Dictionary<SnackItemData, int> remainingSnacks = new Dictionary<SnackItemData, int>();
             
@@ -264,24 +329,30 @@ public class BuySystem : MonoBehaviour, IPointerClickHandler
             {
                 // item.Value : 장바구니에 담긴 아이템 수량
                 int remaining = item.Value;
+                int originalRemaining = remaining; // 원래 수량 저장
 
                 // 남은 수량만큼 인벤토리에 추가 시도
-                for (int i = 0; i < remaining; i++)
+                for (int i = 0; i < originalRemaining; i++)
                 {
-                    // 현재 장바구니에서 꺼낸 아이템(item.Key)을 인벤토리에 넣어보고, 넣기에 성공했는지 여부를 added에 저장
+                    Debug.Log($"인벤토리에 {item.Key.itemName} 추가 시도 ({i+1}/{originalRemaining})");
                     bool added = InventoryManager.Instance.AddShopItem(item.Key);
 
                     // 만약 성공하면 장바구니에 담긴 아이템 수량 감소
                     if (added)
                     {
                         remaining--;
+                        Debug.Log($"{item.Key.itemName} 추가 성공, 남은 수량: {remaining}");
                     }
                     // 실패한 경우
                     else
                     {
+                        Debug.LogWarning($"{item.Key.itemName} 추가 실패, 인벤토리 가득참");
                         break; // 인벤토리가 가득 차면 더 이상 시도하지 않음
                     }
                 }
+                
+                // 구매는 이미 완료됨 (총 금액 차감 완료)
+                
                 // 남은 수량이 있으면 장바구니에 남김
                 if (remaining > 0)
                 {
@@ -293,24 +364,29 @@ public class BuySystem : MonoBehaviour, IPointerClickHandler
             foreach (var snack in cartSnacks)
             {
                 int remaining = snack.Value;
+                int originalRemaining = remaining; // 원래 수량 저장
                 Debug.Log($"구매 확정: {snack.Key.snackName} {remaining}개 처리 시작");
                 
-                // ⚠️ 문제 해결: 각 스낵당 1개씩만 인벤토리에 추가
-                if (remaining > 0)
+                // 남은 수량만큼 인벤토리에 추가 시도
+                for (int i = 0; i < originalRemaining; i++)
                 {
-                    Debug.Log($"인벤토리에 {snack.Key.snackName} 1개 추가 시도");
+                    Debug.Log($"인벤토리에 {snack.Key.snackName} 추가 시도 ({i+1}/{originalRemaining})");
                     bool added = InventoryManager.Instance.AddSnack(snack.Key);
                     
+                    // 만약 성공하면 장바구니에 담긴 아이템 수량 감소
                     if (added)
                     {
-                        remaining = remaining - 1; // 1개만 감소
+                        remaining--;
                         Debug.Log($"{snack.Key.snackName} 추가 성공, 남은 수량: {remaining}");
                     }
                     else
                     {
                         Debug.LogWarning($"{snack.Key.snackName} 추가 실패, 인벤토리 가득참");
+                        break; // 인벤토리가 가득 차면 더 이상 시도하지 않음
                     }
                 }
+                
+                // 구매는 이미 완료됨 (개별 가격 차감 완료)
                 
                 // 남은 수량이 있으면 장바구니에 남김
                 if (remaining > 0)
@@ -318,6 +394,8 @@ public class BuySystem : MonoBehaviour, IPointerClickHandler
                     remainingSnacks[snack.Key] = remaining;
                 }
             }
+            
+            // 구매 완료 (총 금액은 이미 차감됨)
 
             // 장바구니 갱신
             cartItems = remainingItems;
@@ -332,21 +410,21 @@ public class BuySystem : MonoBehaviour, IPointerClickHandler
     }
 
     // 장바구니에서 스낵 삭제
-    public void DeleteSnackFromCart(SnackItemData SnackItemData)
+    public void DeleteSnackFromCart(SnackItemData snackData)
     {
-        if (SnackItemData == null)
+        if (snackData == null)
         {
             return;
         }
 
-        if (cartSnacks.ContainsKey(SnackItemData))
+        if (cartSnacks.ContainsKey(snackData))
         {
-            cartSnacks[SnackItemData]--;
+            cartSnacks[snackData]--;
 
             // 수량이 0이 되면 완전히 제거
-            if (cartSnacks[SnackItemData] <= 0)
+            if (cartSnacks[snackData] <= 0)
             {
-                cartSnacks.Remove(SnackItemData);
+                cartSnacks.Remove(snackData);
             }
 
             needsUIRefresh = true; // UI 갱신 필요
@@ -375,6 +453,15 @@ public class BuySystem : MonoBehaviour, IPointerClickHandler
             needsUIRefresh = true; // UI 갱신 필요
             UpdateCartUI();
         }
+    }
+
+    // 장바구니 전체 비우기
+    public void ClearCart()
+    {
+        cartItems.Clear();
+        cartSnacks.Clear();
+        needsUIRefresh = true;
+        UpdateCartUI();
     }
 
     // 장바구니 닫기

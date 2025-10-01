@@ -12,9 +12,12 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 531f6d0813200b348a9b06714c6cc4c6, type: 3}
   m_Name: Snack2
   m_EditorClassIdentifier: 
-  itemID: 
-  itemName: 
-  icon: {fileID: 0}
-  description: 
-  itemStat: 0
+  itemID: 2
+  snackName: "\uAC04\uC2DD2"
+  icon: {fileID: 21300000, guid: 77805c1094cb5c94ea2946fe059dee5e, type: 3}
+  price: 10
+  description: "\uAC04\uC2DD2"
+  effectType: 0
+  itemStat: 10
   slotNum: 0
+  shelfLifeDays: 5

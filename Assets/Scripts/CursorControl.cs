@@ -12,6 +12,8 @@ public class CursorControl : MonoBehaviour
 
     void Update()
     {
+        if (Time.timeScale == 0f) return;
+
         if (Input.GetKeyDown(KeyCode.LeftAlt))
         {
             Cursor.lockState = CursorLockMode.None;
@@ -19,6 +21,20 @@ public class CursorControl : MonoBehaviour
         }
 
         if (Input.GetKeyUp(KeyCode.LeftAlt))
+        {
+            Cursor.lockState = CursorLockMode.Locked;
+            Cursor.visible = false;
+        }
+    }
+
+    public void CursorVisible(bool isPause)
+    {
+        if (isPause)
+        {
+            Cursor.lockState = CursorLockMode.None;
+            Cursor.visible = true;
+        }
+        else if (!isPause)
         {
             Cursor.lockState = CursorLockMode.Locked;
             Cursor.visible = false;

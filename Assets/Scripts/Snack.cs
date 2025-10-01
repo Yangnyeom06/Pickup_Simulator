@@ -4,7 +4,7 @@ using UnityEngine;
 
 public class Snack : MonoBehaviour
 {
-    public SnackItemData SnackItemData; // 아이템 데이터 참조
+    public SnackItemData snackItemData; // 아이템 데이터 참조
     InventoryManager inventoryManager;
 /*
     void Start()
@@ -25,12 +25,16 @@ public class Snack : MonoBehaviour
 */
     public void SetSnackItemData(SnackItemData data)
     {
-        SnackItemData = data;
+        snackItemData = data;
     }
 
     public void GotSnackItem()
     {
-        inventoryManager.AddSnack(SnackItemData);
+        bool success = inventoryManager.AddSnack(snackItemData);
+        if (!success)
+        {
+            Debug.LogWarning($"인벤토리가 가득 차서 {snackItemData.snackName}을(를) 추가할 수 없습니다!");
+        }
     }
 
     public void DeleteSnackItem()
