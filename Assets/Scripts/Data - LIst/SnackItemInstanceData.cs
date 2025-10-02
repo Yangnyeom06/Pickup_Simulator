@@ -14,7 +14,7 @@ public class SnackItemInstanceData
 
 
     // 구매일과 유통기한을 포함한 생성자
-    public SnackInstanceData(string itemID, string itemName, Sprite icon, string description, float itemStat, int slotNum, int purchaseDay, int shelfLifeDays)
+    public SnackItemInstanceData(string itemID, string itemName, Sprite icon, string description, float itemStat, int slotNum, int purchaseDay, int shelfLifeDays)
     {
         this.itemID = itemID;
         this.itemName = itemName;

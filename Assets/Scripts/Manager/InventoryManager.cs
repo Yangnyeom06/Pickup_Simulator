@@ -183,7 +183,9 @@ public class InventoryManager : MonoBehaviour
             {
                 snackItemData.slotNum = i; // 슬롯 인덱스를 그대로 사용
                 buyItemSlotList[i].SetSnackItem(snackItemData);
-                savedSnackItems.Add(new SnackItemInstanceData(snackItemData.itemID, snackItemData.snackName, snackItemData.icon, snackItemData.description, snackItemData.itemStat, snackItemData.slotNum));
+                // 현재 날짜를 구매일로 설정 (DayManager가 있다면 사용, 없으면 0)
+                int currentDay = DayManager.Instance != null ? DayManager.Instance.CalculateTotalDays() : 0;
+                savedSnackItems.Add(new SnackItemInstanceData(snackItemData.itemID, snackItemData.snackName, snackItemData.icon, snackItemData.description, snackItemData.itemStat, snackItemData.slotNum, currentDay, snackItemData.shelfLifeDays));
                 Debug.Log($"'{snackItemData.snackName}' 새로운 슬롯에 추가됨!");
                 return true; // 아이템 추가 성공
             }

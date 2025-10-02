@@ -25,6 +25,9 @@ public class SnackItemData : ScriptableObject
     public float itemStat; // 간식을 먹으면 스테미나 또는 체력 증가(10~30)
     public int slotNum;
     
+    [Header("유통기한")]
+    public int shelfLifeDays = 5; // 유통기한 (기본 5일)
+    
     /// <summary>
     /// 구매일로부터 며칠이 지났는지 계산
     /// </summary>
