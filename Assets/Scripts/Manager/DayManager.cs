@@ -114,6 +114,9 @@ public class DayManager : MonoBehaviour
         angles.z = 0f;
         timer.transform.eulerAngles = angles;
         timerTime = 1000000f;
+        
+        // 중고트럭 스폰 체크 추가
+        CheckUsedCarTruckSpawn();
     }
 
     /// <summary>

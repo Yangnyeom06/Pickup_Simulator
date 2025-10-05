@@ -18,6 +18,8 @@ public class UsedCarSpawnManager : MonoBehaviour
     [Header("Spawn Locations")]
     [SerializeField] private Transform[] spawnPoints; // 스폰 가능한 위치들
     [SerializeField] private Transform defaultSpawnPoint; // 기본 스폰 위치
+    [SerializeField] private float spawnHeightOffset = 0.5f; // 지면 위 높이 오프셋
+    [SerializeField] private bool autoCalculateHeight = true; // 오브젝트 크기에 따른 자동 높이 계산
     
     [Header("Debug Info")]
     [SerializeField] private bool isCurrentlySpawned = false;
@@ -122,7 +124,8 @@ public class UsedCarSpawnManager : MonoBehaviour
         
         if (spawnPoint != null)
         {
-            usedCarTruckObject.transform.position = spawnPoint.position;
+            Vector3 spawnPosition = GetGroundPosition(spawnPoint);
+            usedCarTruckObject.transform.position = spawnPosition;
             usedCarTruckObject.transform.rotation = spawnPoint.rotation;
         }
         
@@ -182,12 +185,101 @@ public class UsedCarSpawnManager : MonoBehaviour
     }
     
     /// <summary>
+    /// 지면 위의 올바른 스폰 위치를 계산
+    /// </summary>
+    /// <param name="spawnPoint">기준 스폰 포인트</param>
+    /// <returns>지면 위의 위치</returns>
+    private Vector3 GetGroundPosition(Transform spawnPoint)
+    {
+        Vector3 spawnPosition = spawnPoint.position;
+        float finalOffset = spawnHeightOffset;
+        
+        // 자동 높이 계산이 활성화되어 있다면 오브젝트의 크기를 고려
+        if (autoCalculateHeight && usedCarTruckObject != null)
+        {
+            // 오브젝트의 Collider 또는 Renderer 경계를 사용해서 높이 계산
+            Bounds objectBounds = GetObjectBounds(usedCarTruckObject);
+            if (objectBounds.size != Vector3.zero)
+            {
+                // 오브젝트 높이의 절반 + 추가 오프셋
+                finalOffset = (objectBounds.size.y * 0.5f) + spawnHeightOffset;
+                Debug.Log($"[UsedCarSpawnManager] 자동 높이 계산: 오브젝트 높이 {objectBounds.size.y:F2}m, 최종 오프셋: {finalOffset:F2}m");
+            }
+        }
+        
+        // Raycast를 사용해서 아래쪽으로 지면을 찾기
+        RaycastHit hit;
+        Vector3 rayStart = spawnPosition + Vector3.up * 10f; // 스폰 포인트 위 10m에서 시작
+        
+        if (Physics.Raycast(rayStart, Vector3.down, out hit, 20f))
+        {
+            // 지면을 찾았다면 그 위치에 계산된 오프셋을 추가
+            spawnPosition = hit.point + Vector3.up * finalOffset;
+            Debug.Log($"[UsedCarSpawnManager] 지면 감지: {hit.point}, 최종 위치: {spawnPosition}");
+        }
+        else
+        {
+            // 지면을 찾지 못했다면 기본 오프셋 사용
+            spawnPosition.y += finalOffset;
+            Debug.LogWarning($"[UsedCarSpawnManager] 지면을 찾지 못함. 기본 오프셋 사용: {spawnPosition}");
+        }
+        
+        return spawnPosition;
+    }
+    
+    /// <summary>
+    /// 오브젝트의 경계(Bounds) 계산
+    /// </summary>
+    /// <param name="obj">대상 오브젝트</param>
+    /// <returns>오브젝트의 경계</returns>
+    private Bounds GetObjectBounds(GameObject obj)
+    {
+        Bounds bounds = new Bounds();
+        bool hasBounds = false;
+        
+        // Renderer들의 경계를 확인
+        Renderer[] renderers = obj.GetComponentsInChildren<Renderer>();
+        foreach (Renderer renderer in renderers)
+        {
+            if (!hasBounds)
+            {
+                bounds = renderer.bounds;
+                hasBounds = true;
+            }
+            else
+            {
+                bounds.Encapsulate(renderer.bounds);
+            }
+        }
+        
+        // Renderer가 없다면 Collider 확인
+        if (!hasBounds)
+        {
+            Collider[] colliders = obj.GetComponentsInChildren<Collider>();
+            foreach (Collider collider in colliders)
+            {
+                if (!hasBounds)
+                {
+                    bounds = collider.bounds;
+                    hasBounds = true;
+                }
+                else
+                {
+                    bounds.Encapsulate(collider.bounds);
+                }
+            }
+        }
+        
+        return bounds;
+    }
+    
+    /// <summary>
     /// 스폰 알림 표시 (선택사항)
     /// </summary>
     private void ShowSpawnNotification()
     {
         // 게임에 알림 시스템이 있다면 여기서 호출
-        Debug.Log("🚛 중고차 상인이 마을에 도착했습니다!");
+        Debug.Log("중고차 상인이 마을에 도착했습니다!");
     }
     
     /// <summary>
