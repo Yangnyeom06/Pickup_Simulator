@@ -18562,6 +18562,7 @@ GameObject:
   - component: {fileID: 817708865}
   - component: {fileID: 817708864}
   - component: {fileID: 817708863}
+  - component: {fileID: 817708871}
   m_Layer: 0
   m_Name: UsedCarNPC
   m_TagString: Untagged
@@ -18602,18 +18603,6 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   mainCamera: {fileID: 1680475512}
   rayDistance: 5
-  playerData:
-    healthLevel: 0
-    staminaLevel: 0
-    speedLevel: 0
-    inventoryLevel: 0
-    mapLevel: 0
-    health: 0
-    maxHealth: 0
-    stamina: 0
-    maxStamina: 0
-    speed: 0
-    money: 0
   sellUI: {fileID: 1028346224}
   slotPrefab: {fileID: 1422548666395631593, guid: 3b82486f7ef71094480aee5da3afae3e, type: 3}
   slotParent: {fileID: 2107034941}
@@ -18786,6 +18775,29 @@ MeshFilter:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 817708861}
   m_Mesh: {fileID: 10208, guid: 0000000000000000e000000000000000, type: 0}
+--- !u!114 &817708871
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 817708861}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: a93ca70d2df6ebe40a53cdd0c71e121e, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  spawnProbability: 1
+  minDaysBetweenSpawns: 1
+  maxDaysBetweenSpawns: 4
+  usedCarTruckObject: {fileID: 817708861}
+  usedCarNPC: {fileID: 817708863}
+  spawnPoints:
+  - {fileID: 817708862}
+  defaultSpawnPoint: {fileID: 817708862}
+  isCurrentlySpawned: 0
+  lastSpawnDay: -1
+  daysSinceLastSpawn: 0
 --- !u!1 &822523254
 GameObject:
   m_ObjectHideFlags: 0

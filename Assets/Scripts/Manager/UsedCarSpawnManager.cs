@@ -116,11 +116,6 @@ public class UsedCarSpawnManager : MonoBehaviour
     /// <param name="currentDay">현재 날짜</param>
     private void SpawnUsedCarTruck(int currentDay)
     {
-        if (usedCarTruckObject == null)
-        {
-            Debug.LogError("[UsedCarSpawnManager] usedCarTruckObject가 할당되지 않았습니다!");
-            return;
-        }
         
         // 스폰 위치 결정
         Transform spawnPoint = GetRandomSpawnPoint();
@@ -154,7 +149,6 @@ public class UsedCarSpawnManager : MonoBehaviour
             usedCarTruckObject.SetActive(false);
             isCurrentlySpawned = false;
             
-            Debug.Log("[UsedCarSpawnManager] 중고트럭 제거됨");
         }
     }
     

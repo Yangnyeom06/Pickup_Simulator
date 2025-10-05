@@ -9,18 +9,19 @@ public class UsedCarNPC : MonoBehaviour, ISaleSystem
     public Camera mainCamera;
     public float rayDistance = 100f;
 
-    public PlayerData playerData;
-
-    // [Header("Inspector 에서 드래그해서 지정할 클릭 대상들")]
-    // public List<Transform> clickableTargets;
+    // 현재 선택된 슬롯·수량
+    private InventorySlotData selectedSlot;
+    // public int selectedQuantity { get; set; } = 0;
+    // private QuantityDialog    quantityDialog;
+    
+    // 중복 판매 방지 플래그    
+    private bool isSelling = false;
 
     [Header("UI References")]
     public GameObject sellUI;                   // Sell 모드 전체 패널
     public GameObject slotPrefab;               // 슬롯 프리팹 (InventorySlotData 컴포넌트 포함)
     public Transform  slotParent;               // 슬롯이 붙을 부모 (Layout Group 등)
     public Button     sellConfirmButton;        // 최종 판매 확정 버튼
-    // public GameObject quantityDialogPrefab;     // QuantityDialog 프리팹
-    // public Transform  quantityDialogParent;     // 다이얼로그를 붙일 부모
 
     [Header("Managers")]
     public MoneyManager     moneyManager;
@@ -32,15 +33,8 @@ public class UsedCarNPC : MonoBehaviour, ISaleSystem
     [Header("Price Settings")]
     [SerializeField] private float priceMultiplier = 1.5f; // 중고트럭에서 더 비싸게 팔 수 있는 배수
 
-    // 현재 선택된 슬롯·수량
-    private InventorySlotData selectedSlot;
-    // public int selectedQuantity { get; set; } = 0;
-    // private QuantityDialog    quantityDialog;
-    
-    // 중복 판매 방지 플래그
-    private bool isSelling = false;
-
     [SerializeField] private TMP_Text playerMoneyText;
+
 
     void Start()
     {
@@ -51,6 +45,7 @@ public class UsedCarNPC : MonoBehaviour, ISaleSystem
             sellConfirmButton.onClick.AddListener(() => {
                 ConfirmSell();
             });
+
             sellConfirmButton.interactable = false; // 시작시에는 비활성화
         }
         
@@ -66,7 +61,7 @@ public class UsedCarNPC : MonoBehaviour, ISaleSystem
         if (Input.GetKeyDown(KeyCode.E))
         {
             RaycastHit hit;
-            if (Physics.Raycast(mainCamera.transform.position, mainCamera.transform.forward ,out hit, rayDistance))
+            if (Physics.Raycast(mainCamera.transform.position, mainCamera.transform.forward, out hit, rayDistance))
             {
                 if (hit.transform.gameObject == this.gameObject)
                 {
@@ -201,7 +196,6 @@ public class UsedCarNPC : MonoBehaviour, ISaleSystem
         // 중복 호출 방지
         if (isSelling)
         {
-            Debug.Log("[UsedCarNPC] 이미 판매 처리 중입니다. 중복 호출 방지!");
             return;
         }
         
@@ -242,8 +236,7 @@ public class UsedCarNPC : MonoBehaviour, ISaleSystem
 
         // 3) 현재 들고 있는 Large 아이템 제거
         bool itemRemoved = false;
-        
-        if (itemRaycast == null)
+        if (!itemRaycast.IsHoldingLargeItem)
         {
             Debug.LogError("[UsedCarNPC] itemRaycast가 null입니다! Inspector에서 할당하세요.");
         }
@@ -253,10 +246,8 @@ public class UsedCarNPC : MonoBehaviour, ISaleSystem
         }
         else
         {
-            Debug.Log($"[UsedCarNPC] Large 아이템 제거 시작 - 현재 상태: {itemRaycast.IsHoldingLargeItem}");
             itemRaycast.SellCurrentLargeItem();
             itemRemoved = true;
-            Debug.Log($"[UsedCarNPC] Large 아이템 제거 완료 - 현재 상태: {itemRaycast.IsHoldingLargeItem}");
         }
         
         Debug.Log($"중고차 판매: {itemData.itemName} (기본가격: {basePrice}G → 판매가격: {gain}G, 배수: {priceMultiplier}x)");
