@@ -34,7 +34,6 @@ public class StoreNPC : MonoBehaviour
         buyButton.gameObject.SetActive(false);
         sellButton.gameObject.SetActive(false);
         cancelButton.gameObject.SetActive(false);
-        dialogueTrigger = GetComponent<DialogueTrigger>();
     }
 
     void Update()
