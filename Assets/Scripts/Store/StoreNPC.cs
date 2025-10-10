@@ -15,6 +15,7 @@ public class StoreNPC : MonoBehaviour
     [Header("씬에 미리 배치된 버튼들")]
     public Button buyButton;
     public Button sellButton;
+    public Button cancelButton;
 
     [Header("연동할 시스템들")]
     public BuySystem buySystem;
@@ -32,6 +33,8 @@ public class StoreNPC : MonoBehaviour
     {
         buyButton.gameObject.SetActive(false);
         sellButton.gameObject.SetActive(false);
+        cancelButton.gameObject.SetActive(false);
+        dialogueTrigger = GetComponent<DialogueTrigger>();
     }
 
     void Update()
@@ -47,20 +50,20 @@ public class StoreNPC : MonoBehaviour
                 }
             }
         }
-
-        CancelBtn();
     }
 
     void ShowButtons()
     {
         buyButton.gameObject.SetActive(true);
         sellButton.gameObject.SetActive(true);
+        cancelButton.gameObject.SetActive(true);
     }
 
     public void HideButtons()
     {
         buyButton.gameObject.SetActive(false);
         sellButton.gameObject.SetActive(false);
+        cancelButton.gameObject.SetActive(false);
     }
 
     public void OnBuyClicked()
@@ -75,22 +78,13 @@ public class StoreNPC : MonoBehaviour
         if (saleSystem != null)
         {
             saleSystem.ShowSellUI();
-            Debug.Log("SaleSystem.ShowSellUI() 호출됨");
-        }
-        else
-        {
-            Debug.LogError("SaleSystem이 null입니다!");
         }
         HideButtons();
     }
 
-    public void CancelBtn()
+    public void OnCancelClicked()
     {
-        if (Input.GetKeyDown(KeyCode.Escape))
-        {
-            buyButton.gameObject.SetActive(false);
-            sellButton.gameObject.SetActive(false); 
-        }
+        HideButtons();
     }
 
     
