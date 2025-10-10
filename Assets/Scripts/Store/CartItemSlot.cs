@@ -26,25 +26,17 @@ public class CartItemSlot : MonoBehaviour
             // 기존 리스너 제거 후 새로 추가 (중복 방지)
             deleteButton.onClick.RemoveAllListeners();
             deleteButton.onClick.AddListener(OnDeleteButtonClicked);
-            Debug.Log($"삭제 버튼 이벤트 설정 완료: {gameObject.name}");
-        }
-        else
-        {
-            Debug.LogError($"deleteButton이 null입니다: {gameObject.name}");
         }
     }
 
     public void ItemSetup(ShopItemData data, int quantity, BuySystem system)
     {
-        if (itemNameText == null) Debug.LogError("itemNameText is null");
 
         this.itemData = data;
         this.snackData = null;
         this.buySystem = system;
 
         itemNameText.text = $"{data.itemName}";
-        if (quantityText != null)
-            quantityText.text = $"x{quantity}";
             
         // Setup 시에도 버튼 이벤트 재설정
         SetupDeleteButton();
@@ -52,7 +44,6 @@ public class CartItemSlot : MonoBehaviour
 
     public void SnackSetup(SnackData data, int quantity, BuySystem system)
     {
-        if (itemNameText == null) Debug.LogError("itemNameText is null");
 
         this.snackData = data;
         this.itemData = null;    
