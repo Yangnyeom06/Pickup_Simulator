@@ -1,0 +1,12 @@
+# 기본적으로 모든 파일 무시
+/*
+
+# 하지만 다음 폴더/파일은 예외로 허용
+!/Assets/
+!/Packages/
+!/ProjectSettings/
+!/.gitignore
+!/.gitattributes
+
+#*.unitypackage
+#*.unitypackage.meta
