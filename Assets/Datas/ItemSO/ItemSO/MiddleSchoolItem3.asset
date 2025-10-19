@@ -1,0 +1,28 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 3bbf93c927add6041a2438de547ae125, type: 3}
+  m_Name: MiddleSchoolItem3
+  m_EditorClassIdentifier: 
+  itemID: 7
+  itemName: Middle School Item3
+  icon: {fileID: 21300000, guid: f8e9e96ae66fea64d9d893dee86c1bc3, type: 3}
+  price: 0
+  description: 
+  itemType: 1
+  itemRarity: 0
+  dirty: 0
+  minValue: 0
+  maxValue: 11111
+  value: 1
+  maxStackSize: 99
+  slotNum: 0
+  prefab: {fileID: 9046266256756568541, guid: a263be9165eb183458d2834e7a0e1be4, type: 3}
