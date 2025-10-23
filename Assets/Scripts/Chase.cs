@@ -12,6 +12,7 @@ public class NPCVisionPatrol : MonoBehaviour
     [Header("Chase Settings")]
     public float timeToStartChasing = 2f;
     public float timeToStopChasing = 10f;
+    [SerializeField] private float moneyLossRatio = 0.1f; // 플레이어 돈 차감 비율
 
     [Header("Patrol Settings")]
     public Transform[] patrolPoints;
@@ -130,6 +131,23 @@ public class NPCVisionPatrol : MonoBehaviour
 
         currentPatrolIndex = (currentPatrolIndex + 1) % patrolPoints.Length;
         agent.SetDestination(patrolPoints[currentPatrolIndex].position);
+    }
+
+    // 플레이어와 충돌 시 돈 차감
+    private void OnCollisionEnter(Collision collision)
+    {
+        if (isChasing && collision.gameObject.CompareTag("Player"))
+        {
+            Debug.Log("NPC가 플레이어를 잡았다!");
+
+            int currentMoney = PlayerManager.Instance.money;
+            int lostAmount = Mathf.FloorToInt(currentMoney * moneyLossRatio);
+            PlayerManager.Instance.money = Mathf.Max(0, currentMoney - lostAmount);
+
+            Debug.Log($"플레이어 돈 차감: -{lostAmount} (남은 돈: {PlayerManager.Instance.money})");
+
+            StopChasing();
+        }
     }
 
     void OnDrawGizmosSelected()

@@ -12,17 +12,17 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 3bbf93c927add6041a2438de547ae125, type: 3}
   m_Name: RoadItem1
   m_EditorClassIdentifier: 
-  itemID: 13
+  itemID: 19
   itemName: Road Item1
   icon: {fileID: 748639603, guid: 2c96ac4c9f33d924080aabf3f45d8ec7, type: 3}
   price: 0
-  description: 
-  itemType: 0
+  description: candy
+  itemType: 1
   itemRarity: 0
   dirty: 0
-  minValue: 0
-  maxValue: 11111
+  minValue: 100
+  maxValue: 200
   value: 1
   maxStackSize: 99
   slotNum: 0
-  prefab: {fileID: 6476005313889489243, guid: c699d85da771f2f44a2b9890d1e0b827, type: 3}
+  prefab: {fileID: 7713679560998827506, guid: 0baf36cd4b657c2418aa5bf433279739, type: 3}

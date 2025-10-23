@@ -26,19 +26,19 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: -8679921383154817045, guid: 97f9c970f20ea7d4392fcdce4a07c409, type: 3}
       propertyPath: m_LocalPosition.y
-      value: 2.6949
+      value: 2.7160323
       objectReference: {fileID: 0}
     - target: {fileID: -8679921383154817045, guid: 97f9c970f20ea7d4392fcdce4a07c409, type: 3}
       propertyPath: m_LocalPosition.z
-      value: 241.87
+      value: 241.88792
       objectReference: {fileID: 0}
     - target: {fileID: -8679921383154817045, guid: 97f9c970f20ea7d4392fcdce4a07c409, type: 3}
       propertyPath: m_LocalRotation.w
-      value: 1
+      value: 0.7071068
       objectReference: {fileID: 0}
     - target: {fileID: -8679921383154817045, guid: 97f9c970f20ea7d4392fcdce4a07c409, type: 3}
       propertyPath: m_LocalRotation.x
-      value: 0
+      value: 0.7071068
       objectReference: {fileID: 0}
     - target: {fileID: -8679921383154817045, guid: 97f9c970f20ea7d4392fcdce4a07c409, type: 3}
       propertyPath: m_LocalRotation.y
@@ -50,7 +50,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: -8679921383154817045, guid: 97f9c970f20ea7d4392fcdce4a07c409, type: 3}
       propertyPath: m_LocalEulerAnglesHint.x
-      value: 0
+      value: 90
       objectReference: {fileID: 0}
     - target: {fileID: -8679921383154817045, guid: 97f9c970f20ea7d4392fcdce4a07c409, type: 3}
       propertyPath: m_LocalEulerAnglesHint.y
@@ -76,6 +76,10 @@ PrefabInstance:
       propertyPath: m_Name
       value: color_pencil
       objectReference: {fileID: 0}
+    - target: {fileID: 919132149155446097, guid: 97f9c970f20ea7d4392fcdce4a07c409, type: 3}
+      propertyPath: m_TagString
+      value: Item
+      objectReference: {fileID: 0}
     - target: {fileID: 2773063268966406005, guid: 97f9c970f20ea7d4392fcdce4a07c409, type: 3}
       propertyPath: 'm_Materials.Array.data[0]'
       value: 
@@ -96,10 +100,62 @@ PrefabInstance:
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
     m_AddedComponents:
+    - targetCorrespondingSourceObject: {fileID: 919132149155446097, guid: 97f9c970f20ea7d4392fcdce4a07c409, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: -8497660495575914063}
+    - targetCorrespondingSourceObject: {fileID: 919132149155446097, guid: 97f9c970f20ea7d4392fcdce4a07c409, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: -9065800033744487549}
     - targetCorrespondingSourceObject: {fileID: 2071963930070466410, guid: 97f9c970f20ea7d4392fcdce4a07c409, type: 3}
       insertIndex: -1
       addedObject: {fileID: 749527676619308628}
   m_SourcePrefab: {fileID: 100100000, guid: 97f9c970f20ea7d4392fcdce4a07c409, type: 3}
+--- !u!1 &5016945862919953888 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 919132149155446097, guid: 97f9c970f20ea7d4392fcdce4a07c409, type: 3}
+  m_PrefabInstance: {fileID: 5286852676535492785}
+  m_PrefabAsset: {fileID: 0}
+--- !u!114 &-8497660495575914063
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5016945862919953888}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: e1a7162c3af6cd54bbc194bd84241822, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  uniqueID: 
+  itemData: {fileID: 11400000, guid: 9f6cf22d769742b408a94e4983583a8d, type: 2}
+--- !u!54 &-9065800033744487549
+Rigidbody:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5016945862919953888}
+  serializedVersion: 4
+  m_Mass: 1
+  m_Drag: 0
+  m_AngularDrag: 0.05
+  m_CenterOfMass: {x: 0, y: 0, z: 0}
+  m_InertiaTensor: {x: 1, y: 1, z: 1}
+  m_InertiaRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_IncludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ExcludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ImplicitCom: 1
+  m_ImplicitTensor: 1
+  m_UseGravity: 1
+  m_IsKinematic: 0
+  m_Interpolate: 0
+  m_Constraints: 0
+  m_CollisionDetection: 0
 --- !u!1 &6169848239676530651 stripped
 GameObject:
   m_CorrespondingSourceObject: {fileID: 2071963930070466410, guid: 97f9c970f20ea7d4392fcdce4a07c409, type: 3}

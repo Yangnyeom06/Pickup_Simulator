@@ -31,4 +31,28 @@ public class SceneChangeManager : MonoBehaviour
 
         SceneManager.LoadScene(sceneName);
     }
+
+    private void OnEnable()
+    {
+        SceneManager.sceneLoaded += OnSceneLoaded;
+    }
+
+    private void OnDisable()
+    {
+        SceneManager.sceneLoaded -= OnSceneLoaded;
+    }
+
+    private void OnSceneLoaded(Scene scene, LoadSceneMode mode)
+    {
+        // Slum 같은 씬이 로드된 후, Player 위치 이동
+        GameObject player = GameObject.FindGameObjectWithTag("Player");
+        if (player != null && !string.IsNullOrEmpty(nextSpawnPointName))
+        {
+            GameObject spawn = GameObject.Find(nextSpawnPointName);
+            if (spawn != null)
+            {
+                player.transform.position = spawn.transform.position;
+            }
+        }
+    }
 }
