@@ -114,6 +114,9 @@ public class DayManager : MonoBehaviour
         angles.z = 0f;
         timer.transform.eulerAngles = angles;
         timerTime = 1000000f;
+        ItemManager.Instance.rarityProbabilities[ItemRarity.Common] = 0.6f;
+        ItemManager.Instance.rarityProbabilities[ItemRarity.Rare] = 0.3f;
+        ItemManager.Instance.rarityProbabilities[ItemRarity.Unique] = 0.1f;
     }
 
     /// <summary>

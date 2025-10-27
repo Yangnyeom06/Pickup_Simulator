@@ -47,6 +47,8 @@ public class LookSensitivityScrollbar : MonoBehaviour
 
         float mapped = Mathf.Lerp(min, max, barValue);
         PlayerPrefs.SetFloat(PREF_KEY_SENS, mapped);
+
+        SettingsEvents.RaiseLookSensitivityChanged(mapped);
     }
 
     /* ───── Helper ───── */

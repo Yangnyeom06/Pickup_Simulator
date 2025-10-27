@@ -3,6 +3,7 @@ using System.Collections.Generic;
 
 public class ItemSpawner : MonoBehaviour
 {
+    public static ItemSpawner Instance { get; private set; }
     private Item[] itemPool; // 이 지역에 맞는 아이템 풀
     [SerializeField] private int spawnCount = 5; // 아이템을 얼마나 스폰할지
 
@@ -90,7 +91,7 @@ public class ItemSpawner : MonoBehaviour
         float roll = Random.value; // 0 ~ 1 사이 값
         float cumulative = 0f;
 
-        foreach (var kvp in rarityProbabilities)
+        foreach (var kvp in ItemManager.Instance.rarityProbabilities)
         {
             cumulative += kvp.Value;
             if (roll <= cumulative)

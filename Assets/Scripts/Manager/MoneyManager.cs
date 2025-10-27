@@ -19,6 +19,8 @@ public class MoneyManager : MonoBehaviour
         }
 
         Instance = this;
+
+        UpdateMoneyUI();
     }
 
     public void AddMoney(int amount)

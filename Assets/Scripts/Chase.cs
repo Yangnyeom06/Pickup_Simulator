@@ -12,6 +12,7 @@ public class NPCVisionPatrol : MonoBehaviour
     [Header("Chase Settings")]
     public float timeToStartChasing = 2f;
     public float timeToStopChasing = 10f;
+    [SerializeField] private float moneyLossRatio = 0.1f; // ï¿½Ã·ï¿½ï¿½Ì¾ï¿½ ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½
 
     [Header("Patrol Settings")]
     public Transform[] patrolPoints;
@@ -94,13 +95,13 @@ public class NPCVisionPatrol : MonoBehaviour
     void StartChasing()
     {
         isChasing = true;
-        Debug.Log("NPC: ÇÃ·¹ÀÌ¾î Ãß°Ý ½ÃÀÛ!");
+        Debug.Log("NPC: ï¿½Ã·ï¿½ï¿½Ì¾ï¿½ ï¿½ß°ï¿½ ï¿½ï¿½ï¿½ï¿½!");
     }
 
     void StopChasing()
     {
         isChasing = false;
-        Debug.Log("NPC: ÇÃ·¹ÀÌ¾î¸¦ ³õÃÄ¼­ ¼øÂû·Î º¹±Í.");
+        Debug.Log("NPC: ï¿½Ã·ï¿½ï¿½Ì¾î¸¦ ï¿½ï¿½ï¿½Ä¼ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½.");
         GoToNextPatrolPoint();
     }
 
@@ -130,6 +131,23 @@ public class NPCVisionPatrol : MonoBehaviour
 
         currentPatrolIndex = (currentPatrolIndex + 1) % patrolPoints.Length;
         agent.SetDestination(patrolPoints[currentPatrolIndex].position);
+    }
+
+    // ï¿½Ã·ï¿½ï¿½Ì¾ï¿½ï¿½ ï¿½æµ¹ ï¿½ï¿½ ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½
+    private void OnCollisionEnter(Collision collision)
+    {
+        if (isChasing && collision.gameObject.CompareTag("Player"))
+        {
+            Debug.Log("NPCï¿½ï¿½ ï¿½Ã·ï¿½ï¿½Ì¾î¸¦ ï¿½ï¿½Ò´ï¿½!");
+
+            int currentMoney = PlayerManager.Instance.money;
+            int lostAmount = Mathf.FloorToInt(currentMoney * moneyLossRatio);
+            PlayerManager.Instance.money = Mathf.Max(0, currentMoney - lostAmount);
+
+            Debug.Log($"ï¿½Ã·ï¿½ï¿½Ì¾ï¿½ ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½: -{lostAmount} (ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½: {PlayerManager.Instance.money})");
+
+            StopChasing();
+        }
     }
 
     void OnDrawGizmosSelected()

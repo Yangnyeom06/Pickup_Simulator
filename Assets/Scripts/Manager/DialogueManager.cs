@@ -90,6 +90,18 @@ public class DialogueManager : MonoBehaviour
         StartCoroutine(AutoCloseDialogue());
     }
 
+    public void CodeStartDialogue(string Dialogue)
+    {
+        dialoguePanel.SetActive(true);
+        isDialogueActive = true;
+        timer = 0f;
+
+        dialogueText.text = Dialogue;
+
+        // 자동으로 대화 종료 코루틴 실행
+        StartCoroutine(AutoCloseDialogue());
+    }
+
     // 일정 시간 후 대화 종료
     private IEnumerator AutoCloseDialogue()
     {

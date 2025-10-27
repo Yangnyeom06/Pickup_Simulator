@@ -2,7 +2,8 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class PlayerController : MonoBehaviour {
+public class PlayerController : MonoBehaviour
+{
     // 스피드 조정 변수
     [SerializeField]
     private float walkSpeed;
@@ -71,8 +72,8 @@ public class PlayerController : MonoBehaviour {
         // 초기화.
         originPosY = theCamera.transform.localPosition.y;
         applyCrouchPosY = originPosY;
-        
-         if (PlayerPrefs.HasKey(PREF_KEY_SENS))
+
+        if (PlayerPrefs.HasKey(PREF_KEY_SENS))
             lookSensitivity = PlayerPrefs.GetFloat(PREF_KEY_SENS);
 
     }
@@ -94,10 +95,10 @@ public class PlayerController : MonoBehaviour {
 
         CameraRotation();
         CharacterRotation();
-        
-    
 
-	}
+
+
+    }
 
     public float LookSensitivity
     {
@@ -148,7 +149,7 @@ public class PlayerController : MonoBehaviour {
         float _posY = theCamera.transform.localPosition.y;
         int count = 0;
 
-        while(_posY != applyCrouchPosY)
+        while (_posY != applyCrouchPosY)
         {
             count++;
             _posY = Mathf.Lerp(_posY, applyCrouchPosY, 0.3f);
@@ -247,7 +248,7 @@ public class PlayerController : MonoBehaviour {
     // 좌우 캐릭터 회전
     private void CharacterRotation()
     {
-       
+
         float _yRotation = Input.GetAxisRaw("Mouse X");
         Vector3 _characterRotationY = new Vector3(0f, _yRotation, 0f) * lookSensitivity;
         myRigid.MoveRotation(myRigid.rotation * Quaternion.Euler(_characterRotationY));
@@ -265,5 +266,34 @@ public class PlayerController : MonoBehaviour {
 
         theCamera.transform.localEulerAngles = new Vector3(currentCameraRotationX, 0f, 0f);
     }
+
+    private void OnEnable()
+    {
+        // 시작 시 한 번 더 안전하게 적용(씬 이동 등으로 복귀했을 때 대비)
+        LookSensitivityValue = PlayerPrefs.GetFloat(PREF_KEY_SENS, LookSensitivity);
+
+        SettingsEvents.OnLookSensitivityChanged += OnSensitivityChanged;
+    }
+
+    private void OnDisable()
+    {
+        SettingsEvents.OnLookSensitivityChanged -= OnSensitivityChanged;
+    }
+     private void OnSensitivityChanged(float value)
+    {
+        LookSensitivityValue = value; // 아래 프로퍼티에서 클램프 + PlayerPrefs 반영
+    }
+
+    public float LookSensitivityValue
+    {
+        get => lookSensitivity;
+        set
+        {
+            // 즉시 적용 + 범위 보호
+            lookSensitivity = Mathf.Clamp(value, 0.1f, 20f);
+            PlayerPrefs.SetFloat(PREF_KEY_SENS, lookSensitivity); // 씬 간 공유 저장
+        }
+    }
+
 
 }

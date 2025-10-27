@@ -10,6 +10,13 @@ public class ItemManager : MonoBehaviour
     [SerializeField] private List<ItemSpawner> elementSchoolSpawners; // 초등학교 스포너 리스트
     [SerializeField] private List<ItemSpawner> middleSchoolSpawners; // 중학교 스포너 리스트
 
+    public Dictionary<ItemRarity, float> rarityProbabilities = new Dictionary<ItemRarity, float>
+    {
+        { ItemRarity.Common, 0.7f },
+        { ItemRarity.Rare, 0.25f },
+        { ItemRarity.Unique, 0.05f }
+    };
+
     private void Awake()
     {
         if (Instance != null && Instance != this)

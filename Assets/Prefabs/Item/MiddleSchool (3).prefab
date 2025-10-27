@@ -12,7 +12,6 @@ GameObject:
   - component: {fileID: 4406381509924809013}
   - component: {fileID: 9086065161555053170}
   - component: {fileID: 5854915105905913368}
-  - component: {fileID: -4710356294807163176}
   - component: {fileID: -3125140353726769773}
   m_Layer: 7
   m_Name: MiddleSchool (3)
@@ -111,20 +110,6 @@ BoxCollider:
   serializedVersion: 3
   m_Size: {x: 1, y: 1, z: 1}
   m_Center: {x: 0, y: 0, z: 0}
---- !u!114 &-4710356294807163176
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 6850365637677953170}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: e1a7162c3af6cd54bbc194bd84241822, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  uniqueID: 
-  itemData: {fileID: 11400000, guid: 3134f469a05335646a4ee30174939ffc, type: 2}
 --- !u!54 &-3125140353726769773
 Rigidbody:
   m_ObjectHideFlags: 0
