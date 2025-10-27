@@ -2,7 +2,8 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class PlayerController : MonoBehaviour {
+public class PlayerController : MonoBehaviour
+{
     // 스피드 조정 변수
     [SerializeField]
     private float walkSpeed;
@@ -60,8 +61,13 @@ public class PlayerController : MonoBehaviour {
 
     private Rigidbody myRigid;
 
+    // 🔹 인터랙션용 필드 추가
+    [Header("Interaction Settings")]
+    [SerializeField] private float interactDistance = 3f;
+    [SerializeField] private LayerMask interactMask = ~0; // 모든 레이어 기본
+    [SerializeField] private KeyCode interactKey = KeyCode.E;
 
-    // Use this for initialization
+    // 초기화
     void Start()
     {
         boxCollider = GetComponent<BoxCollider>();
@@ -71,19 +77,14 @@ public class PlayerController : MonoBehaviour {
         // 초기화.
         originPosY = theCamera.transform.localPosition.y;
         applyCrouchPosY = originPosY;
-        
-         if (PlayerPrefs.HasKey(PREF_KEY_SENS))
-            lookSensitivity = PlayerPrefs.GetFloat(PREF_KEY_SENS);
 
+        if (PlayerPrefs.HasKey(PREF_KEY_SENS))
+            lookSensitivity = PlayerPrefs.GetFloat(PREF_KEY_SENS);
     }
 
 
-
-
-    // Update is called once per frame
     void Update()
     {
-
         IsGround();
         TryJump();
         TryRun();
@@ -94,10 +95,11 @@ public class PlayerController : MonoBehaviour {
 
         CameraRotation();
         CharacterRotation();
-        
-    
 
-	}
+        // 🔹 여기 추가
+        TryInteract();
+    }
+
 
     public float LookSensitivity
     {
@@ -105,10 +107,35 @@ public class PlayerController : MonoBehaviour {
         set
         {
             lookSensitivity = Mathf.Clamp(value, 0.1f, 20f);
-            PlayerPrefs.SetFloat(PREF_KEY_SENS, lookSensitivity); // 씬 간 공유
+            PlayerPrefs.SetFloat(PREF_KEY_SENS, lookSensitivity);
         }
     }
 
+
+    // 🔸 문, 인터랙션 처리 함수
+    private void TryInteract()
+    {
+        // 카메라 중앙에서 레이 쏘기
+        Ray ray = theCamera.ViewportPointToRay(new Vector3(0.5f, 0.5f, 0f));
+        if (Physics.Raycast(ray, out RaycastHit hit, interactDistance, interactMask, QueryTriggerInteraction.Collide))
+        {
+            // DoorInteract
+            var door = hit.collider.GetComponentInParent<DoorInteract>();
+            if (door != null && Input.GetKeyDown(interactKey))
+            {
+                door.Interact();
+                return;
+            }
+
+            // SingleDoorInteract
+            var singleDoor = hit.collider.GetComponentInParent<SingleDoorInteract>();
+            if (singleDoor != null && Input.GetKeyDown(interactKey))
+            {
+                singleDoor.Interact();
+                return;
+            }
+        }
+    }
 
 
     // 앉기 시도
@@ -138,17 +165,14 @@ public class PlayerController : MonoBehaviour {
         }
 
         StartCoroutine(CrouchCoroutine());
-
     }
 
-    // 부드러운 동작 실행.
     IEnumerator CrouchCoroutine()
     {
-
         float _posY = theCamera.transform.localPosition.y;
         int count = 0;
 
-        while(_posY != applyCrouchPosY)
+        while (_posY != applyCrouchPosY)
         {
             count++;
             _posY = Mathf.Lerp(_posY, applyCrouchPosY, 0.3f);
@@ -161,14 +185,12 @@ public class PlayerController : MonoBehaviour {
     }
 
 
-    // 지면 체크.
     private void IsGround()
     {
         isGround = Physics.Raycast(transform.position, Vector3.down, boxCollider.bounds.extents.y + 0.1f);
     }
 
 
-    // 점프 시도
     private void TryJump()
     {
         if (Input.GetKeyDown(KeyCode.Space) && isGround)
@@ -177,12 +199,8 @@ public class PlayerController : MonoBehaviour {
         }
     }
 
-
-    // 점프
     private void Jump()
     {
-
-        // 앉은 상태에서 점프시 앉은 상태 해제.
         if (isCrouch)
             Crouch();
 
@@ -190,7 +208,6 @@ public class PlayerController : MonoBehaviour {
     }
 
 
-    // 달리기 시도
     private void TryRun()
     {
         if (Input.GetKey(KeyCode.LeftShift) && (PlayerManager.Instance.staminaLevel.current > 0))
@@ -203,36 +220,28 @@ public class PlayerController : MonoBehaviour {
         }
     }
 
-    // 달리기 실행
     private void Running()
     {
-        if (isRun) return; // 달리고 있으면 리턴
+        if (isRun) return;
         if (isCrouch)
             Crouch();
 
         isRun = true;
         applySpeed = runSpeed;
         PlayerManager.Instance.StartStaminaLoss();
-        Debug.Log("달리는 중");
     }
 
-
-    // 달리기 취소
     public void RunningCancel()
     {
-        if (!isRun) return; // 안달리고 있으면 리턴
-
+        if (!isRun) return;
         isRun = false;
         applySpeed = walkSpeed;
         PlayerManager.Instance.StopStaminaLoss();
-        Debug.Log("안달리는 중");
     }
 
 
-    // 움직임 실행
     private void Move()
     {
-
         float _moveDirX = Input.GetAxisRaw("Horizontal");
         float _moveDirZ = Input.GetAxisRaw("Vertical");
 
@@ -244,18 +253,15 @@ public class PlayerController : MonoBehaviour {
         myRigid.MovePosition(transform.position + _velocity * Time.deltaTime);
     }
 
-    // 좌우 캐릭터 회전
+
     private void CharacterRotation()
     {
-       
         float _yRotation = Input.GetAxisRaw("Mouse X");
         Vector3 _characterRotationY = new Vector3(0f, _yRotation, 0f) * lookSensitivity;
         myRigid.MoveRotation(myRigid.rotation * Quaternion.Euler(_characterRotationY));
     }
 
 
-
-    // 상하 카메라 회전
     private void CameraRotation()
     {
         float _xRotation = Input.GetAxisRaw("Mouse Y");
@@ -265,5 +271,4 @@ public class PlayerController : MonoBehaviour {
 
         theCamera.transform.localEulerAngles = new Vector3(currentCameraRotationX, 0f, 0f);
     }
-
 }
