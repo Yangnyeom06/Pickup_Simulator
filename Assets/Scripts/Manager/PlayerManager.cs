@@ -1,6 +1,17 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using System;
+
+// 버프 정보 클래스
+[System.Serializable]
+public class BuffInfo
+{
+    public SnackEffectType buffType;
+    public float value; // 버프 강도 (퍼센트)
+    public float duration; // 남은 지속시간
+    public string buffName; // 버프 이름 (디버깅용)
+}
 
 public class PlayerManager : MonoBehaviour
 {
@@ -25,6 +36,12 @@ public class PlayerManager : MonoBehaviour
     private Coroutine staminaLossCoroutine;
     public float staminaLossInterval = 1;
     public float staminaLossSpeed = 1f;
+    
+    // 버프 관리
+    private Dictionary<SnackEffectType, BuffInfo> activeBuffs = new Dictionary<SnackEffectType, BuffInfo>();
+    private Coroutine buffUpdateCoroutine;
+    private float baseHealthLossSpeed;
+    private float baseStaminaLossSpeed;
 
     private void Awake()
     {
@@ -41,7 +58,10 @@ public class PlayerManager : MonoBehaviour
 
     private void Start()
     {
+        baseHealthLossSpeed = HealthLossSpeed;
+        baseStaminaLossSpeed = staminaLossSpeed;
         StartHealthLoss();
+        StartBuffUpdate();
     }
 
     #region HealthLoss
@@ -65,7 +85,9 @@ public class PlayerManager : MonoBehaviour
     {
         while (healthLevel.current > 0)
         {
-            healthLevel.current -= HealthLossSpeed;
+            // 버프 적용된 체력 소모량 계산
+            float actualHealthLoss = GetActualHealthLossSpeed();
+            healthLevel.current -= actualHealthLoss;
             yield return new WaitForSeconds(HealthLossInterval);
         }
         // 집으로 보내는 이벤트 실행
@@ -73,6 +95,19 @@ public class PlayerManager : MonoBehaviour
         // 나중에 바꿔주기
         DayManager.Instance.End();
         Debug.Log("체력이 0이 되었습니다!");
+    }
+    
+    /// <summary>
+    /// 버프가 적용된 실제 체력 소모량을 반환합니다
+    /// </summary>
+    private float GetActualHealthLossSpeed()
+    {
+        if (activeBuffs.ContainsKey(SnackEffectType.HealthLossReduction))
+        {
+            float reductionPercent = activeBuffs[SnackEffectType.HealthLossReduction].value;
+            return baseHealthLossSpeed * (1f - reductionPercent / 100f);
+        }
+        return baseHealthLossSpeed;
     }
     #endregion
 
@@ -97,13 +132,28 @@ public class PlayerManager : MonoBehaviour
     {
         while (staminaLevel.current > 0)
         {
-            staminaLevel.current -= (int)staminaLossSpeed;
+            // 버프 적용된 스테미나 소모량 계산
+            float actualStaminaLoss = GetActualStaminaLossSpeed();
+            staminaLevel.current -= (int)actualStaminaLoss;
             yield return new WaitForSeconds(staminaLossInterval);
 
             // 스태미나가 0이 되면 자동으로 달리기 취소해야 하므로 이벤트나 상태 전달 필요
         }
         playerController.RunningCancel();
         Debug.Log("스태미나가 0이 되었습니다!");
+    }
+    
+    /// <summary>
+    /// 버프가 적용된 실제 스테미나 소모량을 반환합니다
+    /// </summary>
+    private float GetActualStaminaLossSpeed()
+    {
+        if (activeBuffs.ContainsKey(SnackEffectType.StaminaLossReduction))
+        {
+            float reductionPercent = activeBuffs[SnackEffectType.StaminaLossReduction].value;
+            return baseStaminaLossSpeed * (1f - reductionPercent / 100f);
+        }
+        return baseStaminaLossSpeed;
     }
     #endregion
 
@@ -181,5 +231,172 @@ public class PlayerManager : MonoBehaviour
         speedLevel.current = 1;
         money = 0;
         MoneyManager.Instance.UpdateMoneyUI();
+        
+        // 모든 버프 제거
+        ClearAllBuffs();
     }
+    
+    #region BuffManagement
+    /// <summary>
+    /// 버프를 적용합니다
+    /// </summary>
+    /// <param name="buffType">버프 타입</param>
+    /// <param name="value">버프 강도 (퍼센트)</param>
+    /// <param name="duration">지속시간 (초)</param>
+    /// <param name="buffName">버프 이름</param>
+    public void ApplyBuff(SnackEffectType buffType, float value, float duration, string buffName = "")
+    {
+        // 같은 타입의 버프가 이미 있으면 덮어쓰기
+        if (activeBuffs.ContainsKey(buffType))
+        {
+            activeBuffs[buffType].value = value;
+            activeBuffs[buffType].duration = duration;
+            activeBuffs[buffType].buffName = buffName;
+            Debug.Log($"[버프 갱신] {buffName}: {value}%, {duration}초");
+        }
+        else
+        {
+            activeBuffs[buffType] = new BuffInfo
+            {
+                buffType = buffType,
+                value = value,
+                duration = duration,
+                buffName = buffName
+            };
+            Debug.Log($"[버프 적용] {buffName}: {value}%, {duration}초");
+            
+            // 체력/스테미나 소모량 버프인 경우 코루틴 재시작하여 즉시 반영
+            if (buffType == SnackEffectType.HealthLossReduction && healthLossCoroutine != null)
+            {
+                StartHealthLoss(); // 재시작하여 새 값 적용
+            }
+            else if (buffType == SnackEffectType.StaminaLossReduction && staminaLossCoroutine != null)
+            {
+                StopStaminaLoss();
+                if (playerController != null && playerController.IsRunning())
+                {
+                    StartStaminaLoss(); // 달리는 중이면 재시작
+                }
+            }
+        }
+        
+        // 버프 업데이트 시작 (이미 실행 중이면 자동으로 무시됨)
+        StartBuffUpdate();
+    }
+    
+    /// <summary>
+    /// 버프를 제거합니다
+    /// </summary>
+    /// <param name="buffType">제거할 버프 타입</param>
+    public void RemoveBuff(SnackEffectType buffType)
+    {
+        if (activeBuffs.ContainsKey(buffType))
+        {
+            string buffName = activeBuffs[buffType].buffName;
+            activeBuffs.Remove(buffType);
+            Debug.Log($"[버프 제거] {buffName}");
+            
+            // 체력/스테미나 소모량 버프 제거 시 코루틴 재시작
+            if (buffType == SnackEffectType.HealthLossReduction && healthLossCoroutine != null)
+            {
+                StartHealthLoss(); // 재시작하여 기본 값 복원
+            }
+            else if (buffType == SnackEffectType.StaminaLossReduction && staminaLossCoroutine != null)
+            {
+                StopStaminaLoss();
+                if (playerController != null && playerController.IsRunning())
+                {
+                    StartStaminaLoss(); // 달리는 중이면 재시작
+                }
+            }
+        }
+    }
+    
+    /// <summary>
+    /// 모든 버프를 제거합니다
+    /// </summary>
+    public void ClearAllBuffs()
+    {
+        activeBuffs.Clear();
+        Debug.Log("[버프] 모든 버프가 제거되었습니다.");
+    }
+    
+    /// <summary>
+    /// 특정 타입의 버프가 활성화되어 있는지 확인합니다
+    /// </summary>
+    public bool HasBuff(SnackEffectType buffType)
+    {
+        return activeBuffs.ContainsKey(buffType);
+    }
+    
+    /// <summary>
+    /// 특정 타입의 버프 값을 가져옵니다
+    /// </summary>
+    public float GetBuffValue(SnackEffectType buffType)
+    {
+        if (activeBuffs.ContainsKey(buffType))
+        {
+            return activeBuffs[buffType].value;
+        }
+        return 0f;
+    }
+    
+    /// <summary>
+    /// 달리기 속도 증가 버프의 배율을 반환합니다 (1.0 = 기본 속도)
+    /// </summary>
+    public float GetRunSpeedMultiplier()
+    {
+        if (activeBuffs.ContainsKey(SnackEffectType.RunSpeedBoost))
+        {
+            float boostPercent = activeBuffs[SnackEffectType.RunSpeedBoost].value;
+            return 1f + (boostPercent / 100f);
+        }
+        return 1f;
+    }
+    
+    /// <summary>
+    /// 버프 업데이트 코루틴 시작
+    /// </summary>
+    private void StartBuffUpdate()
+    {
+        if (buffUpdateCoroutine != null) return;
+        buffUpdateCoroutine = StartCoroutine(UpdateBuffs());
+    }
+    
+    /// <summary>
+    /// 버프 지속시간을 업데이트하고 만료된 버프를 제거합니다
+    /// </summary>
+    private IEnumerator UpdateBuffs()
+    {
+        while (true)
+        {
+            yield return new WaitForSeconds(1f); // 1초마다 체크
+            
+            List<SnackEffectType> expiredBuffs = new List<SnackEffectType>();
+            
+            foreach (var buff in activeBuffs.Values)
+            {
+                buff.duration -= 1f;
+                
+                if (buff.duration <= 0f)
+                {
+                    expiredBuffs.Add(buff.buffType);
+                }
+            }
+            
+            // 만료된 버프 제거
+            foreach (var buffType in expiredBuffs)
+            {
+                RemoveBuff(buffType);
+            }
+            
+            // 모든 버프가 없으면 코루틴 종료
+            if (activeBuffs.Count == 0)
+            {
+                buffUpdateCoroutine = null;
+                yield break;
+            }
+        }
+    }
+    #endregion
 }

@@ -1,5 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
+using System;
+using System.Reflection;
 using UnityEngine;
 
 public class PlayerController : MonoBehaviour
@@ -15,10 +17,14 @@ public class PlayerController : MonoBehaviour
     private float crouchSpeed;
 
     private float baseSpeed;
+    private float currentSpeed; // 실제 사용되는 속도
     private float applySpeed
     {
-        get { return baseSpeed * PlayerManager.Instance.speedLevel.current; }
-        set { baseSpeed = value; }
+        get { return currentSpeed; }
+        set { 
+            baseSpeed = value;
+            UpdateCurrentSpeed();
+        }
     }
 
     private float calSpeed;
@@ -72,7 +78,8 @@ public class PlayerController : MonoBehaviour
     {
         boxCollider = GetComponent<BoxCollider>();
         myRigid = GetComponent<Rigidbody>();
-        applySpeed = walkSpeed;
+        baseSpeed = walkSpeed;
+        UpdateCurrentSpeed();
 
         // 초기화.
         originPosY = theCamera.transform.localPosition.y;
@@ -80,6 +87,24 @@ public class PlayerController : MonoBehaviour
 
         if (PlayerPrefs.HasKey(PREF_KEY_SENS))
             lookSensitivity = PlayerPrefs.GetFloat(PREF_KEY_SENS);
+    }
+    
+    /// <summary>
+    /// 현재 속도를 업데이트합니다 (speedLevel과 버프 적용)
+    /// </summary>
+    private void UpdateCurrentSpeed()
+    {
+        if (isRun)
+        {
+            // 달리기 중: 버프 적용된 runSpeed 사용
+            float speedMultiplier = PlayerManager.Instance.GetRunSpeedMultiplier();
+            currentSpeed = runSpeed * speedMultiplier * PlayerManager.Instance.speedLevel.current;
+        }
+        else
+        {
+            // 걷기/앉기: 기본 속도만 사용
+            currentSpeed = baseSpeed * PlayerManager.Instance.speedLevel.current;
+        }
     }
 
 
@@ -119,6 +144,43 @@ public class PlayerController : MonoBehaviour
         Ray ray = theCamera.ViewportPointToRay(new Vector3(0.5f, 0.5f, 0f));
         if (Physics.Raycast(ray, out RaycastHit hit, interactDistance, interactMask, QueryTriggerInteraction.Collide))
         {
+            // BusSystem (버스) - 런타임에 타입으로 찾기 (컴파일 오류 방지)
+            Component busComponent = null;
+            // 먼저 직접 컴포넌트 찾기 시도
+            var allComponents = hit.collider.GetComponents<Component>();
+            foreach (var comp in allComponents)
+            {
+                if (comp != null && comp.GetType().Name == "BusSystem")
+                {
+                    busComponent = comp;
+                    break;
+                }
+            }
+            // 찾지 못했으면 부모에서 찾기
+            if (busComponent == null)
+            {
+                var parentComponents = hit.collider.GetComponentsInParent<Component>();
+                foreach (var comp in parentComponents)
+                {
+                    if (comp != null && comp.GetType().Name == "BusSystem")
+                    {
+                        busComponent = comp;
+                        break;
+                    }
+                }
+            }
+            
+            // BusSystem을 찾았고 E키를 눌렀다면 Interact 호출
+            if (busComponent != null && Input.GetKeyDown(interactKey))
+            {
+                var interactMethod = busComponent.GetType().GetMethod("Interact");
+                if (interactMethod != null)
+                {
+                    interactMethod.Invoke(busComponent, null);
+                    return;
+                }
+            }
+
             // DoorInteract
             var door = hit.collider.GetComponentInParent<DoorInteract>();
             if (door != null && Input.GetKeyDown(interactKey))
@@ -155,14 +217,16 @@ public class PlayerController : MonoBehaviour
 
         if (isCrouch)
         {
-            applySpeed = crouchSpeed;
+            baseSpeed = crouchSpeed;
             applyCrouchPosY = crouchPosY;
         }
         else
         {
-            applySpeed = walkSpeed;
+            baseSpeed = walkSpeed;
             applyCrouchPosY = originPosY;
         }
+        
+        UpdateCurrentSpeed();
 
         StartCoroutine(CrouchCoroutine());
     }
@@ -227,21 +291,33 @@ public class PlayerController : MonoBehaviour
             Crouch();
 
         isRun = true;
-        applySpeed = runSpeed;
+        UpdateCurrentSpeed();
         PlayerManager.Instance.StartStaminaLoss();
+    }
+    
+    /// <summary>
+    /// 현재 달리는 중인지 확인합니다
+    /// </summary>
+    public bool IsRunning()
+    {
+        return isRun;
     }
 
     public void RunningCancel()
     {
         if (!isRun) return;
         isRun = false;
-        applySpeed = walkSpeed;
+        baseSpeed = walkSpeed;
+        UpdateCurrentSpeed();
         PlayerManager.Instance.StopStaminaLoss();
     }
 
 
     private void Move()
     {
+        // 달리는 중이면 버프 적용된 속도로 업데이트
+        UpdateCurrentSpeed();
+        
         float _moveDirX = Input.GetAxisRaw("Horizontal");
         float _moveDirZ = Input.GetAxisRaw("Vertical");
 

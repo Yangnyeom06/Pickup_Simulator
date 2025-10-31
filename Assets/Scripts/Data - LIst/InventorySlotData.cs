@@ -476,6 +476,42 @@ public class InventorySlotData : MonoBehaviour
                     effectName = $"체력 +{healthIncrease}, 스태미나 +{staminaIncrease}";
                     break;
                     
+                case SnackEffectType.HealthLossReduction:
+                    // 체력 소모량 감소 버프 적용
+                    playerManager.ApplyBuff(
+                        SnackEffectType.HealthLossReduction,
+                        currentSnackItem.itemStat,
+                        currentSnackItem.buffDuration,
+                        currentSnackItem.snackName
+                    );
+                    effectName = $"체력 소모량 {currentSnackItem.itemStat}% 감소 ({currentSnackItem.buffDuration}초)";
+                    actualIncrease = 1f; // 버프 적용 성공 표시
+                    break;
+                    
+                case SnackEffectType.StaminaLossReduction:
+                    // 스테미나 소모량 감소 버프 적용
+                    playerManager.ApplyBuff(
+                        SnackEffectType.StaminaLossReduction,
+                        currentSnackItem.itemStat,
+                        currentSnackItem.buffDuration,
+                        currentSnackItem.snackName
+                    );
+                    effectName = $"스테미나 소모량 {currentSnackItem.itemStat}% 감소 ({currentSnackItem.buffDuration}초)";
+                    actualIncrease = 1f; // 버프 적용 성공 표시
+                    break;
+                    
+                case SnackEffectType.RunSpeedBoost:
+                    // 달리기 속도 증가 버프 적용
+                    playerManager.ApplyBuff(
+                        SnackEffectType.RunSpeedBoost,
+                        currentSnackItem.itemStat,
+                        currentSnackItem.buffDuration,
+                        currentSnackItem.snackName
+                    );
+                    effectName = $"달리기 속도 {currentSnackItem.itemStat}% 증가 ({currentSnackItem.buffDuration}초)";
+                    actualIncrease = 1f; // 버프 적용 성공 표시
+                    break;
+                    
                 default:
                     Debug.LogWarning($"{currentSnackItem.snackName}: 알 수 없는 효과 타입 {currentSnackItem.effectType}");
                     return false;
@@ -489,7 +525,19 @@ public class InventorySlotData : MonoBehaviour
 
         if (actualIncrease > 0)
         {
-            Debug.Log($"{currentSnackItem.snackName} 사용! 스태미나 +{actualIncrease}");
+            // 버프 타입인지 확인
+            bool isBuffType = currentSnackItem.effectType == SnackEffectType.HealthLossReduction ||
+                              currentSnackItem.effectType == SnackEffectType.StaminaLossReduction ||
+                              currentSnackItem.effectType == SnackEffectType.RunSpeedBoost;
+            
+            if (isBuffType)
+            {
+                Debug.Log($"{currentSnackItem.snackName} 사용! {effectName}");
+            }
+            else
+            {
+                Debug.Log($"{currentSnackItem.snackName} 사용! {effectName}");
+            }
             
             // 아이템 수량 감소
             currentItemCount--;
@@ -514,7 +562,7 @@ public class InventorySlotData : MonoBehaviour
         }
         else
         {
-            Debug.Log($"{currentSnackItem.snackName}: 스태미나 증가 실패");
+            Debug.Log($"{currentSnackItem.snackName}: 사용 실패");
             return false;
         }
     }
