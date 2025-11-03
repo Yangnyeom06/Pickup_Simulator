@@ -1,0 +1,28 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 3bbf93c927add6041a2438de547ae125, type: 3}
+  m_Name: ElementSchoolItem5
+  m_EditorClassIdentifier: 
+  itemID: 5
+  itemName: element Item5
+  icon: {fileID: -439039881, guid: 4cde836a4be5e0a44bb1396a83cb7f39, type: 3}
+  price: 0
+  description: "\uB531\uC9C0"
+  itemType: 1
+  itemRarity: 0
+  dirty: 0
+  minValue: 1000
+  maxValue: 1200
+  value: 1
+  maxStackSize: 99
+  slotNum: 0
+  prefab: {fileID: 1562979103011880958, guid: c589f140cf177654e9923d2fb4565514, type: 3}
