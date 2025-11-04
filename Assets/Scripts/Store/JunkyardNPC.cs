@@ -6,11 +6,6 @@ using TMPro;
 
 public class JunkyardNPC : MonoBehaviour, ISaleSystem
 {
-    public Camera mainCamera;
-    public float rayDistance = 100f;
-
-    public PlayerData playerData;
-
     [Header("UI References")]
     public GameObject sellUI;                   // Sell 모드 전체 패널
     public GameObject slotPrefab;               // 슬롯 프리팹 (InventorySlotData 컴포넌트 포함)
@@ -19,10 +14,6 @@ public class JunkyardNPC : MonoBehaviour, ISaleSystem
     // public GameObject quantityDialogPrefab;     // QuantityDialog 프리팹
     // public Transform  quantityDialogParent;     // 다이얼로그를 붙일 부모
 
-    [Header("Managers")]
-    public MoneyManager     moneyManager;
-    public InventoryManager inventoryManager;
-    
     [Header("Player References")]
     public ItemRaycast itemRaycast;
 
@@ -55,18 +46,21 @@ public class JunkyardNPC : MonoBehaviour, ISaleSystem
         }
     }
 
-    void Update()
+    // 건물 진입 시 UI 자동 표시
+    private void OnTriggerEnter(Collider other)
     {
-        if (Input.GetKeyDown(KeyCode.E))
+        if (other.CompareTag("Player"))
         {
-            RaycastHit hit;
-            if (Physics.Raycast(mainCamera.transform.position, mainCamera.transform.forward ,out hit, rayDistance))
-            {
-                if (hit.transform.gameObject == this.gameObject)
-                {
-                    ShowSellUI();
-                }
-            }
+            ShowSellUI();
+        }
+    }
+
+    // 건물 나갈 때 UI 닫기 (선택사항)
+    private void OnTriggerExit(Collider other)
+    {
+        if (other.CompareTag("Player"))
+        {
+            CancelSell();
         }
     }
 
@@ -226,7 +220,10 @@ public class JunkyardNPC : MonoBehaviour, ISaleSystem
         Debug.Log($"  - 최종 판매가: {gain}G");
 
         // 2) 돈 입금
-        moneyManager.AddMoney(gain);
+        if (MoneyManager.Instance != null)
+        {
+            MoneyManager.Instance.AddMoney(gain);
+        }
 
         // 3) 현재 들고 있는 Large 아이템 제거
         bool itemRemoved = false;
