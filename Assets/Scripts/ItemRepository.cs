@@ -96,7 +96,7 @@ public class ItemRepository : MonoBehaviour
         foreach (var item in ItemManager.Instance.itemListData.roadItems)
             if (item != null && item.itemData.itemID == id) return item.itemData;
 
-        foreach (var item in ItemManager.Instance.itemListData.mountainItems)
+        foreach (var item in ItemManager.Instance.itemListData.slumItems)
             if (item != null && item.itemData.itemID == id) return item.itemData;
 
         foreach (var item in ItemManager.Instance.itemListData.elementSchoolItems)
