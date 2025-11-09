@@ -4,7 +4,11 @@
 PlayerSettings:
   m_ObjectHideFlags: 0
   serializedVersion: 28
+<<<<<<< HEAD
+  productGUID: 23800111254e691428e3f6c5627b2f07
+=======
   productGUID: 206a643d8c08cce4c9e6c243c43b6147
+>>>>>>> origin/dev/newUI
   AndroidProfiler: 0
   AndroidFilterTouchesWhenObscured: 0
   AndroidEnableSustainedPerformanceMode: 0
@@ -13,7 +17,11 @@ PlayerSettings:
   useOnDemandResources: 0
   accelerometerFrequency: 60
   companyName: DefaultCompany
+<<<<<<< HEAD
+  productName: develop
+=======
   productName: PickupSimulator
+>>>>>>> origin/dev/newUI
   defaultCursor: {fileID: 0}
   cursorHotspot: {x: 0, y: 0}
   m_SplashScreenBackgroundColor: {r: 0.12156863, g: 0.12156863, b: 0.1254902, a: 1}
@@ -286,6 +294,9 @@ PlayerSettings:
   AndroidReportGooglePlayAppDependencies: 1
   androidSymbolsSizeThreshold: 800
   m_BuildTargetIcons: []
+<<<<<<< HEAD
+  m_BuildTargetPlatformIcons: []
+=======
   m_BuildTargetPlatformIcons:
   - m_BuildTarget: Android
     m_Icons:
@@ -379,6 +390,7 @@ PlayerSettings:
       m_Height: 36
       m_Kind: 0
       m_SubKind: 
+>>>>>>> origin/dev/newUI
   m_BuildTargetBatching: []
   m_BuildTargetShaderSettings: []
   m_BuildTargetGraphicsJobs: []
@@ -699,14 +711,22 @@ PlayerSettings:
   editorAssembliesCompatibilityLevel: 1
   m_RenderingPath: 1
   m_MobileRenderingPath: 1
+<<<<<<< HEAD
+  metroPackageName: develop
+=======
   metroPackageName: PickupSimulator
+>>>>>>> origin/dev/newUI
   metroPackageVersion: 
   metroCertificatePath: 
   metroCertificatePassword: 
   metroCertificateSubject: 
   metroCertificateIssuer: 
   metroCertificateNotAfter: 0000000000000000
+<<<<<<< HEAD
+  metroApplicationDescription: develop
+=======
   metroApplicationDescription: PickupSimulator
+>>>>>>> origin/dev/newUI
   wsaImages: {}
   metroTileShortName: 
   metroTileShowName: 0
@@ -784,12 +804,12 @@ PlayerSettings:
   projectName: 
   organizationId: 
 =======
-  cloudProjectId: 1e045e0b-3367-4ac6-89e0-1a6ad1a30859
+  cloudProjectId: 56ae6a77-6872-46b4-9f38-073af6616bf1
   framebufferDepthMemorylessMode: 0
   qualitySettingsNames: []
-  projectName: develop
+  projectName: simulator
   organizationId: maristella0625
->>>>>>> 74b4bcf0 (update)
+>>>>>>> origin/dev/newUI
   cloudEnabled: 0
   legacyClampBlendShapeWeights: 0
   hmiLoadingImage: {fileID: 0}

@@ -4,6 +4,10 @@
 EditorBuildSettings:
   m_ObjectHideFlags: 0
   serializedVersion: 2
+<<<<<<< HEAD
+  m_Scenes: []
+  m_configObjects: {}
+=======
   m_Scenes:
   - enabled: 1
     path: Assets/Scenes/TestMainScene.unity
@@ -11,8 +15,6 @@ EditorBuildSettings:
   - enabled: 1
     path: Assets/Scenes/TestScene1234.unity
     guid: 99c9720ab356a0642a771bea13969a05
-<<<<<<< HEAD
-=======
   - enabled: 1
     path: Assets/Scenes/Map.unity
     guid: a2a87ccf461fb8a40985bd1e3c2acdea
@@ -28,7 +30,7 @@ EditorBuildSettings:
   - enabled: 1
     path: Assets/Scenes/House.unity
     guid: a086388523c4e2a46822c824b879aab5
->>>>>>> 74b4bcf0 (update)
   m_configObjects:
     com.unity.input.settings.actions: {fileID: -944628639613478452, guid: 052faaac586de48259a63d0c4782560b, type: 3}
+>>>>>>> origin/dev/newUI
   m_UseUCBPForAssetBundles: 0
