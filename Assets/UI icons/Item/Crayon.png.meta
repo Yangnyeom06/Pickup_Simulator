@@ -6,7 +6,11 @@ TextureImporter:
   serializedVersion: 13
   mipmaps:
     mipMapMode: 0
+<<<<<<< HEAD
     enableMipMap: 1
+=======
+    enableMipMap: 0
+>>>>>>> origin/dev/newUI
     sRGBTexture: 1
     linearTexture: 0
     fadeOut: 0
@@ -37,6 +41,7 @@ TextureImporter:
     filterMode: 1
     aniso: 1
     mipBias: 0
+<<<<<<< HEAD
     wrapU: 0
     wrapV: 0
     wrapW: 0
@@ -44,6 +49,15 @@ TextureImporter:
   lightmap: 0
   compressionQuality: 50
   spriteMode: 0
+=======
+    wrapU: 1
+    wrapV: 1
+    wrapW: 0
+  nPOTScale: 0
+  lightmap: 0
+  compressionQuality: 50
+  spriteMode: 2
+>>>>>>> origin/dev/newUI
   spriteExtrude: 1
   spriteMeshType: 1
   alignment: 0
@@ -52,9 +66,15 @@ TextureImporter:
   spriteBorder: {x: 0, y: 0, z: 0, w: 0}
   spriteGenerateFallbackPhysicsShape: 1
   alphaUsage: 1
+<<<<<<< HEAD
   alphaIsTransparency: 0
   spriteTessellationDetail: -1
   textureType: 0
+=======
+  alphaIsTransparency: 1
+  spriteTessellationDetail: -1
+  textureType: 8
+>>>>>>> origin/dev/newUI
   textureShape: 1
   singleChannelComponent: 0
   flipbookRows: 1
@@ -95,12 +115,42 @@ TextureImporter:
     forceMaximumCompressionQuality_BC6H_BC7: 0
   spriteSheet:
     serializedVersion: 2
+<<<<<<< HEAD
     sprites: []
+=======
+    sprites:
+    - serializedVersion: 2
+      name: Crayon_0
+      rect:
+        serializedVersion: 2
+        x: 0
+        y: 0
+        width: 600
+        height: 600
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 02aa4232e268f234f93c1dd764c3dbbe
+      internalID: 1940758611
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+>>>>>>> origin/dev/newUI
     outline: []
     customData: 
     physicsShape: []
     bones: []
+<<<<<<< HEAD
     spriteID: 
+=======
+    spriteID: 0383ce6d6b0f4bc4689f8a446d3f385f
+>>>>>>> origin/dev/newUI
     internalID: 0
     vertices: []
     indices: 
@@ -109,7 +159,12 @@ TextureImporter:
     secondaryTextures: []
     spriteCustomMetadata:
       entries: []
+<<<<<<< HEAD
     nameFileIdTable: {}
+=======
+    nameFileIdTable:
+      Crayon_0: 1940758611
+>>>>>>> origin/dev/newUI
   mipmapLimitGroupName: 
   pSDRemoveMatte: 0
   userData: 

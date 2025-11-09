@@ -7,14 +7,18 @@ using System.Collections;
 
 public class FadeInOut : MonoBehaviour
 {
+<<<<<<< HEAD
     public static FadeInOut Instance { get; private set; }
 
+=======
+>>>>>>> origin/dev/newUI
     public GameObject panel;
     public float fadeTime = 1.0f;
     public float delayTime = 1.0f;
     private Image panelImage;
     public AnimationCurve fadeCurve;
 
+<<<<<<< HEAD
     private void Awake()
     {
         if (Instance == null)
@@ -27,6 +31,9 @@ public class FadeInOut : MonoBehaviour
             Destroy(gameObject);
         }
     }
+=======
+
+>>>>>>> origin/dev/newUI
 
     void Start()
     {

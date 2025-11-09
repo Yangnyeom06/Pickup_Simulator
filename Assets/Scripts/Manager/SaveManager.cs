@@ -13,7 +13,10 @@ public class SaveManager : MonoBehaviour
 
     private void Awake()
     {
+<<<<<<< HEAD
         Debug.Log(Application.persistentDataPath + $"/gameSave_slot_{slotId}.json");
+=======
+>>>>>>> origin/dev/newUI
         if (Instance == null)
         {
             Instance = this;
@@ -78,6 +81,10 @@ public class SaveManager : MonoBehaviour
                 uiData.Apply();
 
             Debug.Log($"로드 완료 (슬롯 {slotId})");
+<<<<<<< HEAD
+=======
+            
+>>>>>>> origin/dev/newUI
             if (ItemRepository.Instance != null)
             {
                 ItemRepository.Instance.collectedItemDatas = new List<ItemInstanceData>(currentSaveData.collectedItemsData);
@@ -90,6 +97,7 @@ public class SaveManager : MonoBehaviour
         }
     }
 
+<<<<<<< HEAD
     public void newGame()
     {
         for (int i = 1; i < 3; i++)
@@ -146,6 +154,24 @@ public class SaveManager : MonoBehaviour
                     Debug.LogWarning($"{scene.name}에서 필요한 컴포넌트를 찾지 못했습니다.");
                 }
             }
+=======
+    public void OnSceneLoaded(Scene scene, LoadSceneMode mode)
+    {
+        if (scene.name == "TestScene1234")
+        {
+            if (PlayerManager.Instance != null && InventoryManager.Instance != null)
+            {
+                slotId = SceneChangeManager.Instance.selectSlotId;
+                LoadGame(slotId);
+
+                Debug.Log($"{scene.name}씬 로드 후 {slotId}번 데이터 적용 완료");
+            }
+            else
+            {
+                Debug.LogWarning($"{scene.name}에서 필요한 컴포넌트를 찾지 못했습니다.");
+            }
+        }
+>>>>>>> origin/dev/newUI
     }
 
     public void ResetAllData(int slotId)
