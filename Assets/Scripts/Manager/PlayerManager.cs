@@ -1,8 +1,6 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-<<<<<<< HEAD
-=======
 using System;
 
 // 버프 정보 클래스
@@ -14,7 +12,6 @@ public class BuffInfo
     public float duration; // 남은 지속시간
     public string buffName; // 버프 이름 (디버깅용)
 }
->>>>>>> 74b4bcf0 (update)
 
 public class PlayerManager : MonoBehaviour
 {
@@ -28,15 +25,12 @@ public class PlayerManager : MonoBehaviour
     public PlayerData playerData;
     private MoneyManager moneyManager;
 
-<<<<<<< HEAD
-=======
     private float _baseHealthLossSpeed;
     private float _baseStaminaLossSpeed;
     [SerializeField] private float defaultHealthLossSpeed = 1f;
     [SerializeField] private float defaultStaminaLossSpeed = 1f;
 
 
->>>>>>> 74b4bcf0 (update)
     public int money
     {
         get => playerData.money;
@@ -48,15 +42,12 @@ public class PlayerManager : MonoBehaviour
     private Coroutine staminaLossCoroutine;
     public float staminaLossInterval = 1;
     public float staminaLossSpeed = 1f;
-<<<<<<< HEAD
-=======
     
     // 버프 관리
     private Dictionary<SnackEffectType, BuffInfo> activeBuffs = new Dictionary<SnackEffectType, BuffInfo>();
     private Coroutine buffUpdateCoroutine;
     private float baseHealthLossSpeed;
     private float baseStaminaLossSpeed;
->>>>>>> 74b4bcf0 (update)
 
     private void Awake()
     {
@@ -67,13 +58,6 @@ public class PlayerManager : MonoBehaviour
         }
 
         Instance = this;
-<<<<<<< HEAD
-    }
-
-    private void Start()
-    {
-        StartHealthLoss();
-=======
         DontDestroyOnLoad(gameObject); 
 
         if (HealthLossSpeed <= 0f) HealthLossSpeed = defaultHealthLossSpeed;
@@ -93,7 +77,6 @@ public class PlayerManager : MonoBehaviour
         baseStaminaLossSpeed = staminaLossSpeed;
         StartHealthLoss();
         StartBuffUpdate();
->>>>>>> 74b4bcf0 (update)
     }
 
     #region HealthLoss
@@ -117,13 +100,9 @@ public class PlayerManager : MonoBehaviour
     {
         while (healthLevel.current > 0)
         {
-<<<<<<< HEAD
-            healthLevel.current -= HealthLossSpeed;
-=======
             // 버프 적용된 체력 소모량 계산
             float actualHealthLoss = GetActualHealthLossSpeed();
             healthLevel.current -= actualHealthLoss;
->>>>>>> 74b4bcf0 (update)
             yield return new WaitForSeconds(HealthLossInterval);
         }
         // 집으로 보내는 이벤트 실행
@@ -132,8 +111,6 @@ public class PlayerManager : MonoBehaviour
         DayManager.Instance.End();
         Debug.Log("체력이 0이 되었습니다!");
     }
-<<<<<<< HEAD
-=======
     
     /// <summary>
     /// 버프가 적용된 실제 체력 소모량을 반환합니다
@@ -147,7 +124,6 @@ public class PlayerManager : MonoBehaviour
         }
         return baseHealthLossSpeed;
     }
->>>>>>> 74b4bcf0 (update)
     #endregion
 
     #region StaminaLoss
@@ -171,13 +147,9 @@ public class PlayerManager : MonoBehaviour
     {
         while (staminaLevel.current > 0)
         {
-<<<<<<< HEAD
-            staminaLevel.current -= (int)staminaLossSpeed;
-=======
             // 버프 적용된 스테미나 소모량 계산
             float actualStaminaLoss = GetActualStaminaLossSpeed();
             staminaLevel.current -= (int)actualStaminaLoss;
->>>>>>> 74b4bcf0 (update)
             yield return new WaitForSeconds(staminaLossInterval);
 
             // 스태미나가 0이 되면 자동으로 달리기 취소해야 하므로 이벤트나 상태 전달 필요
@@ -185,8 +157,6 @@ public class PlayerManager : MonoBehaviour
         playerController.RunningCancel();
         Debug.Log("스태미나가 0이 되었습니다!");
     }
-<<<<<<< HEAD
-=======
     
     /// <summary>
     /// 버프가 적용된 실제 스테미나 소모량을 반환합니다
@@ -200,7 +170,6 @@ public class PlayerManager : MonoBehaviour
         }
         return baseStaminaLossSpeed;
     }
->>>>>>> 74b4bcf0 (update)
     #endregion
 
     #region StaminaManagement
@@ -277,9 +246,6 @@ public class PlayerManager : MonoBehaviour
         speedLevel.current = 1;
         money = 0;
         MoneyManager.Instance.UpdateMoneyUI();
-<<<<<<< HEAD
-    }
-=======
         
         // 모든 버프 제거
         ClearAllBuffs();
@@ -448,5 +414,4 @@ public class PlayerManager : MonoBehaviour
         }
     }
     #endregion
->>>>>>> 74b4bcf0 (update)
 }

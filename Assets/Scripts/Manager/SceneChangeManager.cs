@@ -44,11 +44,7 @@ public class SceneChangeManager : MonoBehaviour
 
     private void OnSceneLoaded(Scene scene, LoadSceneMode mode)
     {
-<<<<<<< HEAD
         // Slum ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½Îµï¿½ï¿½ ï¿½ï¿½, Player ï¿½ï¿½Ä¡ ï¿½Ìµï¿½
-=======
-        // Slum °°Àº ¾ÀÀÌ ·ÎµåµÈ ÈÄ, Player À§Ä¡ ÀÌµ¿
->>>>>>> 74b4bcf0 (update)
         GameObject player = GameObject.FindGameObjectWithTag("Player");
         if (player != null && !string.IsNullOrEmpty(nextSpawnPointName))
         {

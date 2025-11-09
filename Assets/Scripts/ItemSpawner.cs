@@ -3,42 +3,6 @@ using System.Collections.Generic;
 
 public class ItemSpawner : MonoBehaviour
 {
-<<<<<<< HEAD
-    public static ItemSpawner Instance { get; private set; }
-    private Item[] itemPool; // 이 지역에 맞는 아이템 풀
-    [SerializeField] private int spawnCount = 5; // 아이템을 얼마나 스폰할지
-
-    // 희귀도 확률
-    public Dictionary<ItemRarity, float> rarityProbabilities = new Dictionary<ItemRarity, float>
-    {
-        { ItemRarity.Common, 0.7f },
-        { ItemRarity.Rare, 0.25f },
-        { ItemRarity.Unique, 0.05f }
-    };
-
-    private void OnDrawGizmos() // 테스트 용
-    {
-        // Transform의 로컬 스케일을 가져와서 아이템을 스폰할 영역의 크기를 정의
-        Vector3 areaSize = transform.localScale;
-
-        // Gizmos의 색상을 설정 (여기서는 경계를 구분하기 쉽게 빨간색으로 설정)
-        Gizmos.color = Color.red;
-
-        // 지정된 영역을 직육면체(3D 공간에서)로 그리기 (크기는 areaSize로, 위치는 transform.position을 기준으로)
-        Gizmos.DrawWireCube(transform.position, areaSize); // 3D에서 Z축도 고려한 크기
-    }
-
-    public void Initialize(Item[] newItemPool)
-    {
-        itemPool = newItemPool; // 지역에 맞는 아이템 리스트 할당
-    }
-
-    public void SpawnItems()
-    {
-        if (itemPool == null || itemPool.Length == 0)
-        {
-            Debug.LogWarning($"[ItemSpawner] {gameObject.name}: ItemPool이 설정되지 않았습니다.");
-=======
     // 이 스포너가 사용할 아이템 풀 (ItemManager에서 Initialize로 주입)
     private Item[] itemPool;
     private bool initialized;
@@ -97,26 +61,11 @@ public class ItemSpawner : MonoBehaviour
         if (itemPool == null || itemPool.Length == 0)
         {
             Debug.LogWarning($"[ItemSpawner:{name}] itemPool is null/empty.");
->>>>>>> 74b4bcf0 (update)
             return;
         }
 
         for (int i = 0; i < spawnCount; i++)
         {
-<<<<<<< HEAD
-            Vector3 randomPos = GetRandomPositionInArea(); // 랜덤 위치 계산
-            
-            // 희귀도 뽑기
-            ItemRarity selectedRarity = GetRandomRarity();
-
-            // 해당 희귀도의 아이템만 추리기
-            List<Item> filteredItems = new List<Item>();
-            foreach (var item in itemPool)
-            {
-                if (item.itemData.itemRarity == selectedRarity)
-                {
-                    filteredItems.Add(item);
-=======
             // 1) 영역 내부에서 랜덤 XY(=XZ) 추출
             Vector3 randomXZ = GetRandomXZInArea();
 
@@ -150,47 +99,11 @@ public class ItemSpawner : MonoBehaviour
                 if (it.itemData.itemRarity == selectedRarity)
                 {
                     filteredItems.Add(it);
->>>>>>> 74b4bcf0 (update)
                 }
             }
 
             if (filteredItems.Count == 0)
             {
-<<<<<<< HEAD
-                Debug.LogWarning($"[ItemSpawner] {gameObject.name}: {selectedRarity} 등급 아이템이 풀에 없습니다.");
-                continue;
-            }
-
-            // 추린 리스트에서 랜덤 뽑기
-            Item randomItem = filteredItems[Random.Range(0, filteredItems.Count)];
-
-            if (randomItem != null)
-            {
-                // ItemData를 Instantiate로 복제하여 새로운 값 설정 (값이 바뀔 때 원본에 영향을 안주기 위해서 복사본 사용)
-                ItemData itemDataClone = Instantiate(randomItem.itemData);
-                itemDataClone.value = Random.Range(itemDataClone.minValue, itemDataClone.maxValue + 1); // 랜덤 값 설정
-                itemDataClone.price = itemDataClone.value;
-                itemDataClone.dirty = Mathf.Round(Random.Range(0f, 1f) * 10f) / 10f; // 랜덤 값 설정
-
-                // 새로운 아이템 생성
-                GameObject newItem = Instantiate(randomItem.gameObject, randomPos, Quaternion.identity);
-                Item item = newItem.GetComponent<Item>();
-                if (item != null)
-                {
-                    item.SetItemData(itemDataClone); // 복사된 ItemData 설정
-                    item.AssignUniqueId(); // 고유 Id 부여
-                }
-            }
-        }
-    }
-    
-    private ItemRarity GetRandomRarity()
-    {
-        float roll = Random.value; // 0 ~ 1 사이 값
-        float cumulative = 0f;
-
-        foreach (var kvp in ItemManager.Instance.rarityProbabilities)
-=======
                 Debug.LogWarning($"[ItemSpawner:{name}] No items for rarity {selectedRarity}.");
                 continue;
             }
@@ -291,32 +204,11 @@ public class ItemSpawner : MonoBehaviour
         float cumulative = 0f;
 
         foreach (var kvp in rarityProbabilities)
->>>>>>> 74b4bcf0 (update)
         {
             cumulative += kvp.Value;
             if (roll <= cumulative)
                 return kvp.Key;
         }
-<<<<<<< HEAD
-
-        return ItemRarity.Common; // fallback
-    }
-
-    private Vector3 GetRandomPositionInArea()
-    {
-        Vector3 areaSize = transform.localScale;  // 스포너 크기
-        Vector3 center = transform.position;     // 스포너 중심 위치
-
-        float randomX = Random.Range(center.x - areaSize.x / 2f, center.x + areaSize.x / 2f);
-        float randomZ = Random.Range(center.z - areaSize.z / 2f, center.z + areaSize.z / 2f);
-
-        float randomY = center.y;
-
-        return new Vector3(randomX, randomY, randomZ); // 3D 위치 반환
-    }
-}
-=======
         return ItemRarity.Common; // fallback
     }
 }
->>>>>>> 74b4bcf0 (update)

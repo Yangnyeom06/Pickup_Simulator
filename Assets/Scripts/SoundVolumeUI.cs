@@ -22,10 +22,6 @@ public class SoundVolumeUI : MonoBehaviour
         seSlider.onValueChanged.AddListener(SetSEVolume);
     }
 
-<<<<<<< HEAD
-=======
-
->>>>>>> 74b4bcf0 (update)
     public void SetBGMVolume(float volume)
     {
         if (SoundManager.instance.audioSourceBgm != null)

@@ -1,15 +1,6 @@
 using UnityEngine;
 using System.Collections;
 using System.Collections.Generic;
-<<<<<<< HEAD
-
-public class CursorControl : MonoBehaviour
-{
-    void Start()
-    {
-        Cursor.lockState = CursorLockMode.Locked;
-        Cursor.visible = false;
-=======
 using UnityEngine.SceneManagement;
 
 public class CursorControl : MonoBehaviour
@@ -32,7 +23,6 @@ public class CursorControl : MonoBehaviour
             Cursor.lockState = CursorLockMode.Locked;
             Cursor.visible = false;
         }
->>>>>>> 74b4bcf0 (update)
     }
 
     void Update()

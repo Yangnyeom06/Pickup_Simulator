@@ -6,18 +6,12 @@ using System;
 
 public enum SnackEffectType
 {
-<<<<<<< HEAD
-    Stamina = 0,    // 스태미나 증가
-    Health = 1,     // 체력 증가
-    Both = 2        // 체력과 스태미나 동시 증가
-=======
     Stamina = 0,            // 스태미나 증가
     Health = 1,             // 체력 증가
     Both = 2,               // 체력과 스태미나 동시 증가
     HealthLossReduction = 3, // 체력 소모량 감소 버프
     StaminaLossReduction = 4, // 스테미나 소모량 감소 버프
     RunSpeedBoost = 5       // 달리기 속도 증가 버프
->>>>>>> 74b4bcf0 (update)
 }
 
 public enum StoreItemDataType
@@ -46,14 +40,9 @@ public class StoreItemData : ScriptableObject
     
     [Header("간식 전용 데이터")]
     [SerializeField] private SnackEffectType _effectType = SnackEffectType.Stamina; // 효과 타입
-<<<<<<< HEAD
-    [SerializeField] private float _itemStat;              // 간식을 먹으면 스테미나 또는 체력 증가(10~30)
-    [SerializeField] private int _shelfLifeDays = 5;       // 유통기한 (기본 5일)
-=======
     [SerializeField] private float _itemStat;              // 간식을 먹으면 스테미나 또는 체력 증가(10~30) / 버프 강도(퍼센트)
     [SerializeField] private int _shelfLifeDays = 5;       // 유통기한 (기본 5일)
     [SerializeField] private float _buffDuration = 60f;    // 버프 지속시간 (초, 버프 타입일 경우에만 사용)
->>>>>>> 74b4bcf0 (update)
 
     // 상점 아이템 속성들 (ShopItemData 호환)
     public ItemType itemType 
@@ -92,15 +81,12 @@ public class StoreItemData : ScriptableObject
         get => dataType == StoreItemDataType.Snack ? _shelfLifeDays : 0; 
         set => _shelfLifeDays = value; 
     }
-<<<<<<< HEAD
-=======
     
     public float buffDuration 
     { 
         get => dataType == StoreItemDataType.Snack ? _buffDuration : 0f; 
         set => _buffDuration = value; 
     }
->>>>>>> 74b4bcf0 (update)
 
     // 간식 관련 메서드들 (SnackItemData와 동일)
     /// <summary>
