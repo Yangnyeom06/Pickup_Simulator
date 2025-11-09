@@ -479,10 +479,6 @@ public class InventorySlotData : MonoBehaviour
             }
         }
     }
-<<<<<<< HEAD
-
-=======
->>>>>>> 74b4bcf0 (update)
     /// <summary>
     /// 스낵 아이템을 사용하여 스태미나를 증가시킵니다
     /// </summary>
