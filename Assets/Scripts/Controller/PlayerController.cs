@@ -1,5 +1,10 @@
 using System.Collections;
 using System.Collections.Generic;
+<<<<<<< HEAD
+=======
+using System;
+using System.Reflection;
+>>>>>>> 74b4bcf0 (update)
 using UnityEngine;
 
 public class PlayerController : MonoBehaviour
@@ -15,10 +20,21 @@ public class PlayerController : MonoBehaviour
     private float crouchSpeed;
 
     private float baseSpeed;
+<<<<<<< HEAD
     private float applySpeed
     {
         get { return baseSpeed * PlayerManager.Instance.speedLevel.current; }
         set { baseSpeed = value; }
+=======
+    private float currentSpeed; // 실제 사용되는 속도
+    private float applySpeed
+    {
+        get { return currentSpeed; }
+        set { 
+            baseSpeed = value;
+            UpdateCurrentSpeed();
+        }
+>>>>>>> 74b4bcf0 (update)
     }
 
     private float calSpeed;
@@ -61,13 +77,28 @@ public class PlayerController : MonoBehaviour
 
     private Rigidbody myRigid;
 
+<<<<<<< HEAD
 
     // Use this for initialization
+=======
+    // 🔹 인터랙션용 필드 추가
+    [Header("Interaction Settings")]
+    [SerializeField] private float interactDistance = 3f;
+    [SerializeField] private LayerMask interactMask = ~0; // 모든 레이어 기본
+    [SerializeField] private KeyCode interactKey = KeyCode.E;
+
+    // 초기화
+>>>>>>> 74b4bcf0 (update)
     void Start()
     {
         boxCollider = GetComponent<BoxCollider>();
         myRigid = GetComponent<Rigidbody>();
+<<<<<<< HEAD
         applySpeed = walkSpeed;
+=======
+        baseSpeed = walkSpeed;
+        UpdateCurrentSpeed();
+>>>>>>> 74b4bcf0 (update)
 
         // 초기화.
         originPosY = theCamera.transform.localPosition.y;
@@ -75,6 +106,7 @@ public class PlayerController : MonoBehaviour
 
         if (PlayerPrefs.HasKey(PREF_KEY_SENS))
             lookSensitivity = PlayerPrefs.GetFloat(PREF_KEY_SENS);
+<<<<<<< HEAD
 
     }
 
@@ -85,6 +117,31 @@ public class PlayerController : MonoBehaviour
     void Update()
     {
 
+=======
+    }
+    
+    /// <summary>
+    /// 현재 속도를 업데이트합니다 (speedLevel과 버프 적용)
+    /// </summary>
+    private void UpdateCurrentSpeed()
+    {
+        if (isRun)
+        {
+            // 달리기 중: 버프 적용된 runSpeed 사용
+            float speedMultiplier = PlayerManager.Instance.GetRunSpeedMultiplier();
+            currentSpeed = runSpeed * speedMultiplier * PlayerManager.Instance.speedLevel.current;
+        }
+        else
+        {
+            // 걷기/앉기: 기본 속도만 사용
+            currentSpeed = baseSpeed * PlayerManager.Instance.speedLevel.current;
+        }
+    }
+
+
+    void Update()
+    {
+>>>>>>> 74b4bcf0 (update)
         IsGround();
         TryJump();
         TryRun();
@@ -96,21 +153,98 @@ public class PlayerController : MonoBehaviour
         CameraRotation();
         CharacterRotation();
 
+<<<<<<< HEAD
 
 
     }
 
+=======
+        // 🔹 여기 추가
+        TryInteract();
+    }
+
+
+>>>>>>> 74b4bcf0 (update)
     public float LookSensitivity
     {
         get => lookSensitivity;
         set
         {
             lookSensitivity = Mathf.Clamp(value, 0.1f, 20f);
+<<<<<<< HEAD
             PlayerPrefs.SetFloat(PREF_KEY_SENS, lookSensitivity); // 씬 간 공유
+=======
+            PlayerPrefs.SetFloat(PREF_KEY_SENS, lookSensitivity);
+>>>>>>> 74b4bcf0 (update)
         }
     }
 
 
+<<<<<<< HEAD
+=======
+    // 🔸 문, 인터랙션 처리 함수
+    private void TryInteract()
+    {
+        // 카메라 중앙에서 레이 쏘기
+        Ray ray = theCamera.ViewportPointToRay(new Vector3(0.5f, 0.5f, 0f));
+        if (Physics.Raycast(ray, out RaycastHit hit, interactDistance, interactMask, QueryTriggerInteraction.Collide))
+        {
+            // BusSystem (버스) - 런타임에 타입으로 찾기 (컴파일 오류 방지)
+            Component busComponent = null;
+            // 먼저 직접 컴포넌트 찾기 시도
+            var allComponents = hit.collider.GetComponents<Component>();
+            foreach (var comp in allComponents)
+            {
+                if (comp != null && comp.GetType().Name == "BusSystem")
+                {
+                    busComponent = comp;
+                    break;
+                }
+            }
+            // 찾지 못했으면 부모에서 찾기
+            if (busComponent == null)
+            {
+                var parentComponents = hit.collider.GetComponentsInParent<Component>();
+                foreach (var comp in parentComponents)
+                {
+                    if (comp != null && comp.GetType().Name == "BusSystem")
+                    {
+                        busComponent = comp;
+                        break;
+                    }
+                }
+            }
+            
+            // BusSystem을 찾았고 E키를 눌렀다면 Interact 호출
+            if (busComponent != null && Input.GetKeyDown(interactKey))
+            {
+                var interactMethod = busComponent.GetType().GetMethod("Interact");
+                if (interactMethod != null)
+                {
+                    interactMethod.Invoke(busComponent, null);
+                    return;
+                }
+            }
+
+            // DoorInteract
+            var door = hit.collider.GetComponentInParent<DoorInteract>();
+            if (door != null && Input.GetKeyDown(interactKey))
+            {
+                door.Interact();
+                return;
+            }
+
+            // SingleDoorInteract
+            var singleDoor = hit.collider.GetComponentInParent<SingleDoorInteract>();
+            if (singleDoor != null && Input.GetKeyDown(interactKey))
+            {
+                singleDoor.Interact();
+                return;
+            }
+        }
+    }
+
+>>>>>>> 74b4bcf0 (update)
 
     // 앉기 시도
     private void TryCrouch()
@@ -129,11 +263,16 @@ public class PlayerController : MonoBehaviour
 
         if (isCrouch)
         {
+<<<<<<< HEAD
             applySpeed = crouchSpeed;
+=======
+            baseSpeed = crouchSpeed;
+>>>>>>> 74b4bcf0 (update)
             applyCrouchPosY = crouchPosY;
         }
         else
         {
+<<<<<<< HEAD
             applySpeed = walkSpeed;
             applyCrouchPosY = originPosY;
         }
@@ -146,6 +285,19 @@ public class PlayerController : MonoBehaviour
     IEnumerator CrouchCoroutine()
     {
 
+=======
+            baseSpeed = walkSpeed;
+            applyCrouchPosY = originPosY;
+        }
+        
+        UpdateCurrentSpeed();
+
+        StartCoroutine(CrouchCoroutine());
+    }
+
+    IEnumerator CrouchCoroutine()
+    {
+>>>>>>> 74b4bcf0 (update)
         float _posY = theCamera.transform.localPosition.y;
         int count = 0;
 
@@ -162,14 +314,20 @@ public class PlayerController : MonoBehaviour
     }
 
 
+<<<<<<< HEAD
     // 지면 체크.
+=======
+>>>>>>> 74b4bcf0 (update)
     private void IsGround()
     {
         isGround = Physics.Raycast(transform.position, Vector3.down, boxCollider.bounds.extents.y + 0.1f);
     }
 
 
+<<<<<<< HEAD
     // 점프 시도
+=======
+>>>>>>> 74b4bcf0 (update)
     private void TryJump()
     {
         if (Input.GetKeyDown(KeyCode.Space) && isGround)
@@ -178,12 +336,17 @@ public class PlayerController : MonoBehaviour
         }
     }
 
+<<<<<<< HEAD
 
     // 점프
     private void Jump()
     {
 
         // 앉은 상태에서 점프시 앉은 상태 해제.
+=======
+    private void Jump()
+    {
+>>>>>>> 74b4bcf0 (update)
         if (isCrouch)
             Crouch();
 
@@ -191,7 +354,10 @@ public class PlayerController : MonoBehaviour
     }
 
 
+<<<<<<< HEAD
     // 달리기 시도
+=======
+>>>>>>> 74b4bcf0 (update)
     private void TryRun()
     {
         if (Input.GetKey(KeyCode.LeftShift) && (PlayerManager.Instance.staminaLevel.current > 0))
@@ -204,14 +370,21 @@ public class PlayerController : MonoBehaviour
         }
     }
 
+<<<<<<< HEAD
     // 달리기 실행
     private void Running()
     {
         if (isRun) return; // 달리고 있으면 리턴
+=======
+    private void Running()
+    {
+        if (isRun) return;
+>>>>>>> 74b4bcf0 (update)
         if (isCrouch)
             Crouch();
 
         isRun = true;
+<<<<<<< HEAD
         applySpeed = runSpeed;
         PlayerManager.Instance.StartStaminaLoss();
         Debug.Log("달리는 중");
@@ -234,6 +407,35 @@ public class PlayerController : MonoBehaviour
     private void Move()
     {
 
+=======
+        UpdateCurrentSpeed();
+        PlayerManager.Instance.StartStaminaLoss();
+    }
+    
+    /// <summary>
+    /// 현재 달리는 중인지 확인합니다
+    /// </summary>
+    public bool IsRunning()
+    {
+        return isRun;
+    }
+
+    public void RunningCancel()
+    {
+        if (!isRun) return;
+        isRun = false;
+        baseSpeed = walkSpeed;
+        UpdateCurrentSpeed();
+        PlayerManager.Instance.StopStaminaLoss();
+    }
+
+
+    private void Move()
+    {
+        // 달리는 중이면 버프 적용된 속도로 업데이트
+        UpdateCurrentSpeed();
+        
+>>>>>>> 74b4bcf0 (update)
         float _moveDirX = Input.GetAxisRaw("Horizontal");
         float _moveDirZ = Input.GetAxisRaw("Vertical");
 
@@ -245,18 +447,27 @@ public class PlayerController : MonoBehaviour
         myRigid.MovePosition(transform.position + _velocity * Time.deltaTime);
     }
 
+<<<<<<< HEAD
     // 좌우 캐릭터 회전
     private void CharacterRotation()
     {
 
+=======
+
+    private void CharacterRotation()
+    {
+>>>>>>> 74b4bcf0 (update)
         float _yRotation = Input.GetAxisRaw("Mouse X");
         Vector3 _characterRotationY = new Vector3(0f, _yRotation, 0f) * lookSensitivity;
         myRigid.MoveRotation(myRigid.rotation * Quaternion.Euler(_characterRotationY));
     }
 
 
+<<<<<<< HEAD
 
     // 상하 카메라 회전
+=======
+>>>>>>> 74b4bcf0 (update)
     private void CameraRotation()
     {
         float _xRotation = Input.GetAxisRaw("Mouse Y");
@@ -267,6 +478,7 @@ public class PlayerController : MonoBehaviour
         theCamera.transform.localEulerAngles = new Vector3(currentCameraRotationX, 0f, 0f);
     }
 
+<<<<<<< HEAD
     private void OnEnable()
     {
         // 시작 시 한 번 더 안전하게 적용(씬 이동 등으로 복귀했을 때 대비)
@@ -280,6 +492,9 @@ public class PlayerController : MonoBehaviour
         SettingsEvents.OnLookSensitivityChanged -= OnSensitivityChanged;
     }
      private void OnSensitivityChanged(float value)
+=======
+    private void OnSensitivityChanged(float value)
+>>>>>>> 74b4bcf0 (update)
     {
         LookSensitivityValue = value; // 아래 프로퍼티에서 클램프 + PlayerPrefs 반영
     }
@@ -294,6 +509,21 @@ public class PlayerController : MonoBehaviour
             PlayerPrefs.SetFloat(PREF_KEY_SENS, lookSensitivity); // 씬 간 공유 저장
         }
     }
+<<<<<<< HEAD
 
 
+=======
+    private void OnEnable()
+    {
+        // 시작 시 한 번 더 안전하게 적용(씬 이동 등으로 복귀했을 때 대비)
+        LookSensitivityValue = PlayerPrefs.GetFloat(PREF_KEY_SENS, LookSensitivity);
+
+        SettingsEvents.OnLookSensitivityChanged += OnSensitivityChanged;
+    }
+
+    private void OnDisable()
+    {
+        SettingsEvents.OnLookSensitivityChanged -= OnSensitivityChanged;
+    }
+>>>>>>> 74b4bcf0 (update)
 }

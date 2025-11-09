@@ -1,6 +1,7 @@
 using UnityEngine;
 using System.Collections;
 using System.Collections.Generic;
+<<<<<<< HEAD
 
 public class CursorControl : MonoBehaviour
 {
@@ -8,6 +9,30 @@ public class CursorControl : MonoBehaviour
     {
         Cursor.lockState = CursorLockMode.Locked;
         Cursor.visible = false;
+=======
+using UnityEngine.SceneManagement;
+
+public class CursorControl : MonoBehaviour
+{
+    public static CursorControl Instance { get; private set; }
+    void Start()
+    {
+        CursorCheck();
+    }
+
+    public void CursorCheck()
+    {
+        if (SceneManager.GetActiveScene().name == "MainMenu")
+        {
+            Cursor.lockState = CursorLockMode.None;
+            Cursor.visible = true;
+        }
+        else
+        {
+            Cursor.lockState = CursorLockMode.Locked;
+            Cursor.visible = false;
+        }
+>>>>>>> 74b4bcf0 (update)
     }
 
     void Update()

@@ -13,6 +13,10 @@ public class SaveManager : MonoBehaviour
 
     private void Awake()
     {
+<<<<<<< HEAD
+=======
+        Debug.Log(Application.persistentDataPath + $"/gameSave_slot_{slotId}.json");
+>>>>>>> 74b4bcf0 (update)
         if (Instance == null)
         {
             Instance = this;
@@ -77,7 +81,11 @@ public class SaveManager : MonoBehaviour
                 uiData.Apply();
 
             Debug.Log($"로드 완료 (슬롯 {slotId})");
+<<<<<<< HEAD
             
+=======
+
+>>>>>>> 74b4bcf0 (update)
             if (ItemRepository.Instance != null)
             {
                 ItemRepository.Instance.collectedItemDatas = new List<ItemInstanceData>(currentSaveData.collectedItemsData);
@@ -90,6 +98,7 @@ public class SaveManager : MonoBehaviour
         }
     }
 
+<<<<<<< HEAD
     public void OnSceneLoaded(Scene scene, LoadSceneMode mode)
     {
         if (scene.name == "TestScene1234")
@@ -104,10 +113,69 @@ public class SaveManager : MonoBehaviour
             else
             {
                 Debug.LogWarning($"{scene.name}에서 필요한 컴포넌트를 찾지 못했습니다.");
+=======
+    public void newGame()
+    {
+        for (int i = 1; i < 3; i++)
+        {
+            if (!File.Exists(GetSavePath(i)))
+            {
+                Debug.Log($"{i}번 슬롯 로드");
+                SceneManager.LoadScene("Map");
+                SaveGame(i);
+                LoadGame(i);
+                CursorControl.Instance.CursorCheck();
+                break;
+            }
+            else
+            {
+                Debug.Log("빈 슬롯이 없습니다.");
+>>>>>>> 74b4bcf0 (update)
             }
         }
     }
 
+<<<<<<< HEAD
+=======
+    public void continueGame()
+    {
+        for (int i = 1; i < 3; i++)
+        {
+            if (File.Exists(GetSavePath(i)))
+            {
+                Debug.Log($"{i}번 슬롯 로드");
+                SceneManager.LoadScene("Map");
+                LoadGame(i);
+                CursorControl.Instance.CursorCheck();
+                break;
+            }
+            else
+            {
+                Debug.Log("세이브 슬롯이 없습니다.");
+            }
+        }
+    }
+
+    public void OnSceneLoaded(Scene scene, LoadSceneMode mode)
+    {
+            if (scene.name == "MainMap")
+            {
+                if (PlayerManager.Instance != null && InventoryManager.Instance != null)
+                {
+                    slotId = SceneChangeManager.Instance.selectSlotId;
+                    LoadGame(slotId);
+                    CursorControl.Instance.CursorCheck();
+
+                    Debug.Log($"{scene.name}씬 로드 후 {slotId}번 데이터 적용 완료");
+                }
+                else
+                {
+                    Debug.LogWarning($"{scene.name}에서 필요한 컴포넌트를 찾지 못했습니다.");
+                }
+            }
+    }
+
+>>>>>>> 74b4bcf0 (update)
     public void ResetAllData(int slotId)
     {
         Debug.Log(slotId);

@@ -30,6 +30,10 @@ public class LookSensitivityScrollbar : MonoBehaviour
         SetBarSilently(Mathf.InverseLerp(min, max, saved));
     }
 
+<<<<<<< HEAD
+=======
+
+>>>>>>> 74b4bcf0 (update)
     /* ───── 매 프레임 PlayerPrefs 변동 감시 (선택사항) ───── */
     private void LateUpdate()
     {

@@ -34,7 +34,14 @@ AnimatorStateTransition:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_Name: 
+<<<<<<< HEAD
   m_Conditions: []
+=======
+  m_Conditions:
+  - m_ConditionMode: 1
+    m_ConditionEvent: IsWalking
+    m_EventTreshold: 0
+>>>>>>> 74b4bcf0 (update)
   m_DstStateMachine: {fileID: 0}
   m_DstState: {fileID: -8916727899260614118}
   m_Solo: 0
@@ -44,7 +51,11 @@ AnimatorStateTransition:
   m_TransitionDuration: 0.25
   m_TransitionOffset: 0
   m_ExitTime: 0.97483224
+<<<<<<< HEAD
   m_HasExitTime: 1
+=======
+  m_HasExitTime: 0
+>>>>>>> 74b4bcf0 (update)
   m_HasFixedDuration: 1
   m_InterruptionSource: 0
   m_OrderedInterruption: 1
@@ -81,7 +92,14 @@ AnimatorStateTransition:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_Name: 
+<<<<<<< HEAD
   m_Conditions: []
+=======
+  m_Conditions:
+  - m_ConditionMode: 2
+    m_ConditionEvent: IsWalking
+    m_EventTreshold: 0
+>>>>>>> 74b4bcf0 (update)
   m_DstStateMachine: {fileID: 0}
   m_DstState: {fileID: 5323115727937201714}
   m_Solo: 0
@@ -91,7 +109,11 @@ AnimatorStateTransition:
   m_TransitionDuration: 0.25
   m_TransitionOffset: 0
   m_ExitTime: 0.7580645
+<<<<<<< HEAD
   m_HasExitTime: 1
+=======
+  m_HasExitTime: 0
+>>>>>>> 74b4bcf0 (update)
   m_HasFixedDuration: 1
   m_InterruptionSource: 0
   m_OrderedInterruption: 1
@@ -104,7 +126,17 @@ AnimatorController:
   m_PrefabAsset: {fileID: 0}
   m_Name: Middle
   serializedVersion: 5
+<<<<<<< HEAD
   m_AnimatorParameters: []
+=======
+  m_AnimatorParameters:
+  - m_Name: IsWalking
+    m_Type: 4
+    m_DefaultFloat: 0
+    m_DefaultInt: 0
+    m_DefaultBool: 0
+    m_Controller: {fileID: 9100000}
+>>>>>>> 74b4bcf0 (update)
   m_AnimatorLayers:
   - serializedVersion: 5
     m_Name: Base Layer

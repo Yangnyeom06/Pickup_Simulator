@@ -1,0 +1,27 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: dad713ce8d5a7794ea1439cd244e0a33, type: 3}
+  m_Name: BuffItem3
+  m_EditorClassIdentifier: 
+  itemID: 
+  itemName: BuffItem3
+  icon: {fileID: -1303429939, guid: b43e430291d8a744595df48b93f62f87, type: 3}
+  price: 50
+  description: 
+  slotNum: 0
+  dataType: 1
+  _itemType: 1
+  _itemCode: 
+  _effectType: 5
+  _itemStat: 30
+  _shelfLifeDays: 5
+  _buffDuration: 40
