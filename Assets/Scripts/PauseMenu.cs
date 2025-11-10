@@ -10,6 +10,10 @@ public class PauseMenu : MonoBehaviour
 
     private bool isPause = false;
 
+    void Start()
+    {
+        cursorControl= GetComponent<CursorControl>();
+    }
 
     void Update()
     {        
@@ -26,18 +30,16 @@ public class PauseMenu : MonoBehaviour
     private void CallMenu()
     {
         isPause = true;
-        go_BaseUI.SetActive(true);
         cursorControl.CursorVisible(true);
-        
+        go_BaseUI.SetActive(true);
         Time.timeScale = 0f; // 시간의 흐름 설정. 0배속. 즉 시간을 멈춤.
     }
 
     public void CloseMenu()
     {
         isPause = false;
-        go_BaseUI.SetActive(false); 
         cursorControl.CursorVisible(false);
-        
+        go_BaseUI.SetActive(false); 
         Time.timeScale = 1f; // 1배속 (정상 속도)
     }
 

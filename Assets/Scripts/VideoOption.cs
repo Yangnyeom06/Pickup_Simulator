@@ -23,8 +23,6 @@ public class VideoOption : MonoBehaviour
         fullscreenBtn.onValueChanged.AddListener(FullScreenBtn);
     }
 
-
-
     private void InitUI()
     {
         resolutions.Clear();

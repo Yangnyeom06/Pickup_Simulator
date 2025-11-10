@@ -358,19 +358,7 @@ Transform:
   m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
-  m_Children:
-<<<<<<< HEAD
-<<<<<<< HEAD
-<<<<<<< HEAD
-=======
   - {fileID: 671041984}
->>>>>>> 74b4bcf0 (update)
-=======
-  - {fileID: 671041984}
->>>>>>> origin/dev/newUI
-=======
-  - {fileID: 671041984}
->>>>>>> origin/dev/Junk
   - {fileID: 1808857648}
   - {fileID: 1017544882}
   - {fileID: 431060973}
@@ -586,19 +574,7 @@ PrefabInstance:
   serializedVersion: 2
   m_Modification:
     serializedVersion: 3
-<<<<<<< HEAD
-<<<<<<< HEAD
-<<<<<<< HEAD
-    m_TransformParent: {fileID: 0}
-=======
     m_TransformParent: {fileID: 432417025}
->>>>>>> 74b4bcf0 (update)
-=======
-    m_TransformParent: {fileID: 432417025}
->>>>>>> origin/dev/newUI
-=======
-    m_TransformParent: {fileID: 432417025}
->>>>>>> origin/dev/Junk
     m_Modifications:
     - target: {fileID: 1606877426911963905, guid: a1863b03a6bd8c14fac2d1414ffd70a8, type: 3}
       propertyPath: m_Name
@@ -606,9 +582,6 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 2091664934703083963, guid: a1863b03a6bd8c14fac2d1414ffd70a8, type: 3}
       propertyPath: m_LocalScale.x
-<<<<<<< HEAD
-<<<<<<< HEAD
-<<<<<<< HEAD
       value: 0.86956984
       objectReference: {fileID: 0}
     - target: {fileID: 2091664934703083963, guid: a1863b03a6bd8c14fac2d1414ffd70a8, type: 3}
@@ -618,11 +591,6 @@ PrefabInstance:
     - target: {fileID: 2091664934703083963, guid: a1863b03a6bd8c14fac2d1414ffd70a8, type: 3}
       propertyPath: m_LocalScale.z
       value: 0.86956984
-=======
-=======
->>>>>>> origin/dev/newUI
-=======
->>>>>>> origin/dev/Junk
       value: 0.8695701
       objectReference: {fileID: 0}
     - target: {fileID: 2091664934703083963, guid: a1863b03a6bd8c14fac2d1414ffd70a8, type: 3}
@@ -632,13 +600,6 @@ PrefabInstance:
     - target: {fileID: 2091664934703083963, guid: a1863b03a6bd8c14fac2d1414ffd70a8, type: 3}
       propertyPath: m_LocalScale.z
       value: 0.86956996
-<<<<<<< HEAD
-<<<<<<< HEAD
->>>>>>> 74b4bcf0 (update)
-=======
->>>>>>> origin/dev/newUI
-=======
->>>>>>> origin/dev/Junk
       objectReference: {fileID: 0}
     - target: {fileID: 2091664934703083963, guid: a1863b03a6bd8c14fac2d1414ffd70a8, type: 3}
       propertyPath: m_LocalPosition.x
@@ -646,9 +607,6 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 2091664934703083963, guid: a1863b03a6bd8c14fac2d1414ffd70a8, type: 3}
       propertyPath: m_LocalPosition.y
-<<<<<<< HEAD
-<<<<<<< HEAD
-<<<<<<< HEAD
       value: 0.33763552
       objectReference: {fileID: 0}
     - target: {fileID: 2091664934703083963, guid: a1863b03a6bd8c14fac2d1414ffd70a8, type: 3}
@@ -670,11 +628,6 @@ PrefabInstance:
     - target: {fileID: 2091664934703083963, guid: a1863b03a6bd8c14fac2d1414ffd70a8, type: 3}
       propertyPath: m_LocalRotation.z
       value: 0
-=======
-=======
->>>>>>> origin/dev/newUI
-=======
->>>>>>> origin/dev/Junk
       value: 1.3909999
       objectReference: {fileID: 0}
     - target: {fileID: 2091664934703083963, guid: a1863b03a6bd8c14fac2d1414ffd70a8, type: 3}
@@ -696,13 +649,6 @@ PrefabInstance:
     - target: {fileID: 2091664934703083963, guid: a1863b03a6bd8c14fac2d1414ffd70a8, type: 3}
       propertyPath: m_LocalRotation.z
       value: 0.50000006
-<<<<<<< HEAD
-<<<<<<< HEAD
->>>>>>> 74b4bcf0 (update)
-=======
->>>>>>> origin/dev/newUI
-=======
->>>>>>> origin/dev/Junk
       objectReference: {fileID: 0}
     - target: {fileID: 2091664934703083963, guid: a1863b03a6bd8c14fac2d1414ffd70a8, type: 3}
       propertyPath: m_LocalEulerAnglesHint.x
@@ -721,26 +667,11 @@ PrefabInstance:
     m_AddedGameObjects: []
     m_AddedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: a1863b03a6bd8c14fac2d1414ffd70a8, type: 3}
-<<<<<<< HEAD
-<<<<<<< HEAD
-<<<<<<< HEAD
-=======
-=======
->>>>>>> origin/dev/newUI
-=======
->>>>>>> origin/dev/Junk
 --- !u!4 &671041984 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 2091664934703083963, guid: a1863b03a6bd8c14fac2d1414ffd70a8, type: 3}
   m_PrefabInstance: {fileID: 671041983}
   m_PrefabAsset: {fileID: 0}
-<<<<<<< HEAD
-<<<<<<< HEAD
->>>>>>> 74b4bcf0 (update)
-=======
->>>>>>> origin/dev/newUI
-=======
->>>>>>> origin/dev/Junk
 --- !u!1001 &786844609
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -2610,13 +2541,4 @@ SceneRoots:
   m_ObjectHideFlags: 0
   m_Roots:
   - {fileID: 432417025}
-<<<<<<< HEAD
-<<<<<<< HEAD
-<<<<<<< HEAD
   - {fileID: 671041983}
-=======
->>>>>>> 74b4bcf0 (update)
-=======
->>>>>>> origin/dev/newUI
-=======
->>>>>>> origin/dev/Junk
