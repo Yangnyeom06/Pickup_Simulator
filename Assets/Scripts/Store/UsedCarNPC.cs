@@ -264,7 +264,12 @@ public class UsedCarNPC : MonoBehaviour, ISaleSystem
 
         sellUI.SetActive(false);
 
-        int playerMoney = PlayerManager.Instance.money;
+        // PlayerData와 직접 연동
+        int playerMoney = 0;
+        if (PlayerManager.Instance != null && PlayerManager.Instance.playerData != null)
+        {
+            playerMoney = PlayerManager.Instance.playerData.money;
+        }
         Debug.Log($"판매 완료: +{gain}G");
         if (playerMoneyText != null)
         {
@@ -298,10 +303,14 @@ public class UsedCarNPC : MonoBehaviour, ISaleSystem
 
     private void UpdatePlayerMoneyUI()
     {
-        int playerMoney = PlayerManager.Instance.money;
-        if (playerMoneyText != null)
+        // PlayerData와 직접 연동
+        if (PlayerManager.Instance != null && PlayerManager.Instance.playerData != null)
         {
-            playerMoneyText.text = $"{playerMoney} G";
+            int playerMoney = PlayerManager.Instance.playerData.money;
+            if (playerMoneyText != null)
+            {
+                playerMoneyText.text = $"{playerMoney} G";
+            }
         }
     }
 }

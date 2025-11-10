@@ -99,17 +99,13 @@ public class AreaPortalWithFade : MonoBehaviour
             if (Physics.Raycast(start, Vector3.down, out RaycastHit hit, raycastMaxDistance, groundMask, QueryTriggerInteraction.Ignore))
             {
                 dest = hit.point + Vector3.up * groundOffset;
-                // ���鿡 ���� '��' ���� ���߰� ������ �Ʒ� �ּ� ����
-                // rot = Quaternion.FromToRotation(Vector3.up, hit.normal) * rot;
             }
         }
 
-        // ���� ����
         player.position = dest;
         player.rotation = rot;
         player.localScale = targetScale;
 
-        // NavMeshAgent ���� ó��(��� ���� ��)
         if (agent)
         {
             agent.enabled = true;
@@ -118,7 +114,6 @@ public class AreaPortalWithFade : MonoBehaviour
             if (!agentWasEnabled) agent.enabled = false;
         }
 
-        // ����
         if (cc) cc.enabled = ccWasEnabled;
         if (rb) rb.isKinematic = rbWasKinematic;
     }

@@ -50,6 +50,9 @@ public class DayManager : MonoBehaviour
     void Start()
     {
         today.text = $"{month}/{day}";
+        
+        // 게임 시작 시에도 중고트럭 스폰 체크 (첫 날)
+        CheckUsedCarTruckSpawn();
     }
 
     void Update()
@@ -106,6 +109,10 @@ public class DayManager : MonoBehaviour
         PlayerManager.Instance.StartHealthLoss();
         note.SetActive(false);
         AdvanceTime();
+        
+        // 중고트럭 스폰 체크 (새로운 날이 시작될 때)
+        CheckUsedCarTruckSpawn();
+        
         pickUpItemCounts = 0;
         sellItemCounts = 0;
         todayGetMoney = 0;
