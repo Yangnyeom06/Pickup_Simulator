@@ -58,7 +58,7 @@ public class ItemManager : MonoBehaviour
     private void SpawnAllItems()
     {
         SpawnItemsInList(roadSpawners);
-        SpawnItemsInList(slumSpawners);
+        SpawnItemsInList(mountainSpawners);
         SpawnItemsInList(elementSchoolSpawners);
         SpawnItemsInList(middleSchoolSpawners);
         SpawnItemsInList(citySpawners);
