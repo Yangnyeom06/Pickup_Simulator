@@ -207,7 +207,35 @@ public class BusSystem : MonoBehaviour
 
         RemoveBusCard();
 
-        StartCoroutine(MoveBusThenTeleport());
+        // FadeInOut 싱글톤에서 코루틴 실행 (항상 활성화되어 있음)
+        FadeInOut fadeInstance = fadeController ?? FadeInOut.Instance;
+        if (fadeInstance != null && fadeInstance.gameObject.activeInHierarchy)
+        {
+            fadeInstance.StartCoroutine(MoveBusThenTeleport());
+            return;
+        }
+
+        // 플레이어 GameObject에서 코루틴 실행
+        if (playerTransform != null && playerTransform.gameObject.activeInHierarchy)
+        {
+            MonoBehaviour playerMono = playerTransform.GetComponent<MonoBehaviour>();
+            if (playerMono != null)
+            {
+                playerMono.StartCoroutine(MoveBusThenTeleport());
+                return;
+            }
+        }
+
+        // 이 GameObject가 활성화되어 있으면 여기서 실행
+        if (gameObject.activeInHierarchy)
+        {
+            StartCoroutine(MoveBusThenTeleport());
+        }
+        else
+        {
+            Debug.LogError("코루틴을 실행할 수 있는 활성화된 GameObject를 찾을 수 없습니다!");
+            isInteractable = true;
+        }
     }
 
     public void OnCancelTravel()
