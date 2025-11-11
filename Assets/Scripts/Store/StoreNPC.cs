@@ -43,7 +43,7 @@ public class StoreNPC : MonoBehaviour
             {
                 if (hit.transform.gameObject == this.gameObject)
                 {
-                    dialogueTrigger.TriggerSerialDialogue();
+                    //dialogueTrigger.TriggerSerialDialogue();
                     ShowButtons();
                 }
             }

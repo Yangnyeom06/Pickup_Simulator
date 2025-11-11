@@ -76,6 +76,12 @@ public class PlayerController : MonoBehaviour
     // 초기화
     void Start()
     {
+        // Player 태그 자동 설정
+        if (!gameObject.CompareTag("Player"))
+        {
+            gameObject.tag = "Player";
+        }
+        
         boxCollider = GetComponent<BoxCollider>();
         myRigid = GetComponent<Rigidbody>();
         baseSpeed = walkSpeed;

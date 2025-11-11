@@ -80,6 +80,10 @@ PrefabInstance:
       propertyPath: m_Name
       value: Luggage
       objectReference: {fileID: 0}
+    - target: {fileID: 919132149155446097, guid: de3847303c976aa43b1abf4fed7f4b88, type: 3}
+      propertyPath: m_TagString
+      value: Item
+      objectReference: {fileID: 0}
     - target: {fileID: 6618752248785773748, guid: de3847303c976aa43b1abf4fed7f4b88, type: 3}
       propertyPath: m_LocalRotation.w
       value: 0.99981403
@@ -144,6 +148,12 @@ PrefabInstance:
     - targetCorrespondingSourceObject: {fileID: 919132149155446097, guid: de3847303c976aa43b1abf4fed7f4b88, type: 3}
       insertIndex: -1
       addedObject: {fileID: 2408043931967430107}
+    - targetCorrespondingSourceObject: {fileID: 919132149155446097, guid: de3847303c976aa43b1abf4fed7f4b88, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 8161012696742799256}
+    - targetCorrespondingSourceObject: {fileID: 919132149155446097, guid: de3847303c976aa43b1abf4fed7f4b88, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: -7260455047450962617}
     - targetCorrespondingSourceObject: {fileID: 8057777149184220619, guid: de3847303c976aa43b1abf4fed7f4b88, type: 3}
       insertIndex: -1
       addedObject: {fileID: 2626116376378842904}
@@ -231,6 +241,55 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   uniqueID: 
   itemData: {fileID: 11400000, guid: 857f283e3de7c694a91d4021b3e69640, type: 2}
+--- !u!54 &8161012696742799256
+Rigidbody:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 201957343340797557}
+  serializedVersion: 4
+  m_Mass: 1
+  m_Drag: 0
+  m_AngularDrag: 0.05
+  m_CenterOfMass: {x: 0, y: 0, z: 0}
+  m_InertiaTensor: {x: 1, y: 1, z: 1}
+  m_InertiaRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_IncludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ExcludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ImplicitCom: 1
+  m_ImplicitTensor: 1
+  m_UseGravity: 1
+  m_IsKinematic: 0
+  m_Interpolate: 0
+  m_Constraints: 0
+  m_CollisionDetection: 0
+--- !u!64 &-7260455047450962617
+MeshCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 201957343340797557}
+  m_Material: {fileID: 0}
+  m_IncludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ExcludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_LayerOverridePriority: 0
+  m_IsTrigger: 0
+  m_ProvidesContacts: 0
+  m_Enabled: 1
+  serializedVersion: 5
+  m_Convex: 1
+  m_CookingOptions: 30
+  m_Mesh: {fileID: -1716388102342851378, guid: de3847303c976aa43b1abf4fed7f4b88, type: 3}
 --- !u!1 &3206654126146913209 stripped
 GameObject:
   m_CorrespondingSourceObject: {fileID: 2489439477782945949, guid: de3847303c976aa43b1abf4fed7f4b88, type: 3}

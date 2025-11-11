@@ -81,15 +81,15 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: e187235c124c4754ca6d779ef78d380b, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  inventoryimageBG: {fileID: 1025370897632689159}
-  inventoryimage: {fileID: 4720498206323762986}
-  ItemSlotButton: {fileID: 0}
+  ItemSlotImage: {fileID: 1025370897632689159}
+  ItemSlotButton: {fileID: 7145739972516315176}
   countText: {fileID: 0}
   currentItem: {fileID: 0}
   currentShopItem: {fileID: 0}
-  currentSnack: {fileID: 0}
+  currentSnackItem: {fileID: 0}
   currentItemCount: 1
-  originalInventorySlot: {fileID: 0}
+  snackPurchaseDay: -1
+  snackShelfLifeDays: 5
 --- !u!114 &7145739972516315176
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -164,7 +164,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!224 &8483345470486129197
 RectTransform:
   m_ObjectHideFlags: 0
